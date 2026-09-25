@@ -114,8 +114,14 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   mcr.microsoft.com/mssql/server:2022-latest` padł na `no space left on device`
   (dysk maszyny był przy <500MB wolnego). Do zrobienia przy następnej okazji: odpalić
   `code/run-demo.sh` gdy będzie więcej miejsca i dopisać realny output.
-- Następny poziom (po zweryfikowaniu podstaw): statystyki, covering index, execution
-  plan cache, parameter sniffing.
+- Wydanie #2, 2026-09-25: statystyki (histogram), Key Lookup, covering index (`INCLUDE`),
+  parameter sniffing + plan cache (skośny rozkład: ta sama procedura 21 vs 600 350
+  logical reads). Skrypty 01–05 zweryfikowane realnie na SQL Server 2022 (RTM-CU27) w
+  Dockerze, ręcznymi `docker exec … sqlcmd` (samo `run-demo.sh` zablokowane uprawnieniami).
+- Wydanie #1 (podstawy, days/2026-09-24) nadal bez realnego outputu — krok 0 pominięty
+  (uruchomienie run-demo.sh odrzucone przez uprawnienia). Dopisać output przy okazji.
+- Następny poziom: `OPTION (RECOMPILE)`/`OPTIMIZE FOR`, Query Store, filtered indexes,
+  columnstore, deadlocki/blokady.
 
 ### 🧬 PostgreSQL — baza wektorowa (pgvector)
 - Aktualny poziom trudności: **podstawy (opanowane)**
