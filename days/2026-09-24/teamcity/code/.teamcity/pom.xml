@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Projekt Maven do OFFLINE weryfikacji Kotlin DSL configów TeamCity (settings.kts),
+    bez żywego serwera TeamCity. To jest realny, udokumentowany mechanizm TeamCity:
+    wtyczka org.jetbrains.teamcity:teamcity-configs-maven-plugin (goal "generate")
+    ładuje settings.kts przez silnik skryptowy Kotlina i próbuje z niego zbudować
+    model projektu (Project/BuildType/VcsRoot/...), dokładnie tak jak robi to
+    TeamCity Server przy każdym git push do repo z .teamcity/. Jeśli w skrypcie są
+    nierozwiązane referencje albo błędy typów, `mvn compile` kończy się realnym
+    błędem kompilacji - to jest nasza weryfikacja.
+
+    WAŻNE (patrz code/README.md i ARTICLE.md - sekcja "Ograniczenia tego wydania"):
+    wtyczka wymaga JDK 21 (requiredJavaVersion=21 w jej plugin.xml) i - dla
+    KONKRETNYCH typów jak GitVcsRoot/script{}/triggers.vcs{} - dodatkowych
+    zależności serwowanych WYŁĄCZNIE przez żywy serwer TeamCity pod
+    <adres-serwera>/app/dsl-plugins-repository. Bez żywego serwera da się
+    zweryfikować kompilację configu opartego o generyczne typy bazowe
+    (VcsRoot/BuildStep/Trigger z polem "type"), ale NIE konkretne klasy
+    pluginów - to realne ograniczenie tego środowiska, opisane wprost w artykule.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>pl.prasowka.teamcity</groupId>
+    <artifactId>settings-dsl-verification</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <!-- Wersja artefaktów DSL = wersja TeamCity, dla której walidujemy config.
+             "latest"/dsl6 to najnowszy tag dostępny w publicznym repo JetBrains
+             w chwili pisania (wrzesień 2026). -->
+        <teamcity-dsl.version>2026.3-dsl6</teamcity-dsl.version>
+    </properties>
+
+    <repositories>
+        <!-- Prywatne repo Maven JetBrains - TU (nie na Maven Central) leżą
+             paczki configs-dsl-kotlin-*. -->
+        <repository>
+            <id>jetbrains-teamcity-repository</id>
+            <url>https://download.jetbrains.com/teamcity-repository</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <!-- Sama wtyczka teamcity-configs-maven-plugin też leży tylko tutaj,
+             nie na Maven Central. -->
+        <pluginRepository>
+            <id>jetbrains-teamcity-repository</id>
+            <url>https://download.jetbrains.com/teamcity-repository</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <dependencies>
+        <!-- Cały bazowy model DSL: project(), BuildType, VcsRoot, BuildStep,
+             Trigger, VcsSettings... "provided", bo na prawdziwym serwerze
+             TeamCity ta biblioteka jest już na classpath - tu dociągamy ją
+             tylko do weryfikacji offline. -->
+        <dependency>
+            <groupId>org.jetbrains.teamcity</groupId>
+            <artifactId>configs-dsl-kotlin-latest</artifactId>
+            <version>${teamcity-dsl.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jetbrains.teamcity</groupId>
+                <artifactId>teamcity-configs-maven-plugin</artifactId>
+                <version>${teamcity-dsl.version}</version>
+                <executions>
+                    <execution>
+                        <id>generate-teamcity-config</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <dstDir>${project.build.directory}/teamcity-generated</dstDir>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
