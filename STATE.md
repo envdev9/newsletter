@@ -48,8 +48,13 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   (xUnit/NUnit/MSTest), asercja na wyjątku i na `bool` — wydanie #1, 2026-09-24.
   Zweryfikowane `dotnet test` (3/3 testy przeszły). Napotkana i udokumentowana pułapka:
   .NET 10 SDK wymaga `global.json` z `"test": {"runner": "Microsoft.Testing.Platform"}`.
-- Następny poziom: data-driven testy (`[Arguments]`/`[MethodDataSource]`), hooki
-  (`[Before]`/`[After]`), równoległość.
+- Wydanie #2, 2026-09-25: `[Arguments]`, `[MethodDataSource]`, `[MatrixDataSource]`, hooki
+  `[Before]`/`[After]` (Test/Class/Assembly), `[NotInParallel]`, `[DependsOn]`,
+  `[ParallelLimiter<T>]`. TUnit 1.69.0, `dotnet test` 36/36; szczyt równoległości zmierzony
+  (6 / 1 / 2). Niezweryfikowane (opisane wprost): DependsOn przy porażce, `[ClassDataSource]`,
+  `[BeforeEvery]`.
+- Następny poziom: `[ClassDataSource]` i współdzielony stan (DI/fixtures), `[BeforeEvery]`,
+  retry/timeout, własne asercje, testy z Aspire/WebApplicationFactory.
 
 ### ✈️ Aspire
 - Aktualny poziom trudności: **podstawy (opanowane)**
@@ -107,6 +112,8 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   quantity-stepper, cart (signal store), search (RxJS) — wydanie #1, 2026-09-24.
   Zweryfikowane `npm ci` + `npx ng build` (build przeszedł, 7.75s) — budowane w
   `/dev/shm` z powodu pełnego dysku systemowego, dysk repo nietknięty.
+- Wydanie #2, 2026-09-25: **POMINIĘTE** — na maszynie brak Node/npm (toolchain z /dev/shm
+  zniknął, instalacja niedozwolona). Do nadrobienia, gdy Node będzie dostępny.
 - Następny poziom: nowości Angular 19+ poza signals, `linkedSignal`, `resource()`,
   integracja signal store z HTTP.
 

@@ -18,6 +18,7 @@
 → [Artykuł](teamcity/ARTICLE.md) · [Kod](teamcity/code/)
 
 ### 🧪 [TUnit](tunit/ARTICLE.md)
+Testy w TUnit biegną domyślnie równolegle — data-driven (`[Arguments]`, `[MethodDataSource]`, Matrix), hooki w trzech zakresach i sterowanie współbieżnością, zmierzone na żywo (36/36 zielone).
 → [Artykuł](tunit/ARTICLE.md) · [Kod](tunit/code/)
 
 ### ✈️ [Aspire](aspire/ARTICLE.md)
