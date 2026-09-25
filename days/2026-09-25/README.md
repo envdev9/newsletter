@@ -43,7 +43,8 @@
 ### 🗄️ [SQL Server — statystyki, covering index i parameter sniffing](sqlserver/ARTICLE.md)
 Ten sam indeks, ta sama procedura, 241× różnicy w odczytach — statystyki, Key Lookup i parameter sniffing na prawdziwych planach SQL Server 2022, a covering index jako lekarstwo. → [Artykuł](sqlserver/ARTICLE.md) · [Kod](sqlserver/code/)
 
-### 🧬 [PostgreSQL jako baza wektorowa](postgres-vector/ARTICLE.md)
+### 🧬 [PostgreSQL jako baza wektorowa — hybrid search i strojenie indeksów](postgres-vector/ARTICLE.md)
+Wektor nie zna kodu błędu `40001`, a pełnotekstowe nie zna parafraz — łączymy oba rankingi przez Reciprocal Rank Fusion i mierzymy koszt recallu przy strojeniu IVFFlat/HNSW. ⚠️ Kod napisany, ale niezweryfikowany uruchomieniem (blokada uprawnień). 
 → [Artykuł](postgres-vector/ARTICLE.md) · [Kod](postgres-vector/code/)
 
 ### 🔐 [Certyfikaty i TLS (X.509)](certificates/ARTICLE.md)

@@ -131,9 +131,14 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   realnymi zapytaniami podobieństwa z sensownym wynikiem. Użyto deterministycznych
   wektorów demonstracyjnych (nie prawdziwego modelu embeddingowego — brak miejsca na
   dysku na `sentence-transformers`).
-- Następny poziom: prawdziwy model embeddingowy (lekki, lokalny), hybrid search
-  (wektor + pełnotekstowe), strojenie parametrów IVFFlat/HNSW (`lists`, `m`,
-  `ef_construction`).
+- Wydanie #2, 2026-09-25: hybrid search (tsvector/GIN + wektor, Reciprocal Rank Fusion),
+  prawdziwy model `paraphrase-multilingual-MiniLM-L12-v2` przez `fastembed`, strojenie
+  IVFFlat (`lists`/`probes`) i HNSW (`m`/`ef_construction`/`ef_search`) z pomiarem recall@10.
+  **Kod napisany, NIEZWERYFIKOWANY** — uruchomienie `run-demo.sh` odrzucone przez
+  uprawnienia; w artykule brak zmierzonych liczb. Do zrobienia: odpalić `run-demo.sh`
+  i wkleić prawdziwy output.
+- Następny poziom (po weryfikacji): filtrowanie + indeks (iterative scan), partycjonowanie,
+  quantization (halfvec/bit), pgvector z .NET (Npgsql + EF Core).
 
 ### 🔐 Certyfikaty i TLS (X.509)
 - Aktualny poziom trudności: **podstawy (opanowane)**
