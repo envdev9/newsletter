@@ -30,6 +30,7 @@ Co się dzieje z wiadomością, gdy consumer wybucha? Retry Immediate/Interval/E
 → [Artykuł](masstransit/ARTICLE.md) · [Kod](masstransit/code/)
 
 ### 🤖 [AI — Claude Code dla .NET/Angular/SQL](ai-claude-code/ARTICLE.md)
+Hook, który czyta komendę powłoki i nie wpuści `git commit` bez Conventional Commits, oraz skill do review migracji EF Core, w którym skaner podaje fakty, a model dopiero potem ocenia.
 → [Artykuł](ai-claude-code/ARTICLE.md) · [Kod](ai-claude-code/code/)
 
 ### ⚙️ [AI — agentic loop](ai-agentic-loop/ARTICLE.md)

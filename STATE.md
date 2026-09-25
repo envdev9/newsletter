@@ -92,8 +92,13 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   `PreToolUse` blokujący zapis SQL migration bez sekcji rollback, skill do code-review
   komponentu Angular — wydanie #1, 2026-09-24. Hook zweryfikowany realnymi uruchomieniami
   (blokuje/przepuszcza poprawnie).
-- Następne: więcej gotowych przypadków (np. hook walidujący konwencje commitów, skill do
-  review migracji EF Core).
+- Wydanie #2, 2026-09-25: hook `PreToolUse` na `Bash` wymuszający Conventional Commits
+  (exit 2 + stderr; obsługa `-am`, `--message=`, `git -C`, `&&`, heredoc; 21/21 przypadków
+  testowych) i skill `ef-migration-review` (skaner `scan_migration.py` + instrukcja). Zweryfikowane
+  realnymi uruchomieniami. Niezweryfikowane: wpięcie w żywej sesji Claude Code, auto-aktywacja
+  skilla, migracje z prawdziwego `dotnet ef`. Znane luki hooka: `-F plik`, zmienna powłoki, `--amend --no-edit`.
+- Następne: hook `PostToolUse` uruchamiający `dotnet format`/testy po edycji, skill do
+  SQL (przegląd planu/indeksów), Angular (review komponentu na signals), konfiguracja `.claude/` w zespole.
 
 ### ⚙️ AI — agentic loop / workflow kodowania
 - Omówione elementy: pętla tool-use, różnica komenda/skill/subagent/hook (kto naciska
