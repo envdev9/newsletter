@@ -25,6 +25,7 @@ Testy w TUnit biegną domyślnie równolegle — data-driven (`[Arguments]`, `[M
 → [Artykuł](aspire/ARTICLE.md) · [Kod](aspire/code/)
 
 ### 📨 [Messaging .NET z MassTransit](masstransit/ARTICLE.md)
+Co się dzieje z wiadomością, gdy consumer wybucha? Retry Immediate/Interval/Exponential, `Fault<T>`, kolejki `_error`/`_skipped`, delayed redelivery i outbox — zmierzone na żywo na in-memory.
 → [Artykuł](masstransit/ARTICLE.md) · [Kod](masstransit/code/)
 
 ### 🤖 [AI — Claude Code dla .NET/Angular/SQL](ai-claude-code/ARTICLE.md)

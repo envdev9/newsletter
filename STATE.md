@@ -76,7 +76,11 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   (`UsingInMemory`) — wydanie #1, 2026-09-24. Zweryfikowane realnym `dotnet run`
   (konsument odebrał wiadomość, output potwierdzony). Użyta wersja: MassTransit 8.5.10
   (ostatnia Apache-2.0 bez wymogu licencji — 9+ wymaga `SetLicense`).
-- Następny poziom: sagas, routing, retry/error handling, przejście na RabbitMQ.
+- Wydanie #2, 2026-09-25: `UseMessageRetry` (Immediate/Interval/Exponential, `Ignore<T>`),
+  `Fault<T>`, kolejki `_error`/`_skipped` (in-memory je tworzy), delayed redelivery,
+  `UseInMemoryOutbox` — zweryfikowane realnym `dotnet run` (MassTransit 8.5.10). Niezweryfikowane:
+  zachowanie na prawdziwym brokerze, transakcyjny outbox z bazą.
+- Następny poziom: sagas (state machine), routing (topologia, exchange), przejście na RabbitMQ.
 
 ### 🤖 AI — Claude Code dla .NET/Angular/SQL
 - Omówione przypadki użycia: slash command generujący testy xUnit dla klasy C#, hook
