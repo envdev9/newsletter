@@ -62,6 +62,11 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   dashboard, OTLP/OpenTelemetry wbudowane, service discovery — wydanie #1, 2026-09-24.
   Zweryfikowane realnym `dotnet run` (dashboard + endpoint wstały, logi potwierdzone).
   Celowo bez zewnętrznych kontenerów (Postgres/Redis/RabbitMQ) w tym wydaniu.
+- Wydanie #2, 2026-09-25: **NIEDOKOŃCZONE** — brak artykułu. Kod (AppHost + ServiceDefaults +
+  CatalogApi + StoreApi, service discovery `WithReference`/`WaitFor`, własny
+  ActivitySource/Meter) budował się na Aspire 13.5.2, ale weryfikacja HTTP (`curl`) została
+  odrzucona przez uprawnienia. Do zrobienia: dodać health check do `catalog`, uruchomić,
+  zweryfikować `/quote/...` i `/discovery`, napisać ARTICLE.md.
 - Następny poziom: integracje z zewnętrznymi zasobami (Postgres/Redis), service
   discovery między dwoma własnymi serwisami, telemetry w praktyce.
 
