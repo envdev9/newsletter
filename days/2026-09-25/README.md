@@ -12,6 +12,7 @@
 → [Artykuł](dotnet/ARTICLE.md) · [Kod](dotnet/code/)
 
 ### 🔧 [Ansible](ansible/ARTICLE.md)
+Rola, szablony Jinja2, pętle i handler, który restartuje usługę tylko wtedy, gdy coś naprawdę się zmieniło — a drugi przebieg to udowadnia (`changed=0`, zero handlerów).
 → [Artykuł](ansible/ARTICLE.md) · [Kod](ansible/code/)
 
 ### 🏗️ [TeamCity](teamcity/ARTICLE.md)

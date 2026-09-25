@@ -1,0 +1,7 @@
+---
+# Handler to task odpalany TYLKO gdy jakiś task go "notify"-uje ze statusem changed.
+# Symulujemy "reload usługi" dopisaniem linii do reload.log - dzięki temu po
+# przebiegach widać, ile razy handler faktycznie ruszył.
+- name: Przeładuj usługę
+  ansible.builtin.shell: "echo reload >> {{ work_dir }}/reload.log"
+  changed_when: true

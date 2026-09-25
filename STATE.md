@@ -28,8 +28,13 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   moduły `file`/`copy`/`debug`, `ansible_connection=local` — wydanie #1, 2026-09-24.
   Zweryfikowane 3 realnymi przebiegami (w tym dowód idempotencji: drugi przebieg
   `changed=0`).
-- Następny poziom: handlery (`handlers`/`notify`), role, szablony Jinja2 (`template`),
-  warunki (`when`), pętle (`loop`).
+- Wydanie #2, 2026-09-25: rola `app_config`, szablony Jinja2 (`template`), pętle
+  (`loop`/`loop_control`), `when`, `notify`/handlery (raz, tylko przy zmianie),
+  `meta: flush_handlers`, `--check --diff`. Zweryfikowane realnie (ansible-core 2.17.14;
+  drugi przebieg `changed=0`). Pułapka: `-e x=false` to string → `| bool`. Niezweryfikowane:
+  prawdziwy `service` (become), `ansible-galaxy init`, zdalne SSH.
+- Następny poziom: `vault`, `block/rescue/always`, `tags`, `register` + `failed_when`/
+  `changed_when`, filtry Jinja2, inventory grupowe + `group_vars`/`host_vars`, kolekcje.
 
 ### 🏗️ TeamCity
 - Aktualny poziom trudności: **podstawy (częściowo — patrz ograniczenie)**

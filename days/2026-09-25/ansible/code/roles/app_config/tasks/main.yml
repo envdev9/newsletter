@@ -1,0 +1,52 @@
+---
+- name: Katalogi robocze (pętla po liście)
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ work_dir }}"
+    - "{{ work_dir }}/sites"
+
+- name: Główny plik konfiguracyjny z szablonu Jinja2
+  ansible.builtin.template:
+    src: app.conf.j2
+    dest: "{{ work_dir }}/app.conf"
+    mode: "0644"
+  notify: Przeładuj usługę
+
+- name: Plik konfiguracyjny per włączona strona (loop + when)
+  ansible.builtin.template:
+    src: site.conf.j2
+    dest: "{{ work_dir }}/sites/{{ site.name }}.conf"
+    mode: "0644"
+  loop: "{{ sites }}"
+  loop_control:
+    loop_var: site
+    label: "{{ site.name }}"
+  when: site.enabled | bool
+  notify: Przeładuj usługę
+
+- name: Usuń plik wyłączonych stron (loop + when)
+  ansible.builtin.file:
+    path: "{{ work_dir }}/sites/{{ site.name }}.conf"
+    state: absent
+  loop: "{{ sites }}"
+  loop_control:
+    loop_var: site
+    label: "{{ site.name }}"
+  when: not (site.enabled | bool)
+  notify: Przeładuj usługę
+
+# Bez tego handler ruszyłby dopiero na końcu playbooka.
+- name: Wymuś uruchomienie handlerów TERAZ
+  ansible.builtin.meta: flush_handlers
+
+- name: Ten task widzi już efekt handlera
+  ansible.builtin.stat:
+    path: "{{ work_dir }}/reload.log"
+  register: reload_log
+
+- name: Raport
+  ansible.builtin.debug:
+    msg: "reload.log istnieje: {{ reload_log.stat.exists }}; metryki: {{ 'włączone' if enable_metrics | bool else 'wyłączone' }}"

@@ -1,0 +1,17 @@
+# {{ ansible_managed }}
+[app]
+name = {{ app_name }}
+port = {{ app_port }}
+log_level = {{ log_level | upper }}
+system = {{ ansible_facts['system'] }}
+{% if enable_metrics | bool %}
+
+[metrics]
+enabled = true
+endpoint = /metrics
+{% endif %}
+
+[sites]
+{% for site in sites if site.enabled %}
+{{ site.name }} = {{ site.port }}
+{% endfor %}

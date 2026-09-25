@@ -1,0 +1,9 @@
+---
+- name: Poziom 2 - rola app_config, szablony, pętle, warunki i handlery
+  hosts: demo
+  gather_facts: true
+  gather_subset:
+    - min
+
+  roles:
+    - role: app_config

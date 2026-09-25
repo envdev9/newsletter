@@ -1,0 +1,14 @@
+---
+# Wartości domyślne roli - najniższy priorytet, każdą da się nadpisać
+# (inventory, -e, vars w playu). To "publiczne API" roli.
+app_name: shop
+work_dir: /tmp/ansible-demo-lvl2
+app_port: 8080
+log_level: info
+enable_metrics: true
+
+# Lista słowników - po niej iterujemy w pętli (loop).
+sites:
+  - { name: api,    port: 8081, enabled: true }
+  - { name: admin,  port: 8082, enabled: true }
+  - { name: legacy, port: 8083, enabled: false }

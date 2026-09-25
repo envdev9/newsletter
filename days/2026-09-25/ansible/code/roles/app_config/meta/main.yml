@@ -1,0 +1,8 @@
+---
+galaxy_info:
+  role_name: app_config
+  author: prasowka
+  description: Demo - generowanie konfiguracji z szablonów Jinja2 i handler "reload"
+  license: MIT
+  min_ansible_version: "2.14"
+dependencies: []
