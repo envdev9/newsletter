@@ -105,8 +105,13 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   spust), pełny diagram PreToolUse→wykonanie→PostToolUse, zagnieżdżenie subagenta —
   wydanie #1, 2026-09-24. Hooki zweryfikowane realnymi uruchomieniami z przykładowym
   JSON-em na stdin.
-- Następne: `UserPromptSubmit`/`Stop`/`SubagentStop` w praktyce, budowanie własnego
-  skilla od zera, kompozycja wielu hooków na tym samym evencie.
+- Wydanie #2, 2026-09-25: `UserPromptSubmit` (exit 2 / stdout→kontekst), `Stop`/`SubagentStop`
+  (bramka testów, `decision: block`, `stop_hook_active`), kompozycja wielu hooków (równoległość,
+  brak gwarancji kolejności; symulator 1.05 s vs 2.10 s), własny skill `changelog-entry`.
+  Zweryfikowane: demo 7/7, walidator skilla. Niezweryfikowane (opisane wprost): żywa sesja
+  Claude Code, pola payloadu `SubagentStop`, reguły łączenia sprzecznych decyzji.
+- Następne: subagenci w praktyce (własny agent w `.claude/agents/`, izolacja kontekstu,
+  ograniczanie narzędzi), pętla z weryfikacją (headless `claude -p`), hooki `PreCompact`/`SessionStart`.
 
 ### 🧠 AI — zarządzanie kontekstem
 - Omówione elementy: kolejność warstw kontekstu (system→narzędzia/MCP→pamięć→historia→

@@ -1,0 +1,6 @@
+feat(orders): dodaj filtrowanie po statusie
+fix(api): napraw NullReference przy pustym koszyku
+feat(auth)!: usun stary endpoint /login
+refactor: wydziel OrderMapper
+Poprawki po review
+chore: aktualizacja zaleznosci

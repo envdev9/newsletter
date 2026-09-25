@@ -34,6 +34,7 @@ Hook, który czyta komendę powłoki i nie wpuści `git commit` bez Conventional
 → [Artykuł](ai-claude-code/ARTICLE.md) · [Kod](ai-claude-code/code/)
 
 ### ⚙️ [AI — agentic loop](ai-agentic-loop/ARTICLE.md)
+`UserPromptSubmit`, `Stop` i `SubagentStop` w praktyce (bramka „testy zielone"), co się dzieje, gdy na jednym evencie jest kilka hooków (równolegle, bez kolejności), oraz własny skill `changelog-entry` od zera.
 → [Artykuł](ai-agentic-loop/ARTICLE.md) · [Kod](ai-agentic-loop/code/)
 
 ### 🧠 [AI — zarządzanie kontekstem](ai-context/ARTICLE.md)
