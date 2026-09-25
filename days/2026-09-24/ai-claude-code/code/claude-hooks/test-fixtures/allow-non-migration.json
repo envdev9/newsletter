@@ -1,0 +1,11 @@
+{
+  "session_id": "test-session",
+  "transcript_path": "/tmp/transcript.jsonl",
+  "cwd": "/repo",
+  "hook_event_name": "PreToolUse",
+  "tool_name": "Write",
+  "tool_input": {
+    "file_path": "/repo/src/Services/UserService.cs",
+    "content": "public class UserService { }\n"
+  }
+}

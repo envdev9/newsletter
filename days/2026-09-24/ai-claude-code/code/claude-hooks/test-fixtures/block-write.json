@@ -1,0 +1,11 @@
+{
+  "session_id": "test-session",
+  "transcript_path": "/tmp/transcript.jsonl",
+  "cwd": "/repo",
+  "hook_event_name": "PreToolUse",
+  "tool_name": "Write",
+  "tool_input": {
+    "file_path": "/repo/db/migrations/2026-09-24_add_customer_index.sql",
+    "content": "CREATE INDEX ix_orders_customer ON orders(customer_id);\n"
+  }
+}
