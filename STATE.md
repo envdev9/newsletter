@@ -1,32 +1,17 @@
-# Stan rotacji
+# Stan postępu
 
 Czytaj to **przed** pisaniem wydania, aktualizuj **po**. To jedyna pamięć między
-przebiegami — kolejny agent nie widzi tej rozmowy, tylko ten plik.
+przebiegami — kolejny agent nie widzi tej rozmowy, tylko ten plik. Każdego dnia
+aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubryki).
 
 ## Ostatnie wydanie
 
 - Numer: 1
 - Data: 2026-09-24
-- Temat: .NET 10 — extension members i file-based apps
 
-## Kolejność rotacji (indeks = gdzie jesteśmy)
+## Postęp per rubryka
 
-1. .NET — nowości w wersji (zrobione dziś, **następne wydanie: temat #2**)
-2. Ansible ⬅ **następne**
-3. TeamCity
-4. TUnit
-5. Aspire
-6. Messaging .NET (MassTransit)
-7. AI — Claude Code dla .NET/Angular/SQL
-8. AI — agentic loop / workflow kodowania
-9. AI — zarządzanie kontekstem
-10. AI — prompty dla developera
-
-Po wydaniu na temacie #10 wracamy do #1.
-
-## Postęp per temat
-
-### 1. .NET
+### 🔷 .NET
 - Aktualna wersja w rotacji: **.NET 10**
 - Opisane funkcje (żeby nie powtarzać):
   - [x] Extension members (właściwości/statyczne members w bloku `extension(Typ x)`) — wydanie #1, 2026-09-24
@@ -34,34 +19,55 @@ Po wydaniu na temacie #10 wracamy do #1.
 - Gdy funkcje .NET 10 się wyczerpią → .NET 11 → (dalsze nowości) → schodzimy w dół:
   9 → 8 → 7 → 6, potem wracamy do najnowszej dostępnej wersji.
 
-### 2. Ansible
-- Aktualny poziom trudności: **podstawy** (jeszcze nie zaczęte)
-- Omówione koncepty: _(brak jeszcze)_
+### 🔧 Ansible
+- Aktualny poziom trudności: **podstawy**
+- Omówione koncepty: _(uzupełnia wydanie #1)_
 
-### 3. TeamCity
-- Aktualny poziom trudności: **podstawy** (jeszcze nie zaczęte)
-- Omówione koncepty: _(brak jeszcze)_
+### 🏗️ TeamCity
+- Aktualny poziom trudności: **podstawy**
+- Omówione koncepty: _(uzupełnia wydanie #1)_
 
-### 4. TUnit
-- Aktualny poziom trudności: **podstawy** (jeszcze nie zaczęte)
-- Omówione koncepty: _(brak jeszcze)_
+### 🧪 TUnit
+- Aktualny poziom trudności: **podstawy**
+- Omówione koncepty: _(uzupełnia wydanie #1)_
 
-### 5. Aspire
-- Aktualny poziom trudności: **podstawy** (jeszcze nie zaczęte)
-- Omówione koncepty: _(brak jeszcze)_
+### ✈️ Aspire
+- Aktualny poziom trudności: **podstawy**
+- Omówione koncepty: _(uzupełnia wydanie #1)_
 
-### 6. Messaging .NET (MassTransit)
-- Aktualny poziom trudności: **podstawy** (jeszcze nie zaczęte)
-- Omówione koncepty: _(brak jeszcze)_
+### 📨 Messaging .NET (MassTransit)
+- Aktualny poziom trudności: **podstawy**
+- Omówione koncepty: _(uzupełnia wydanie #1)_
 
-### 7. AI — Claude Code dla .NET/Angular/SQL
-- Omówione przypadki użycia: _(brak jeszcze)_
+### 🤖 AI — Claude Code dla .NET/Angular/SQL
+- Omówione przypadki użycia: _(uzupełnia wydanie #1)_
 
-### 8. AI — agentic loop / workflow kodowania
-- Omówione elementy (agenci/skille/komendy/hooki): _(brak jeszcze)_
+### ⚙️ AI — agentic loop / workflow kodowania
+- Omówione elementy (agenci/skille/komendy/hooki): _(uzupełnia wydanie #1)_
 
-### 9. AI — zarządzanie kontekstem
-- Omówione elementy: _(brak jeszcze)_
+### 🧠 AI — zarządzanie kontekstem
+- Omówione elementy: _(uzupełnia wydanie #1)_
 
-### 10. AI — prompty dla developera
-- Omówione elementy: _(brak jeszcze)_
+### ✍️ AI — prompty dla developera
+- Omówione elementy: _(uzupełnia wydanie #1)_
+
+### 🅰️ Angular
+- Aktualny poziom trudności: **podstawy (signals jako fundament)**
+- Omówione koncepty: _(uzupełnia wydanie #1)_
+- Dołączona jako rubryka od wydania #1 (dopisana w trakcie, 2026-09-24).
+
+### 🗄️ SQL Server
+- Aktualny poziom trudności: **podstawy**
+- Omówione koncepty: _(uzupełnia wydanie #1)_
+- Dołączona jako rubryka od wydania #1 (dopisana w trakcie, 2026-09-24).
+
+### 🧬 PostgreSQL — baza wektorowa (pgvector)
+- Aktualny poziom trudności: **podstawy**
+- Omówione koncepty: _(uzupełnia wydanie #1)_
+- Dołączona jako rubryka od wydania #1 (dopisana w trakcie, 2026-09-24).
+
+### 🔐 Certyfikaty i TLS (X.509)
+- Aktualny poziom trudności: **podstawy**
+- Omówione koncepty: _(uzupełnia wydanie #1)_
+- Cel nadrzędny tej rubryki: poziom mistrzowski (patrz TOPICS.md, pkt 14).
+- Dołączona jako rubryka od wydania #1 (dopisana w trakcie, 2026-09-24).

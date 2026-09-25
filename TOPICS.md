@@ -31,11 +31,17 @@ między sekcjami). Każda dziedzina ma stały emoji/kolor badge'a, żeby całoś
 do skanowania wzrokiem jak dział w gazecie. Szczegóły layoutu głównego `README.md` — nie
 psuj konwencji, którą tam ustaliliśmy, rozszerzaj ją.
 
-## Rotacja tematów
+## Rubryki — codziennie WSZYSTKIE, nie rotacyjnie
 
-Jedno wydanie = jeden temat z listy poniżej, w kolejności rotacyjnej (po ostatnim
-wracamy do pierwszego). Dokładny wskaźnik "gdzie jesteśmy" trzyma `STATE.md` — zawsze
-czytaj go przed napisaniem wydania i aktualizuj po.
+**Jedno wydanie (jeden dzień) = jeden artykuł z KAŻDEJ rubryki poniżej.** To nie jest
+rotacja "dziś temat A, jutro temat B" — każdego dnia czytelnik dostaje postęp we
+wszystkich dziedzinach naraz, jak dział w prawdziwej gazecie (sport, polityka,
+technologia... tu: .NET, Ansible, TeamCity, ...). Każda rubryka ma **własny, niezależny
+postęp** (wersja .NET, poziom trudności Ansible/TeamCity/itd.) trzymany w `STATE.md` —
+ten postęp przesuwa się o jeden krok dziennie, per rubryka, niezależnie od pozostałych.
+Zawsze czytaj `STATE.md` przed pisaniem wydania i aktualizuj po (osobna sekcja per
+rubryka). Lista rubryk może z czasem rosnąć (dopisywana ręcznie) — trzymaj się aktualnej
+listy poniżej, nie tej zapamiętanej z poprzednich przebiegów.
 
 1. **.NET — nowości w wersji** 🔷: opisz 2 nowe funkcje danej wersji .NET, z pełnym,
    kompilującym się przykładem kodu na każdą + wyjaśnieniem "co to zmienia w praktyce".
@@ -68,6 +74,29 @@ czytaj go przed napisaniem wydania i aktualizuj po.
    kontekstem, nie na poziomie ciekawostki.
 10. **AI — prompty dla developera** ✍️: co i jak pisać w promptach, jak formułować zadania,
     czego unikać, konkretne przykłady złego i dobrego promptu z komentarzem dlaczego.
+11. **Angular** 🅰️: nowoczesny Angular — signals, `ngrx/signals` (signal store), nowe
+    funkcje od wersji 19 wzwyż. Nie trzeba iść wersja po wersji chronologicznie — sam
+    dobierz kolejność, która najlepiej buduje zrozumienie (np. najpierw signals jako
+    fundament, potem signal store, potem nowości frameworka na tym bazujące). Plus RxJS —
+    ale tylko operatory, które są realnie sensowne w praktyce (nie cały katalog RxJS).
+12. **SQL Server** 🗄️: od podstaw (SELECT, JOIN, podstawowe typy) do przykładów
+    zaawansowanych (indeksy, plany wykonania, optymalizacja zapytań). Przykłady z
+    plikami wsadowymi (`.sql` uruchamiane przez `sqlcmd`), tak żeby czytelnik mógł sam
+    odpalić i zobaczyć np. różnicę w planie wykonania z indeksem i bez.
+13. **PostgreSQL jako baza wektorowa** 🧬: `pgvector`, przykłady z embeddingami — jak
+    wygląda kolumna wektorowa, jak się indeksuje (IVFFlat/HNSW), jak wygląda realne
+    wyszukiwanie podobieństwa. Model embedujący dobierz tak, żeby przykład dało się
+    odpalić bez płatnych kluczy API (lokalny model / deterministyczny przykład
+    ilustrujący mechanikę indeksu, jeśli lokalny model embeddingowy jest zbyt ciężki).
+14. **Certyfikaty i TLS (X.509)** 🔐: wszystko co developer powinien wiedzieć o
+    certyfikatach — nie tylko w .NET, ale ogólnie. Teoria od podstaw (klucz
+    publiczny/prywatny, łańcuch zaufania, CA, self-signed vs CA-signed, czym różni się
+    TLS 1.2 od 1.3) i praktyka (.NET: `X509Certificate2`, walidacja certyfikatu, mTLS,
+    konfiguracja Kestrel/HTTPS, magazyn certyfikatów; poza .NET: `openssl`, generowanie i
+    inspekcja certyfikatów, typowe błędy zaufania i jak je diagnozować). **To ma
+    przyświecać całej tej rubryce: cel to poziom MISTRZOWSKI** — czytelnik ma po serii
+    wydań rozumieć certyfikaty na wylot, nie znać kilku ciekawostek. Poziom trudności
+    rośnie z każdym kolejnym wydaniem tego tematu, jak w pozostałych rubrykach.
 
 ## Wymagania co do kodu
 
@@ -82,11 +111,19 @@ czytaj go przed napisaniem wydania i aktualizuj po.
 
 ## Gdzie i jak zapisywać
 
-- Jeden folder na dzień: `days/YYYY-MM-DD-krotki-slug-tematu/`
-  - `ARTICLE.md` — treść wydania (nagłówek w stylu gazety, opis edukacyjny, ciekawostka).
-  - `code/` — pełny, uruchamialny projekt + `code/README.md` (instrukcja uruchomienia +
-    fragment artykułu).
-- Każde wydanie dopisywane do tabeli w głównym `README.md` (spis treści gazety) z
-  linkiem do `ARTICLE.md` i do `code/`.
-- Stan rotacji/postępu per temat: `STATE.md`, aktualizowany po każdym wydaniu.
-- Commit message: `Prasówka #<numer>: <tytuł wydania>`.
+- Jeden folder na dzień (wydanie): `days/YYYY-MM-DD/`
+  - `README.md` — **strona tytułowa wydania**: krótkie zajawki wszystkich 10 rubryk tego
+    dnia z linkami do artykułów (wzór: dowolny istniejący `days/*/README.md`).
+  - Jeden podfolder na rubrykę, stały slug: `dotnet/`, `ansible/`, `teamcity/`, `tunit/`,
+    `aspire/`, `masstransit/`, `ai-claude-code/`, `ai-agentic-loop/`, `ai-context/`,
+    `ai-prompts/`. W każdym:
+    - `ARTICLE.md` — treść (nagłówek w stylu gazety, opis edukacyjny).
+    - `code/` — pełny, uruchamialny projekt/skrypt + `code/README.md` (instrukcja
+      uruchomienia + fragment artykułu, którego dotyczy).
+- Główny `README.md` (spis treści całej gazety): **jeden wiersz na dzień** (nie na
+  rubrykę) w tabeli "Spis wydań", link do `days/YYYY-MM-DD/README.md`. Sekcja "Dziś na
+  pierwszej stronie" pokazuje zajawkę najnowszego dnia.
+- Postęp per rubryka: `STATE.md`, osobna sekcja na rubrykę, aktualizowana po każdym
+  wydaniu (każda rubryka co dzień, więc każda sekcja rusza się co dzień).
+- Commit message: `Prasówka #<numer>: <data>` (jeden commit na cały dzień, wszystkie 10
+  rubryk razem).

@@ -132,8 +132,6 @@ Zobacz [`code/README.md`](code/README.md) — dokładne komendy dla obu przykła
 
 <div align="center">
 
-**Jutro:** Ansible od zera — pierwszy playbook, który naprawdę coś robi.
-
-[← powrót do spisu wydań](../../README.md)
+[← wróć do wydania #1 (wszystkie rubryki)](../README.md) · [spis wydań](../../README.md)
 
 </div>
