@@ -1,0 +1,4 @@
+# Wygenerowane demo-klucze i demo-certyfikaty (patrz code/README.md).
+# Odtwarzalne w każdej chwili przez ./openssl/generate-pki.sh - nie ma
+# potrzeby ich commitować, a to dobra higiena dla czegokolwiek z "key" w nazwie.
+openssl/pki/
