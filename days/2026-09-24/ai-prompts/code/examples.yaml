@@ -1,0 +1,85 @@
+# Pary zły/dobry prompt do prasówki (rubryka "AI — prompty dla developera").
+# Każdy wpis MUSI mieć: id, kategoria, zly, dobry, dlaczego (wszystkie niepuste).
+# Weryfikuje to print_examples.py — patrz code/README.md za realnym outputem.
+
+- id: 1
+  kategoria: "Konkretność + wskazanie plików/linii"
+  zly: >-
+    Popraw bug w serwisie userów.
+  dobry: >-
+    W src/Services/UserService.cs, metoda GetActiveUsersAsync (linie 42-58) zwraca
+    też użytkowników z IsDeleted=true, bo w zapytaniu LINQ brakuje warunku. Dodaj
+    .Where(u => !u.IsDeleted) przed .ToListAsync() i pokaż diff.
+  dlaczego: >-
+    "Serwis userów" i "bug" to dwie niewiadome naraz - model musi najpierw
+    przeszukać repo i zgadnąć, o który plik i o jaki objaw chodzi. Konkretny plik,
+    zakres linii i dokładny opis efektu (co dokładnie wraca, a nie powinno) zmieniają
+    to w zadanie jednoznaczne do wykonania za pierwszym razem, bez rundy pytań.
+
+- id: 2
+  kategoria: "Podawanie 'dlaczego', nie tylko 'co'"
+  zly: >-
+    Zmień timeout w HttpClient na 30 sekund.
+  dobry: >-
+    Zwiększ timeout HttpClient w OrderApiClient.cs z 10s na 30s - integracja z
+    API dostawcy potrafi odpowiadać 15-20s przy dużych zamówieniach, obecny
+    timeout powoduje false-positive TimeoutException na produkcji (log w Seq,
+    correlationId widoczny w tickecie). Zmień tylko dla tego klienta, nie globalnie
+    w Program.cs.
+  dlaczego: >-
+    Sama wartość liczbowa bez przyczyny zamienia model w maszynkę do
+    znajdź-i-zamień - nie może ocenić, czy 30s to bezpieczna wartość, czy lepszym
+    rozwiązaniem byłaby retry policy zamiast samego zwiększenia timeoutu, ani czy
+    zmiana ma dotyczyć jednego klienta czy całej aplikacji. Podanie przyczyny daje
+    modelowi dane do podjęcia właściwej decyzji, nie tylko wykonania polecenia.
+
+- id: 3
+  kategoria: "Unikanie niejednoznaczności"
+  zly: >-
+    Dodaj walidację do formularza rejestracji.
+  dobry: >-
+    Dodaj walidatory Angular Reactive Forms do RegisterComponent
+    (src/app/register/register.component.ts): email - Validators.required +
+    Validators.email; hasło - min. 8 znaków, min. 1 cyfra, min. 1 znak specjalny
+    (custom validator passwordStrengthValidator); potwierdzenie hasła - zgodność
+    z polem hasło (walidator na poziomie FormGroup). Błędy pokazuj w <mat-error>
+    po utracie fokusu (blur), nie przy każdym keystroke.
+  dlaczego: >-
+    Słowo "walidacja" bez specyfikacji zostawia dziesiątki otwartych decyzji
+    (jakie reguły, kiedy pokazywać błąd, jaki komunikat) modelowi, który wybierze
+    coś swojego - zwykle innego niż to, co miałeś na myśli, co kończy się
+    przeróbką. Wypisanie reguł i zachowania UX z góry eliminuje zgadywanie.
+
+- id: 4
+  kategoria: "Oczekiwany format odpowiedzi"
+  zly: >-
+    Sprawdź te trzy zapytania SQL pod kątem wydajności.
+  dobry: >-
+    Przeanalizuj wydajność 3 zapytań w queries.sql pod kątem: brakujących
+    indeksów, seek vs scan, N+1. Odpowiedz w formacie tabeli Markdown z kolumnami:
+    Zapytanie | Problem | Sugerowany indeks/fix | Szacowany wpływ
+    (niski/średni/wysoki). Nie przepisuj pełnych zapytań w odpowiedzi, tylko numer
+    z pliku.
+  dlaczego: >-
+    Bez narzuconego formatu odpowiedź może wyjść jako luźna proza, którą trzeba
+    ręcznie przepisać do ticketu albo PR-a. Narzucony format (konkretne kolumny,
+    limit długości) daje odpowiedź gotową do wklejenia od razu, oszczędza rundę
+    "czy możesz to podać w tabeli".
+
+- id: 5
+  kategoria: "Zakres zmiany i granice (co WOLNO, a czego NIE)"
+  zly: >-
+    Zrefaktoryzuj OrderService, żeby był czytelniejszy.
+  dobry: >-
+    W OrderService.cs wydziel logikę liczenia rabatu (linie 80-120) do osobnej
+    klasy DiscountCalculator, wstrzykiwanej przez konstruktor jako interfejs
+    IDiscountCalculator. Nie zmieniaj publicznego API OrderService (sygnatury
+    metod mają zostać takie same - są używane w 6 innych miejscach, patrz
+    referencje) i nie dotykaj testów w OrderServiceTests.cs poza dodaniem mocka
+    IDiscountCalculator tam, gdzie to konieczne.
+  dlaczego: >-
+    "Czytelniejszy" jest subiektywne i bez granic - model może przeprojektować
+    połowę klasy, zmienić publiczne API i zepsuć 6 miejsc wywołania, których nie
+    widział w danym momencie kontekstu. Podanie zakresu (co wydzielić, dokąd) i
+    twardych granic (czego nie ruszać, bo ma konsumentów) ogranicza refaktor do
+    bezpiecznego, przewidywalnego kroku.
