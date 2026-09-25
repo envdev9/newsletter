@@ -1,0 +1,15 @@
+<section class="card">
+  <h3>1. signal() + computed() + effect()</h3>
+  <p>count = <strong>{{ count() }}</strong> · doubled = {{ doubled() }} · {{ parity() }}</p>
+  <p>
+    <button (click)="decrement()">-1</button>
+    <button (click)="increment()">+1</button>
+    <button (click)="reset()">reset</button>
+  </p>
+  <p><small>effect() dopisuje wpis do logu przy każdej zmianie count (ostatnie 5):</small></p>
+  <ul>
+    @for (entry of log(); track $index) {
+      <li>{{ entry }}</li>
+    }
+  </ul>
+</section>

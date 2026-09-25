@@ -1,0 +1,30 @@
+<section class="card">
+  <h3>3. @ngrx/signals - signalStore()</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Produkt</th>
+        <th>Cena</th>
+        <th>Ilość</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (line of store.lines(); track line.id) {
+        <tr>
+          <td>{{ line.name }}</td>
+          <td>{{ line.unitPrice }} zł</td>
+          <td>
+            <app-quantity-stepper
+              [max]="10"
+              [quantity]="line.quantity"
+              (quantityChange)="store.setQuantity(line.id, $event)"
+            />
+          </td>
+          <td><button type="button" (click)="store.removeLine(line.id)">usuń</button></td>
+        </tr>
+      }
+    </tbody>
+  </table>
+  <p>Pozycji: {{ store.itemCount() }} · Razem: <strong>{{ store.total().toFixed(2) }} zł</strong></p>
+</section>

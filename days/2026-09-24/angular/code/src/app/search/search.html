@@ -1,0 +1,18 @@
+<section class="card">
+  <h3>4. Kiedy signal, a kiedy RxJS - toSignal() + debounceTime/switchMap</h3>
+  <input
+    type="text"
+    placeholder="Szukaj repo... (np. angular)"
+    (input)="onInput($any($event.target).value)"
+  />
+  @if (loading()) {
+    <p><small>szukam...</small></p>
+  }
+  <ul>
+    @for (repo of results(); track repo.name) {
+      <li>{{ repo.name }}</li>
+    } @empty {
+      <li><small>brak wyników</small></li>
+    }
+  </ul>
+</section>
