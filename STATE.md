@@ -16,6 +16,9 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
 - Opisane funkcje (żeby nie powtarzać):
   - [x] Extension members (właściwości/statyczne members w bloku `extension(Typ x)`) — wydanie #1, 2026-09-24
   - [x] File-based apps (`dotnet run plik.cs`, `#:package`) — wydanie #1, 2026-09-24
+  - [x] Słowo kluczowe `field` (semi-auto properties, C# 14) — wydanie #2, 2026-09-25
+  - [x] Null-conditional assignment (`a?.b = x`, `a?.b += x`; `?.` z `++` nie kompiluje się, CS1059) — wydanie #2, 2026-09-25
+  - Zostało w .NET 10 m.in.: partial constructors/events, lambda modifiers bez typów, LeftJoin/RightJoin w LINQ, `Span` conversions.
 - Gdy funkcje .NET 10 się wyczerpią → .NET 11 → (dalsze nowości) → schodzimy w dół:
   9 → 8 → 7 → 6, potem wracamy do najnowszej dostępnej wersji.
 

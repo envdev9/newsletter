@@ -8,6 +8,7 @@
 ---
 
 ### 🔷 [.NET](dotnet/ARTICLE.md)
+`field` i `?.` po lewej stronie przypisania: koniec ceremonii w C# 14 — semi-auto properties i null-conditional assignment, oba zweryfikowane na SDK 10.
 → [Artykuł](dotnet/ARTICLE.md) · [Kod](dotnet/code/)
 
 ### 🔧 [Ansible](ansible/ARTICLE.md)
