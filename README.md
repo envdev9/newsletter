@@ -16,8 +16,9 @@
 ![pgvector](https://img.shields.io/badge/PostgreSQL_%2B_pgvector-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
 ![TLS](https://img.shields.io/badge/TLS_%2F_X.509-2E8B57?style=for-the-badge&logo=letsencrypt&logoColor=white)
 
-*Jedno wydanie dziennie, godz. 6:00 — a w każdym wydaniu artykuł z KAŻDEJ z 10 rubryk
-poniżej naraz. Zawsze z kodem, który realnie się uruchamia.*
+*Jedno wydanie dziennie, godz. 2:30 — a w każdym wydaniu artykuł z KAŻDEJ z 14 rubryk
+poniżej naraz. Kod zawsze zweryfikowany lokalnie przed publikacją — a jeśli czegoś nie
+dało się zweryfikować (środowisko, nie kod), wydanie mówi to wprost zamiast udawać.*
 
 </div>
 
@@ -27,9 +28,10 @@ poniżej naraz. Zawsze z kodem, który realnie się uruchamia.*
 
 ### [Wydanie #1 — 24 września 2026](days/2026-09-24/README.md)
 
-14 rubryk, 14 artykułów, 14 działających przykładów kodu: .NET 10, Ansible, TeamCity,
-TUnit, Aspire, MassTransit, cztery odsłony AI dla dev-a, Angular, SQL Server,
-PostgreSQL+pgvector i certyfikaty/TLS.
+14 rubryk, 14 artykułów: .NET 10, Ansible, TeamCity, TUnit, Aspire, MassTransit, cztery
+odsłony AI dla dev-a, Angular, SQL Server, PostgreSQL+pgvector i certyfikaty/TLS. 12 z 14
+przykładów kodu zweryfikowane realnym uruchomieniem — TeamCity i SQL Server mają kod
+gotowy, ale weryfikację ograniczyło środowisko (szczegóły w artykułach).
 
 → [Otwórz wydanie #1](days/2026-09-24/README.md)
 
