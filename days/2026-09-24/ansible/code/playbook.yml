@@ -1,0 +1,34 @@
+---
+# Pierwszy realny playbook: tworzy katalog roboczy, zapisuje do niego plik
+# z treścią zbudowaną ze zmiennych, i na końcu wypisuje komunikat na konsoli.
+#
+# Uruchom dwa razy z rzędu (patrz code/README.md) - za drugim razem zobaczysz
+# "changed=0", bo pierwsze dwa taski są idempotentne: stan docelowy (katalog
+# istnieje, plik ma taką treść) już jest osiągnięty, więc Ansible nic nie
+# zmienia.
+
+- name: Pierwszy playbook - katalog roboczy i plik powitalny
+  hosts: demo
+  gather_facts: false
+
+  vars:
+    work_dir: /tmp/ansible-demo
+    greeting_file: "{{ work_dir }}/powitanie.txt"
+    # your_name można nadpisać z linii poleceń: -e "your_name=Mag"
+    greeting_message: "Cześć, {{ your_name | default('Świecie') }}! Ten plik stworzył Ansible."
+
+  tasks:
+    - name: Upewnij się, że katalog roboczy istnieje
+      ansible.builtin.file:
+        path: "{{ work_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Zapisz plik powitalny z treścią zbudowaną ze zmiennej
+      ansible.builtin.copy:
+        dest: "{{ greeting_file }}"
+        content: "{{ greeting_message }}\n"
+
+    - name: Pokaż na konsoli, co właśnie zrobiliśmy
+      ansible.builtin.debug:
+        msg: "Zapisano '{{ greeting_message }}' do {{ greeting_file }}"

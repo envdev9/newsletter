@@ -1,0 +1,8 @@
+# Inwentarz (inventory) - lista hostów, na których Ansible ma coś zrobić.
+# Tu jest tylko jeden "host": nasza własna maszyna, oznaczona jako lokalna
+# (ansible_connection=local), więc Ansible nie próbuje łączyć się przez SSH -
+# uruchamia moduły bezpośrednio, tak samo jakbyś sam wpisywał komendy w tej
+# powłoce. Dzięki temu playbook działa bez żadnego prawdziwego serwera.
+
+[demo]
+localhost ansible_connection=local
