@@ -166,8 +166,13 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   "co", niejednoznaczność, format odpowiedzi, zakres zmiany) — wydanie #1, 2026-09-24.
   Zweryfikowane skryptem walidującym przykłady (5/5 OK, plus test negatywny wykrywający
   błąd).
-- Następne: prompty do debugowania, prompty do code review, iteracyjne dopracowywanie
-  promptu w trakcie sesji.
+- Wydanie #3, 2026-09-26: debugowanie .NET (stack trace, repro, hipotezy przed poprawką), debugowanie SQL
+  (dane z planu), code review Angulara (skala ważności, czego nie komentować), iteracyjne dopracowywanie
+  promptu (3 wersje: lint 0/9→4/9→9/9). `prompt_lint.py` zweryfikowany: 9/9 zgodnych, test negatywny
+  (7/9, exit 1), `--strict`. Niezweryfikowane: jakość odpowiedzi modelu — lint to heurystyka regex,
+  reguły dobrane pod własne przykłady.
+- Następne: prompty do refaktoryzacji i migracji, prompty z przykładami (few-shot) i formatem wyjścia,
+  system prompt / CLAUDE.md jako trwały prompt, ewaluacja promptów na prawdziwym modelu (gdy dostępny).
 
 ### 🅰️ Angular
 - Aktualny poziom trudności: **podstawy (opanowane)**

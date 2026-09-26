@@ -1,0 +1,3 @@
+POST /api/orders zwraca 500 w `OrderService.cs` (linie 54-87). Występuje tylko gdy zamówienie
+ma wygasły kod rabatowy; bez kodu działa za każdym razem. Kryterium sukcesu: nowy test
+przechodzi (`dotnet test`). Odpowiedz w formacie diff. Nie zmieniaj publicznego API.

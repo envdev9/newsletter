@@ -1,0 +1,14 @@
+Test CreateOrder_WithExpiredCoupon w `OrderServiceTests.cs` pada z takim błędem:
+
+```
+Assert.Equal() Failure: Expected: 90.00  Actual: 100.00
+   at Shop.Tests.OrderServiceTests.CreateOrder_WithExpiredCoupon() in OrderServiceTests.cs:line 41
+```
+
+Odtworzenie: pada tylko na CI (sporadycznie, ok. co trzeci przebieg), lokalnie przechodzi.
+Podejrzewam zależność od zegara: kupon w teście wygasa "dziś o północy".
+
+Zanim zmienisz kod: podaj hipotezy, dlaczego wynik zależy od środowiska, i jak każdą
+sprawdzić. Kryterium sukcesu: test jest deterministyczny (`dotnet test` 20 razy pod rząd
+zielony). Odpowiedz w formacie: lista numerowana, potem diff. Nie zmieniaj kodu
+produkcyjnego w `OrderService.cs`, tylko test.

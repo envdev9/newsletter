@@ -1,0 +1,19 @@
+POST /api/orders zwraca 500. Poniżej stack trace z logu (dane osobowe usunięte):
+
+```
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at Shop.Api.Services.OrderService.ApplyDiscount(Order order) in src/Shop.Api/Services/OrderService.cs:line 87
+   at Shop.Api.Services.OrderService.CreateAsync(CreateOrderRequest request) in src/Shop.Api/Services/OrderService.cs:line 54
+```
+
+Odtworzenie: występuje tylko gdy zamówienie ma kod rabatowy, który wygasł; bez kodu
+rabatowego działa za każdym razem. Zaczęło się po commicie "Discounts v2".
+
+Zanim cokolwiek zmienisz: podaj 3 hipotezy przyczyny uszeregowane od najbardziej
+prawdopodobnej i przy każdej napisz, jak ją sprawdzić (który plik/linię przeczytać albo
+jaki test uruchomić). Dopiero po mojej akceptacji przygotuj poprawkę.
+
+Kryterium sukcesu: nowy test w `OrderServiceTests.cs` z wygasłym kodem przechodzi
+(`dotnet test --filter OrderServiceTests`), a pozostałe testy zostają zielone.
+Odpowiedz w formacie: lista numerowana hipotez, potem diff. Nie zmieniaj publicznego
+API `OrderService` i nie dotykaj migracji.

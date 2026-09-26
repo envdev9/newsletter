@@ -44,6 +44,7 @@ Subagent z odebranym `Edit` i `Bash`, pętla, w której o sukcesie decyduje exit
 → [Artykuł](ai-context/ARTICLE.md) · [Kod](ai-context/code/)
 
 ### ✍️ [AI — prompty dla developera](ai-prompts/ARTICLE.md)
+Zamiast „napraw błąd” wklej stack trace, poproś o uszeregowane hipotezy przed poprawką i zdefiniuj skalę uwag w review — plus lint promptów, który łapie braki, ale (uczciwie) nie dowodzi jakości odpowiedzi modelu.
 → [Artykuł](ai-prompts/ARTICLE.md) · [Kod](ai-prompts/code/)
 
 ### 🅰️ [Angular](angular/ARTICLE.md)

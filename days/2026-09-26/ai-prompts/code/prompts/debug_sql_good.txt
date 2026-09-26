@@ -1,0 +1,15 @@
+Zapytanie w `reports/sales_by_customer.sql` (linie 5-31) trwa ok. 12 s na tabeli
+`dbo.Orders` (ok. 2 mln wierszy). Sporadycznie: tylko gdy filtr `@From` obejmuje więcej
+niż kwartał. Wycinek z planu wykonania (SET STATISTICS IO ON):
+
+```
+Table 'Orders'. Scan count 1, logical reads 48211
+Plan: Clustered Index Scan na Orders (Estimated rows 3, Actual rows 412009)
+```
+
+Zanim zaproponujesz indeks: podaj 2 hipotezy, dlaczego estymacja jest tak zaniżona
+(np. przestarzałe statystyki, parameter sniffing), i jak każdą zweryfikować zapytaniem
+diagnostycznym. Kryterium sukcesu: logical reads spada poniżej 5000, a wynik zapytania
+jest identyczny (ta sama liczba wierszy). Odpowiedz w formacie tabeli: Hipoteza |
+Jak sprawdzić | Oczekiwany wynik. Nie zmieniaj schematu tabeli i nie dodawaj hintów
+w treści zapytania.

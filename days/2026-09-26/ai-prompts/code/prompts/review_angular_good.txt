@@ -1,0 +1,9 @@
+Zrób code review zmian w `src/app/orders/order-list.component.ts` i
+`order-list.component.html` (diff względem main). Skup się na: wyciekach subskrypcji
+RxJS, wywołaniach w szablonie, które odpalają się przy każdym cyklu detekcji zmian, oraz
+błędach w obsłudze null. Szukaj tylko realnych błędów, nie preferencji.
+
+Każdą uwagę oznacz wagą: krytyczne (błąd/wyciek), ważne (ryzyko), nit (kosmetyka), a nity
+pomiń, jeśli jest ich więcej niż 3. Odpowiedz w formacie tabeli: Plik:linia | Waga | Problem |
+Proponowana poprawka w jednej linijce. Nie komentuj formatowania ani nazw zmiennych i nie
+proponuj zmiany architektury komponentu.

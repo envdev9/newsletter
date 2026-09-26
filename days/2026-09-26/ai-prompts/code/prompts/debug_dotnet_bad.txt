@@ -1,0 +1,1 @@
+Endpoint zamówień czasem wywala 500, napraw to.

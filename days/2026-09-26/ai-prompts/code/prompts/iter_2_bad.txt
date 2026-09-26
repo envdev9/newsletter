@@ -1,0 +1,8 @@
+Test CreateOrder_WithExpiredCoupon w `OrderServiceTests.cs` pada z takim błędem:
+
+```
+Assert.Equal() Failure: Expected: 90.00  Actual: 100.00
+   at Shop.Tests.OrderServiceTests.CreateOrder_WithExpiredCoupon() in OrderServiceTests.cs:line 41
+```
+
+Pada tylko na CI, lokalnie przechodzi. Popraw go.
