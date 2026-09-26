@@ -1,0 +1,60 @@
+<section>
+  <h2>Katalog produktów (signal store + rxMethod + httpResource)</h2>
+
+  <input
+    type="search"
+    placeholder="Szukaj: klawiatura, monitor... (boom = błąd 500)"
+    (input)="onSearch($any($event.target).value)"
+  />
+
+  @if (store.loading()) {
+    <p class="muted">Ładowanie listy...</p>
+  }
+  @if (store.error(); as err) {
+    <p class="error">{{ err }}</p>
+  }
+  @if (store.isEmpty()) {
+    <p class="muted">Brak wyników. Wpisz frazę.</p>
+  }
+
+  <ul>
+    @for (p of store.products(); track p.id) {
+      <li>
+        <button type="button" (click)="select(p.id)">
+          {{ p.id === selectedId() ? '>' : '' }} {{ p.name }} - {{ p.price }} zł
+        </button>
+      </li>
+    }
+  </ul>
+
+  <h3>Szczegóły wybranego</h3>
+  @switch (details.status()) {
+    @case ('idle') {
+      <p class="muted">Nic nie wybrano.</p>
+    }
+    @case ('loading') {
+      <p class="muted">Pobieram szczegóły...</p>
+    }
+    @case ('reloading') {
+      <p class="muted">Odświeżam...</p>
+    }
+    @case ('error') {
+      <p class="error">Błąd szczegółów</p>
+    }
+    @default {
+      @if (details.hasValue()) {
+        <p>
+          <strong>{{ details.value().name }}</strong> - {{ details.value().description }}
+          (magazyn: {{ details.value().stock }})
+        </p>
+        <button type="button" (click)="order()" [disabled]="store.ordering() || details.value().stock === 0">
+          {{ store.ordering() ? 'Składam zamówienie...' : 'Zamów' }}
+        </button>
+      }
+    }
+  }
+
+  @if (store.lastOrderId(); as id) {
+    <p>Ostatnie zamówienie: {{ id }}</p>
+  }
+</section>

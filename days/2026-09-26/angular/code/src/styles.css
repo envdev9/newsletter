@@ -1,0 +1,4 @@
+body { font-family: system-ui, sans-serif; margin: 2rem; max-width: 60rem; }
+section { border: 1px solid #ccc; border-radius: 6px; padding: 1rem; margin-bottom: 1rem; }
+.error { color: #b00020; }
+.muted { color: #666; }

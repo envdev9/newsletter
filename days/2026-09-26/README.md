@@ -48,6 +48,7 @@ Zamiast „napraw błąd” wklej stack trace, poproś o uszeregowane hipotezy p
 → [Artykuł](ai-prompts/ARTICLE.md) · [Kod](ai-prompts/code/)
 
 ### 🅰️ [Angular](angular/ARTICLE.md)
+`linkedSignal` zachowuje zaznaczenie na liście po odświeżeniu danych, `httpResource` zastępuje ręczne stany loading/error, a signal store z `rxMethod` (debounce → distinctUntilChanged → switchMap) łączy się z HTTP — 8/8 testów i build przeszły na Angular 22.2.
 → [Artykuł](angular/ARTICLE.md) · [Kod](angular/code/)
 
 ### 🗄️ [SQL Server](sqlserver/ARTICLE.md)

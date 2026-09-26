@@ -183,9 +183,16 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   `/dev/shm` z powodu pełnego dysku systemowego, dysk repo nietknięty.
 - Wydanie #2, 2026-09-25: **POMINIĘTE** — na maszynie brak Node/npm (toolchain z /dev/shm
   zniknął, instalacja niedozwolona). Do nadrobienia, gdy Node będzie dostępny.
-- Wydanie #3, 2026-09-26: **POMINIĘTE** — nadal brak Node/npm na maszynie (`node: command not found`).
-- Następny poziom: nowości Angular 19+ poza signals, `linkedSignal`, `resource()`,
-  integracja signal store z HTTP.
+- Wydanie #3, 2026-09-26: pierwotnie pominięte (brak Node), nadrobione tego samego dnia gdy Node v22.23.3
+  był dostępny: `linkedSignal` (`source`/`computation` z poprzednią wartością), `httpResource`
+  (`params`, nie `request`), `resource()`/`rxResource` (tylko z typów, bez kodu), signal store + HTTP
+  (`withState`/`withComputed`/`withMethods`, `rxMethod`: debounceTime→distinctUntilChanged→switchMap,
+  `catchError` wewnątrz), switchMap vs exhaustMap vs concatMap. Angular 22.2.0, @ngrx/signals 22.0.1,
+  rxjs 7.8.2. Zweryfikowane: `npm ci`, `ng build`, `ng test` 8/8 (Vitest+jsdom). Pułapka: `npm install`
+  bez lockfile'a padł → `--legacy-peer-deps`. Niezweryfikowane: `ng serve`, `resource()` z własnym loaderem,
+  `tapResponse`. W `code/` zostały `node_modules/`, `dist/`, `.angular/` (w .gitignore).
+- Następny poziom: formularze na signals (Signal Forms), `@defer`/SSR/hydration, router (resolvers,
+  `withComponentInputBinding`), testy komponentów, `resource()` z własnym loaderem, `tapResponse`.
 
 ### 🗄️ SQL Server
 - Aktualny poziom trudności: **podstawy (kod gotowy, niezweryfikowany)**
