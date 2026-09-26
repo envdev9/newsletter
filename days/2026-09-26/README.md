@@ -53,6 +53,7 @@ Retry ratuje jedną wiadomość, a saga ratuje cały proces — zamówienie jako
 → [Artykuł](postgres-vector/ARTICLE.md) · [Kod](postgres-vector/code/)
 
 ### 🔐 [Certyfikaty i TLS (X.509)](certificates/ARTICLE.md)
+Odwołany certyfikat dostaje w .NET `HTTP 200`, jeśli nie włączysz sprawdzania — mTLS w Kestrelu z własnym PKI i katalog błędów zaufania z prawdziwymi komunikatami `dotnet` i `openssl`.
 → [Artykuł](certificates/ARTICLE.md) · [Kod](certificates/code/)
 
 ---

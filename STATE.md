@@ -208,6 +208,13 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   `X509Chain` w .NET — wydanie #1, 2026-09-24. Zweryfikowane realnym `openssl` (własne
   CA + certyfikat + "rogue" self-signed) i realnym `dotnet run` (3 scenariusze walidacji
   łańcucha, w tym poprawne odrzucenie self-signed: `UntrustedRoot`).
-- Następny poziom: mTLS (klient i serwer wzajemnie się weryfikują), OCSP/CRL,
-  Kestrel/HTTPS konfiguracja w .NET, typowe błędy zaufania w produkcji i jak je
-  diagnozować.
+- Wydanie #2 (25.09) nie powstało (brak artykułu) — nie nadrabiane.
+- Wydanie #3, 2026-09-26: mTLS w Kestrelu (`RequireCertificate`, `CustomRootTrust`, EKU clientAuth),
+  PKI root→intermediate (pathlen:0)→serwer/klient przez `openssl ca`, `HttpClient` z certyfikatem klienta,
+  katalog błędów (brak certu, zły EKU, wygasły, obcy wystawca, brak intermediate, IP poza SAN, CRL
+  `certificate revoked`). Zweryfikowane `dotnet run` (net10.0) + openssl. Ustalenia: .NET z
+  `RevocationMode.NoCheck` przepuszcza odwołany cert; brak SAN przechodzi dla `localhost` (fallback do CN).
+  Niezweryfikowane: cały `generate-mtls-pki.sh` jako skrypt (uruchomienie odrzucone; komendy ręcznie),
+  OCSP/stapling, włączone sprawdzanie CRL w .NET, przeglądarki/AIA, Windows/PFX, nieznany status `PartialChain` w scenariuszu B.
+- Następny poziom: OCSP/stapling, revocation w .NET (CRL/CDP), magazyn certyfikatów (`X509Store`),
+  ACME/Let's Encrypt, rotacja certyfikatów, certificate pinning, TLS 1.3 na poziomie protokołu.

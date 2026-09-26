@@ -1,0 +1,10 @@
+# Klucze/certyfikaty demo generujemy poza repo (domyslnie /tmp/prasowka-mtls-pki).
+# Na wszelki wypadek nigdy nie commitujemy niczego takiego:
+*.key
+*.pem
+*.csr
+*.crl
+*.pfx
+pki/
+bin/
+obj/

@@ -1,0 +1,102 @@
+# SZABLON konfiguracji dla `openssl ca` / `openssl req` (wydanie #3: mTLS).
+# Znacznik (at)PKI(at) jest podmieniany przez generate-mtls-pki.sh na katalog
+# wyjsciowy; wynik trafia do <katalog>/ca.cnf (w repo nie ma sciezek do kluczy).
+
+[ca_root]
+database         = @PKI@/root/index.txt
+new_certs_dir    = @PKI@/root/newcerts
+serial           = @PKI@/root/serial
+crlnumber        = @PKI@/root/crlnumber
+private_key      = @PKI@/root/ca.key
+certificate      = @PKI@/root/ca.pem
+default_md       = sha256
+default_days     = 365
+default_crl_days = 30
+policy           = policy_any
+unique_subject   = no
+copy_extensions  = none
+
+[ca_inter]
+database         = @PKI@/inter/index.txt
+new_certs_dir    = @PKI@/inter/newcerts
+serial           = @PKI@/inter/serial
+crlnumber        = @PKI@/inter/crlnumber
+private_key      = @PKI@/inter/ca.key
+certificate      = @PKI@/inter/ca.pem
+default_md       = sha256
+default_days     = 365
+default_crl_days = 30
+policy           = policy_any
+unique_subject   = no
+copy_extensions  = none
+
+[ca_rogue]
+database         = @PKI@/rogue/index.txt
+new_certs_dir    = @PKI@/rogue/newcerts
+serial           = @PKI@/rogue/serial
+crlnumber        = @PKI@/rogue/crlnumber
+private_key      = @PKI@/rogue/ca.key
+certificate      = @PKI@/rogue/ca.pem
+default_md       = sha256
+default_days     = 365
+default_crl_days = 30
+policy           = policy_any
+unique_subject   = no
+copy_extensions  = none
+
+[policy_any]
+countryName      = optional
+organizationName = optional
+commonName       = supplied
+
+[req]
+distinguished_name = req_dn
+prompt             = no
+
+[req_dn]
+
+# --- rozszerzenia ---------------------------------------------------------
+
+[ext_root]
+basicConstraints     = critical,CA:TRUE
+keyUsage             = critical,keyCertSign,cRLSign
+subjectKeyIdentifier = hash
+
+[ext_intermediate]
+basicConstraints       = critical,CA:TRUE,pathlen:0
+keyUsage               = critical,keyCertSign,cRLSign
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid
+
+# Poprawny certyfikat serwera: SAN + EKU serverAuth
+[ext_server]
+basicConstraints       = critical,CA:FALSE
+keyUsage               = critical,digitalSignature
+extendedKeyUsage       = serverAuth
+subjectAltName         = DNS:localhost,IP:127.0.0.1
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid
+
+# Bledny: brak SAN (tylko CN w subject)
+[ext_server_nosan]
+basicConstraints       = critical,CA:FALSE
+keyUsage               = critical,digitalSignature
+extendedKeyUsage       = serverAuth
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid
+
+# Poprawny certyfikat klienta: EKU clientAuth
+[ext_client]
+basicConstraints       = critical,CA:FALSE
+keyUsage               = critical,digitalSignature
+extendedKeyUsage       = clientAuth
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid
+
+# Bledny: klient z EKU serverAuth (pomylony profil)
+[ext_client_wrongeku]
+basicConstraints       = critical,CA:FALSE
+keyUsage               = critical,digitalSignature
+extendedKeyUsage       = serverAuth
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid
