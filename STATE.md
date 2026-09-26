@@ -18,7 +18,9 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   - [x] File-based apps (`dotnet run plik.cs`, `#:package`) — wydanie #1, 2026-09-24
   - [x] Słowo kluczowe `field` (semi-auto properties, C# 14) — wydanie #2, 2026-09-25
   - [x] Null-conditional assignment (`a?.b = x`, `a?.b += x`; `?.` z `++` nie kompiluje się, CS1059) — wydanie #2, 2026-09-25
-  - Zostało w .NET 10 m.in.: partial constructors/events, lambda modifiers bez typów, LeftJoin/RightJoin w LINQ, `Span` conversions.
+  - [x] `Enumerable.LeftJoin`/`RightJoin` (LINQ, .NET 10) — wydanie #3, 2026-09-26
+  - [x] Partial constructors/events (C# 14; event z `add`/`remove` nie jest field-like → CS0079 przy `?.Invoke`) — wydanie #3, 2026-09-26. Zweryfikowane `dotnet run`; niezweryfikowane: LeftJoin w EF Core, prawdziwy source generator.
+  - Zostało w .NET 10 m.in.: lambda modifiers bez typów, `Span` conversions, inne nowości → potem .NET 11.
 - Gdy funkcje .NET 10 się wyczerpią → .NET 11 → (dalsze nowości) → schodzimy w dół:
   9 → 8 → 7 → 6, potem wracamy do najnowszej dostępnej wersji.
 
