@@ -224,8 +224,15 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   **Kod napisany, NIEZWERYFIKOWANY** — uruchomienie `run-demo.sh` odrzucone przez
   uprawnienia; w artykule brak zmierzonych liczb. Do zrobienia: odpalić `run-demo.sh`
   i wkleić prawdziwy output.
-- Następny poziom (po weryfikacji): filtrowanie + indeks (iterative scan), partycjonowanie,
-  quantization (halfvec/bit), pgvector z .NET (Npgsql + EF Core).
+- Wydanie #3, 2026-09-26: problem post-filtrowania w HNSW (recall 0,019 z filtrem tenanta),
+  `hnsw.iterative_scan` (`strict_order`/`relaxed_order`, `max_scan_tuples`; recall 0,91–0,93), B-tree na
+  kolumnie filtra (nie wystarcza), partial index HNSW (408 kB), kwantyzacja `halfvec` (indeks 54 vs 79 MB,
+  recall bez zmian) i `bit` + rerank (8,5 MB vs 156 MB, ale recall 0,45–0,58). pgvector 0.8.6 / PG 16.15.
+  Zweryfikowane realnie SQL-em (ręcznie docker exec), dane SYNTETYCZNE (deterministyczne, bez modelu).
+  Niezweryfikowane: cały `run-demo.sh`, partycjonowanie, `halfvec` jako typ kolumny, Npgsql+Pgvector (.NET),
+  kod z wydania #2 (nadal niezweryfikowany).
+- Następny poziom: pgvector z .NET (Npgsql + Pgvector, EF Core), partycjonowanie, weryfikacja kodu z #2
+  (fastembed), binary quantization na realnych embeddingach.
 
 ### 🔐 Certyfikaty i TLS (X.509)
 - Aktualny poziom trudności: **podstawy (opanowane)**

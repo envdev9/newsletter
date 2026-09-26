@@ -55,6 +55,7 @@ Ten sam plan raz 21, raz 600 350 stron: cztery sposoby na parameter sniffing, a 
 → [Artykuł](sqlserver/ARTICLE.md) · [Kod](sqlserver/code/)
 
 ### 🧬 [PostgreSQL jako baza wektorowa](postgres-vector/ARTICLE.md)
+Filtr `WHERE` potrafi po cichu wyzerować wyniki HNSW (recall 0,019), a `iterative_scan`, partial index i `halfvec` to naprawiają lub odchudzają indeks — zmierzone na pgvector 0.8.6, z uczciwym rachunkiem, gdzie kwantyzacja binarna na razie zawodzi.
 → [Artykuł](postgres-vector/ARTICLE.md) · [Kod](postgres-vector/code/)
 
 ### 🔐 [Certyfikaty i TLS (X.509)](certificates/ARTICLE.md)
