@@ -60,8 +60,12 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   `[ParallelLimiter<T>]`. TUnit 1.69.0, `dotnet test` 36/36; szczyt równoległości zmierzony
   (6 / 1 / 2). Niezweryfikowane (opisane wprost): DependsOn przy porażce, `[ClassDataSource]`,
   `[BeforeEvery]`.
-- Następny poziom: `[ClassDataSource]` i współdzielony stan (DI/fixtures), `[BeforeEvery]`,
-  retry/timeout, własne asercje, testy z Aspire/WebApplicationFactory.
+- Wydanie #3, 2026-09-26: `[ClassDataSource<T>]` + `SharedType` (PerTestSession/PerClass/Keyed/None),
+  fixture z `IAsyncInitializer`/`IAsyncDisposable`, `[Retry]` + `CurrentRetryAttempt`, `[Timeout]`,
+  `[BeforeEvery(Test)]`, `[After(TestSession)]`. TUnit 1.69.0, `dotnet test` 18/18. Pułapka:
+  `[ClassDataSource]` na parametrze → TUnit0038/0070. Niezweryfikowane: `[AfterEvery]`, BeforeEvery
+  Class/Assembly, własne asercje (`Assertion<T>`), warunkowy retry.
+- Następny poziom: własne asercje, testy z Aspire/WebApplicationFactory, `[AfterEvery]`, warunkowy retry.
 
 ### ✈️ Aspire
 - Aktualny poziom trudności: **podstawy (opanowane)**

@@ -18,6 +18,7 @@ Trzy metody LINQ na jedno słowo „LEFT" zastąpił jeden operator, a `partial`
 → [Artykuł](teamcity/ARTICLE.md) · [Kod](teamcity/code/)
 
 ### 🧪 [TUnit](tunit/ARTICLE.md)
+Najdroższa linijka w testach to start zasobu — ile razy się wykona i kto go posprząta? Fixture'y `[ClassDataSource]` w czterech zasięgach, `[Retry]`, `[Timeout]` i hook globalny, zmierzone na żywo (18/18 zielone).
 → [Artykuł](tunit/ARTICLE.md) · [Kod](tunit/code/)
 
 ### ✈️ [Aspire](aspire/ARTICLE.md)
