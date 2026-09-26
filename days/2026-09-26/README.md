@@ -22,6 +22,7 @@ Najdroższa linijka w testach to start zasobu — ile razy się wykona i kto go 
 → [Artykuł](tunit/ARTICLE.md) · [Kod](tunit/code/)
 
 ### ✈️ [Aspire](aspire/ARTICLE.md)
+`WaitFor` nie czeka, aż proces wstanie, tylko aż serwis powie „jestem gotowy" — dwa serwisy znajdują się po nazwie (`http://catalog`), a całość weryfikuje jedno polecenie `dotnet run` z testowym AppHostem.
 → [Artykuł](aspire/ARTICLE.md) · [Kod](aspire/code/)
 
 ### 📨 [Messaging .NET z MassTransit](masstransit/ARTICLE.md)
