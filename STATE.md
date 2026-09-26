@@ -200,8 +200,15 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   Dockerze, ręcznymi `docker exec … sqlcmd` (samo `run-demo.sh` zablokowane uprawnieniami).
 - Wydanie #1 (podstawy, days/2026-09-24) nadal bez realnego outputu — krok 0 pominięty
   (uruchomienie run-demo.sh odrzucone przez uprawnienia). Dopisać output przy okazji.
-- Następny poziom: `OPTION (RECOMPILE)`/`OPTIMIZE FOR`, Query Store, filtered indexes,
-  columnstore, deadlocki/blokady.
+- Wydanie #3, 2026-09-26: leczenie parameter sniffingu (`OPTION (RECOMPILE)`, `OPTIMIZE FOR UNKNOWN`,
+  `OPTIMIZE FOR (@p=1)`; 600 350 vs 21 vs 2 486 reads; koszt RECOMPILE 574 vs 5 414 ms/2000 wywołań),
+  Query Store (`sys.query_store_*`, regresja planu, `sp_query_store_force_plan`/`unforce`), filtered index
+  na kolejce zadań (6 846 → 3 → 2 reads; pułapka: zapytanie z parametrem pomija indeks bez RECOMPILE).
+  Skrypty 01–05 zweryfikowane realnie (SQL Server 2022 RTM-CU27, ręcznie docker exec). Niezweryfikowane:
+  cały `run-demo.sh`, `06-cleanup.sql`, wymuszony plan po zniknięciu indeksu, Query Store hints. PSP
+  optimization nie zadziałało w tym scenariuszu (przyczyny nie zbadane). Krok 0 (weryfikacja #1) nadal
+  pominięty — uruchomienie `run-demo.sh` odrzucone przez uprawnienia.
+- Następny poziom: columnstore, deadlocki/blokady, Query Store hints, PSP optimization.
 
 ### 🧬 PostgreSQL — baza wektorowa (pgvector)
 - Aktualny poziom trudności: **podstawy (opanowane)**

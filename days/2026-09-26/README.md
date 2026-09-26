@@ -51,6 +51,7 @@ Zamiast „napraw błąd” wklej stack trace, poproś o uszeregowane hipotezy p
 → [Artykuł](angular/ARTICLE.md) · [Kod](angular/code/)
 
 ### 🗄️ [SQL Server](sqlserver/ARTICLE.md)
+Ten sam plan raz 21, raz 600 350 stron: cztery sposoby na parameter sniffing, a Query Store przypina dobry plan bez zmiany kodu, plus filtered index, który zamiast 1 051 stron ma 2 — zmierzone na SQL Server 2022.
 → [Artykuł](sqlserver/ARTICLE.md) · [Kod](sqlserver/code/)
 
 ### 🧬 [PostgreSQL jako baza wektorowa](postgres-vector/ARTICLE.md)
