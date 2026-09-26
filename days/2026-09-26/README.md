@@ -12,6 +12,7 @@ Trzy metody LINQ na jedno słowo „LEFT" zastąpił jeden operator, a `partial`
 → [Artykuł](dotnet/ARTICLE.md) · [Kod](dotnet/code/)
 
 ### 🔧 [Ansible](ansible/ARTICLE.md)
+Co robi playbook, gdy wdrożenie pada w połowie? `block`/`rescue`/`always` cofają konfigurację, `failed_when`/`changed_when` uczą Ansible, co jest błędem, a `group_vars`/`host_vars`, tagi i filtry Jinja2 porządkują resztę — zweryfikowane na ansible-core 2.17 (vault opisany, ale niezweryfikowany).
 → [Artykuł](ansible/ARTICLE.md) · [Kod](ansible/code/)
 
 ### 🏗️ [TeamCity](teamcity/ARTICLE.md)

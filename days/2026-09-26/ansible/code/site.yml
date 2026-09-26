@@ -1,0 +1,126 @@
+---
+# Poziom 3: vault, group_vars/host_vars, filtry, register + failed_when/changed_when,
+# block/rescue/always, tags. Wszystko na ansible_connection=local.
+- name: Poziom 3 - vault, grupy, block/rescue/always, tags
+  hosts: app
+  gather_facts: false
+  vars:
+    host_dir: "{{ out_dir }}/{{ inventory_hostname }}"
+    # filtr combine: scalanie slownikow (recursive) - domyslne + nadpisania z host_vars
+    settings: "{{ base_settings | combine(settings_override | default({}), recursive=True) }}"
+
+  tasks:
+    - name: Katalog hosta
+      ansible.builtin.file:
+        path: "{{ host_dir }}"
+        state: directory
+        mode: "0755"
+      tags: [always]
+
+    # --- block / rescue / always -------------------------------------------------
+    - name: Wdrozenie konfiguracji z automatycznym wycofaniem
+      tags: [config]
+      block:
+        - name: Wyrenderuj app.conf
+          ansible.builtin.template:
+            src: app.conf.j2
+            dest: "{{ host_dir }}/app.conf"
+            mode: "0644"
+
+        - name: Wyrenderuj settings.json (filtr combine + to_nice_json)
+          ansible.builtin.copy:
+            content: "{{ settings | to_nice_json }}\n"
+            dest: "{{ host_dir }}/settings.json"
+            mode: "0644"
+
+        - name: Zwaliduj konfiguracje
+          ansible.builtin.command:
+            argv: [sh, "{{ playbook_dir }}/files/validate.sh", "{{ host_dir }}/app.conf"]
+          changed_when: false
+
+        - name: Zapamietaj ostatnia dobra konfiguracje
+          ansible.builtin.copy:
+            src: "{{ host_dir }}/app.conf"
+            dest: "{{ host_dir }}/app.conf.last-good"
+            remote_src: true
+            mode: "0644"
+
+      rescue:
+        - name: Co poszlo nie tak
+          ansible.builtin.debug:
+            msg: "Padl task '{{ ansible_failed_task.name }}' (rc={{ ansible_failed_result.rc | default('n/a') }})"
+
+        - name: Czy jest ostatnia dobra konfiguracja
+          ansible.builtin.stat:
+            path: "{{ host_dir }}/app.conf.last-good"
+          register: last_good
+
+        - name: Przywroc ostatnia dobra konfiguracje
+          ansible.builtin.copy:
+            src: "{{ host_dir }}/app.conf.last-good"
+            dest: "{{ host_dir }}/app.conf"
+            remote_src: true
+            mode: "0644"
+          when: last_good.stat.exists
+
+        - name: Brak poprzedniej wersji - usun zla konfiguracje
+          ansible.builtin.file:
+            path: "{{ host_dir }}/app.conf"
+            state: absent
+          when: not last_good.stat.exists
+
+        - name: Zapisz, ze wdrozenie zostalo wycofane
+          ansible.builtin.set_fact:
+            deploy_status: rolled-back
+
+      always:
+        - name: Zapisz status wdrozenia (wykonuje sie zawsze)
+          ansible.builtin.copy:
+            content: "{{ deploy_status | default('ok') }}\n"
+            dest: "{{ host_dir }}/deploy.status"
+            mode: "0644"
+
+    # --- register + failed_when / changed_when ----------------------------------
+    - name: Healthcheck (rc 0 = OK, 3 = degraded, reszta = blad)
+      ansible.builtin.command:
+        argv: [sh, "{{ playbook_dir }}/files/health.sh", "{{ host_dir }}/app.conf"]
+      register: health
+      changed_when: false
+      failed_when: health.rc not in [0, 3]
+      check_mode: false
+      tags: [check]
+
+    - name: Wynik healthchecku
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }}: {{ 'DEGRADED' if health.rc == 3 else 'OK' }} ({{ health.stdout }})"
+      tags: [check]
+
+    # --- vault: sekrety w pliku 0600, no_log ------------------------------------
+    - name: Plik z sekretami (wartosci z ansible-vault)
+      ansible.builtin.copy:
+        content: |
+          DB_PASSWORD={{ db_password }}
+          API_KEY={{ api_key }}
+        dest: "{{ host_dir }}/secrets.env"
+        mode: "0600"
+      no_log: true
+      tags: [secrets]
+
+    # --- migracja tylko na grupie db; changed_when wg tresci outputu -------------
+    - name: Migracja bazy (tylko grupa db)
+      ansible.builtin.command:
+        argv: [sh, "{{ playbook_dir }}/files/migrate.sh", "{{ host_dir }}"]
+      register: migrate
+      changed_when: "'applied' in migrate.stdout"
+      when: "'db' in group_names"
+      tags: [migrate]
+
+- name: Podsumowanie (filtry na danych z hostvars)
+  hosts: app
+  gather_facts: false
+  run_once: true
+  tasks:
+    - name: Porty wszystkich hostow
+      ansible.builtin.debug:
+        msg: "{{ dict(groups['app'] | zip(groups['app'] | map('extract', hostvars, 'service_port'))) | to_json }}"
+      tags: [always]

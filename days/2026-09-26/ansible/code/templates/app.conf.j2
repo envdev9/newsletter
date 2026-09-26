@@ -1,0 +1,9 @@
+# {{ ansible_managed }}
+[app]
+host = {{ inventory_hostname }}
+group = {{ group_names | sort | join(',') }}
+env = {{ env | upper }}
+port = {{ service_port }}
+log_level = {{ log_level | default('info') | upper }}
+features = {{ features | sort | join(',') }}
+api_key_fingerprint = {{ api_key | hash('sha256') | truncate(12, True, '') }}

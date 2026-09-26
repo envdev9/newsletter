@@ -1,0 +1,21 @@
+---
+# Katalog wyjsciowy demo - wszystko laduje w /tmp, nie w repo.
+out_dir: /tmp/ansible-demo-lvl3
+
+env: dev
+log_level: info
+features:
+  - metrics
+  - audit
+  - cache
+
+base_settings:
+  timeouts:
+    connect: 5
+    read: 30
+  retries: 3
+
+# Zmienne z prefiksem vault_ leza zaszyfrowane w vault.yml.
+# Tu tylko odwolanie - dzieki temu grep po vars.yml pokazuje, skad wartosc.
+db_password: "{{ vault_db_password }}"
+api_key: "{{ vault_api_key }}"

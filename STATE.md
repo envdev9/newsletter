@@ -35,8 +35,14 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   `meta: flush_handlers`, `--check --diff`. Zweryfikowane realnie (ansible-core 2.17.14;
   drugi przebieg `changed=0`). Pułapka: `-e x=false` to string → `| bool`. Niezweryfikowane:
   prawdziwy `service` (become), `ansible-galaxy init`, zdalne SSH.
-- Następny poziom: `vault`, `block/rescue/always`, `tags`, `register` + `failed_when`/
-  `changed_when`, filtry Jinja2, inventory grupowe + `group_vars`/`host_vars`, kolekcje.
+- Wydanie #3, 2026-09-26: inventory grupowe (`web`/`db`/`app:children`) + `group_vars`/`host_vars`,
+  `block`/`rescue`/`always` (wdrożenie z rollbackiem), `register` + `failed_when`/`changed_when`,
+  tagi, filtry Jinja2 (`combine`, `to_nice_json`, `hash`, `zip`/`extract`…), `no_log`. Zweryfikowane
+  (ansible-core 2.17.14): syntax-check, 2 przebiegi (`changed=0`), rescue, tags/limit, `--check --diff`.
+  Niezweryfikowane: `ansible-vault` (polecenie odrzucone przez środowisko — opisane, `vault.yml` w
+  repo jawny z fikcyjnymi wartościami), `ansible-inventory --graph`, SSH/`become`, `validate`.
+- Następny poziom: realnie zweryfikować `ansible-vault` (encrypt/view/encrypt_string), kolekcje i
+  `ansible-galaxy`, własne filtry/lookupy, `include_tasks` vs `import_tasks`, `strategy`/`serial`, Molecule.
 
 ### 🏗️ TeamCity
 - Aktualny poziom trudności: **podstawy (częściowo — patrz ograniczenie)**

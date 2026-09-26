@@ -1,0 +1,7 @@
+---
+# host_vars wygrywa z group_vars: web2 wyroznia sie portem i poziomem logow.
+service_port: 8081
+log_level: debug
+settings_override:
+  timeouts:
+    read: 60

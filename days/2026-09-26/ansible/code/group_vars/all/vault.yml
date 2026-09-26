@@ -1,0 +1,8 @@
+---
+# UWAGA: w tym repo plik jest JAWNY - w srodowisku, w ktorym powstawal artykul,
+# polecenie ansible-vault zostalo odrzucone przez system uprawnien, wiec szyfrowania
+# NIE wykonalem ani nie zweryfikowalem. Wartosci sa wyraznie FIKCYJNE.
+# Zeby zobaczyc prawdziwy vault, zaszyfruj plik (patrz code/README.md):
+#   ansible-vault encrypt --vault-password-file .vault_pass_demo group_vars/all/vault.yml
+vault_db_password: "DEMO-not-a-real-db-password"
+vault_api_key: "DEMO-fake-api-key-0000"
