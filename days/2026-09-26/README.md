@@ -40,6 +40,7 @@ Subagent z odebranym `Edit` i `Bash`, pętla, w której o sukcesie decyduje exit
 → [Artykuł](ai-agentic-loop/ARTICLE.md) · [Kod](ai-agentic-loop/code/)
 
 ### 🧠 [AI — zarządzanie kontekstem](ai-context/ARTICLE.md)
+5 wyników narzędzi z 60 dźwiga dwie trzecie kontekstu sesji, a subagent zamiast kompaktowania obniża szczyt kontekstu ponad 4× — metryka „token-tury”, `/compact` i łańcuchy subagentów (liczby z transkryptu syntetycznego).
 → [Artykuł](ai-context/ARTICLE.md) · [Kod](ai-context/code/)
 
 ### ✍️ [AI — prompty dla developera](ai-prompts/ARTICLE.md)

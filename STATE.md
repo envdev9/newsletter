@@ -153,8 +153,13 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   system-reminder→bieżąca tura), prompt caching i dlaczego kolejność ma znaczenie
   ekonomicznie, transkrypty `.jsonl`, kiedy delegować do subagenta, `grep`/`head` vs
   `cat` (zmierzone: 619× mniej kontekstu) — wydanie #1, 2026-09-24.
-- Następne: kompaktowanie/`/compact`, strategie dzielenia bardzo dużych zadań na
-  łańcuchy subagentów, budżetowanie kontekstu w długich sesjach.
+- Wydanie #2 (nadrobione), 2026-09-26: metryka „token-tury” (rozmiar wyniku × liczba tur), `/compact`
+  (co przeżywa/ginie, sterowanie), łańcuchy subagentów (wskaźniki do plików, kontrakt na rozmiar raportu),
+  checklista budżetowania. Skrypty `gen_transcript.py`/`analyze_transcript.py`/`test_analyzer.py` (6/6)
+  zweryfikowane na SYNTETYCZNYM transkrypcie (odczyt `~/.claude/projects` odrzucony) — liczby to
+  ilustracja mechanizmu, nie pomiar. Niezweryfikowane: `/compact` z instrukcją, CLAUDE.md po compact,
+  żywy łańcuch subagentów. Zostało `code/__pycache__/` (w .gitignore).
+- Następne: analiza prawdziwego transkryptu (gdy odczyt dozwolony), pamięć/CLAUDE.md jako stały koszt kontekstu, MCP i koszt definicji narzędzi.
 
 ### ✍️ AI — prompty dla developera
 - Omówione elementy: 5 par zły/dobry prompt (konkretność+pliki/linie, "dlaczego" vs
