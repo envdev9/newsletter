@@ -32,6 +32,7 @@ Retry ratuje jedną wiadomość, a saga ratuje cały proces — zamówienie jako
 → [Artykuł](masstransit/ARTICLE.md) · [Kod](masstransit/code/)
 
 ### 🤖 [AI — Claude Code dla .NET/Angular/SQL](ai-claude-code/ARTICLE.md)
+Agent zmienia plik `.cs`, a hook `PostToolUse` w tej samej chwili go formatuje i buduje — błąd kompilacji wraca do modelu od razu, a zespołowy `settings.json` daje wszystkim te same bariery (hook zweryfikowany na SDK 10, żywa sesja Claude Code nie).
 → [Artykuł](ai-claude-code/ARTICLE.md) · [Kod](ai-claude-code/code/)
 
 ### ⚙️ [AI — agentic loop](ai-agentic-loop/ARTICLE.md)

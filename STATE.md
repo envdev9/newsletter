@@ -122,8 +122,13 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   testowych) i skill `ef-migration-review` (skaner `scan_migration.py` + instrukcja). Zweryfikowane
   realnymi uruchomieniami. Niezweryfikowane: wpięcie w żywej sesji Claude Code, auto-aktywacja
   skilla, migracje z prawdziwego `dotnet ef`. Znane luki hooka: `-F plik`, zmienna powłoki, `--amend --no-edit`.
-- Następne: hook `PostToolUse` uruchamiający `dotnet format`/testy po edycji, skill do
-  SQL (przegląd planu/indeksów), Angular (review komponentu na signals), konfiguracja `.claude/` w zespole.
+- Wydanie #3, 2026-09-26: hook `PostToolUse` (po edycji `.cs`: `dotnet format` + `dotnet build`, błąd → exit 2)
+  i zespołowy `settings.json` (permissions + hook) z linterem `validate_settings.py`. Zweryfikowane na .NET SDK
+  10.0.400: demo 5/5, walidator OK. Pułapka: `dotnet format --include` z bezwzględną ścieżką nic nie robi
+  (exit 0). Niezweryfikowane: żywa sesja, payload `PostToolUse`, składnia/pierwszeństwo `permissions`.
+  Zapis do `.claude/` był odrzucony → katalogi `claude-hooks/`, `claude-config/`. Zostały `bin/`,`obj/`
+  (gitignore) i pusty `code/team-config/`.
+- Następne: skill do SQL (przegląd planu/indeksów; wymaga `sqlcmd`), Angular (review komponentu na signals).
 
 ### ⚙️ AI — agentic loop / workflow kodowania
 - Omówione elementy: pętla tool-use, różnica komenda/skill/subagent/hook (kto naciska
