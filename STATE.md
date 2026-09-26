@@ -53,7 +53,14 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   `teamcity-configs-maven-plugin:2026.3-dsl6` wymaga JDK 21, maszyna ma JDK 17. Sama
   poprawność `settings.kts` NIE została w pełni potwierdzona kompilacją. Jeśli JDK 21
   będzie dostępne w przyszłości, warto to wydanie zweryfikować retroaktywnie.
-- Następny poziom: templates, dependencies (snapshot/artifact), parametry.
+- Wydanie #3, 2026-09-26: pipeline .NET Build→Test→Pack — `template(...)` z dziedziczeniem i override,
+  parametry (`env.`/`system.`/konfiguracyjne, `%param%`, typ `password`), snapshot vs artifact dependency,
+  artifact rules, trigger na końcu łańcucha, `buildNumberPattern`. **Kompilacja NIEZWERYFIKOWANA** —
+  pobranie JDK 21/Maven do /tmp odrzucone przez środowisko (mvn brak, java 17); składnia z dokumentacji.
+  Do potwierdzenia: `password(label=, display=)`, `sameChainOrLastFinished()`, `requirements`.
+  Zostawiony pusty katalog /tmp/tc-verify (nie dało się usunąć).
+- Następny poziom: (po weryfikacji JDK 21) build features, Composite builds, matrix/`parallelTests`,
+  Kotlin DSL — wersjonowanie w repo, integracja z Docker.
 
 ### 🧪 TUnit
 - Aktualny poziom trudności: **podstawy (opanowane)**

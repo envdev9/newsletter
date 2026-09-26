@@ -16,6 +16,7 @@ Co robi playbook, gdy wdrożenie pada w połowie? `block`/`rescue`/`always` cofa
 → [Artykuł](ansible/ARTICLE.md) · [Kod](ansible/code/)
 
 ### 🏗️ [TeamCity](teamcity/ARTICLE.md)
+Jeden szablon zamiast trzech kopii configu: Build → Test → Pack jako łańcuch zależności snapshot i artifact, z parametrami i override w Kotlin DSL — uczciwie: kompilacji DSL nie udało się zweryfikować (brak JDK 21).
 → [Artykuł](teamcity/ARTICLE.md) · [Kod](teamcity/code/)
 
 ### 🧪 [TUnit](tunit/ARTICLE.md)
