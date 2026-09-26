@@ -36,6 +36,7 @@ Agent zmienia plik `.cs`, a hook `PostToolUse` w tej samej chwili go formatuje i
 → [Artykuł](ai-claude-code/ARTICLE.md) · [Kod](ai-claude-code/code/)
 
 ### ⚙️ [AI — agentic loop](ai-agentic-loop/ARTICLE.md)
+Subagent z odebranym `Edit` i `Bash`, pętla, w której o sukcesie decyduje exit code testów, a nie słowo agenta, i hooki `PreCompact`/`SessionStart` przenoszące listę zadań przez kompaktowanie kontekstu — skrypty zweryfikowane lokalnie, żywa sesja nie.
 → [Artykuł](ai-agentic-loop/ARTICLE.md) · [Kod](ai-agentic-loop/code/)
 
 ### 🧠 [AI — zarządzanie kontekstem](ai-context/ARTICLE.md)

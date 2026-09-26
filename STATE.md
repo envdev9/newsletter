@@ -140,8 +140,13 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   brak gwarancji kolejności; symulator 1.05 s vs 2.10 s), własny skill `changelog-entry`.
   Zweryfikowane: demo 7/7, walidator skilla. Niezweryfikowane (opisane wprost): żywa sesja
   Claude Code, pola payloadu `SubagentStop`, reguły łączenia sprzecznych decyzji.
-- Następne: subagenci w praktyce (własny agent w `.claude/agents/`, izolacja kontekstu,
-  ograniczanie narzędzi), pętla z weryfikacją (headless `claude -p`), hooki `PreCompact`/`SessionStart`.
+- Wydanie #3, 2026-09-26: własny subagent `dotnet-reviewer` (frontmatter, `tools: Read, Grep, Glob`,
+  `description` jako mechanizm delegowania, izolacja kontekstu), pętla z weryfikacją (exit code testów,
+  feedback, limit iteracji), hooki `PreCompact`/`SessionStart` (snapshot zadań i odtworzenie po compact).
+  Zweryfikowane lokalnie w Pythonie: lint agenta, pętla (sukces w 2. iteracji / porażka przy limicie),
+  demo hooków 7/7. Niezweryfikowane: `claude` CLI (`--version` odrzucone), `claude -p`, wybór agenta po
+  `description`, egzekwowanie `tools`, kształt payloadów `PreCompact`/`SessionStart`; rolę agenta gra skrypt.
+- Następne: headless `claude -p` w CI (gdy CLI dostępne), równoległe subagenty i scalanie wyników, `permissionMode`, skille ładowane przez agenta.
 
 ### 🧠 AI — zarządzanie kontekstem
 - Omówione elementy: kolejność warstw kontekstu (system→narzędzia/MCP→pamięć→historia→
