@@ -26,6 +26,7 @@ Najdroższa linijka w testach to start zasobu — ile razy się wykona i kto go 
 → [Artykuł](aspire/ARTICLE.md) · [Kod](aspire/code/)
 
 ### 📨 [Messaging .NET z MassTransit](masstransit/ARTICLE.md)
+Retry ratuje jedną wiadomość, a saga ratuje cały proces — zamówienie jako maszyna stanów (`Initially`/`During`/`Finally`), timeout przez `Schedule`, composite event i pułapka, która cofała zamówienie ze stanu Shipping. Zmierzone na żywo na in-memory.
 → [Artykuł](masstransit/ARTICLE.md) · [Kod](masstransit/code/)
 
 ### 🤖 [AI — Claude Code dla .NET/Angular/SQL](ai-claude-code/ARTICLE.md)

@@ -92,7 +92,12 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   `Fault<T>`, kolejki `_error`/`_skipped` (in-memory je tworzy), delayed redelivery,
   `UseInMemoryOutbox` — zweryfikowane realnym `dotnet run` (MassTransit 8.5.10). Niezweryfikowane:
   zachowanie na prawdziwym brokerze, transakcyjny outbox z bazą.
-- Następny poziom: sagas (state machine), routing (topologia, exchange), przejście na RabbitMQ.
+- Wydanie #3, 2026-09-26: sagi — `MassTransitStateMachine<T>`, `CorrelateById`, `Initially`/`During`/
+  `Ignore`/`Finally`, `SetCompletedWhenFinalized`, `Schedule`/`Unschedule` (timeout), `CompositeEvent`,
+  `Fault<T>` przy evencie w złym stanie; pułapka: handler składnika composite biegnie po przejściu
+  composite → guard. 6 scenariuszy zweryfikowane `dotnet run` (8.5.10, in-memory). Niezweryfikowane:
+  trwałe repozytoria sag (EF/Mongo/Redis), RabbitMQ/ASB scheduler, wyścig płatność vs timeout, kompensacje.
+- Następny poziom: routing (topologia, exchange), przejście na RabbitMQ, trwałe repozytorium sag.
 
 ### 🤖 AI — Claude Code dla .NET/Angular/SQL
 - Omówione przypadki użycia: slash command generujący testy xUnit dla klasy C#, hook
@@ -145,6 +150,7 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   `/dev/shm` z powodu pełnego dysku systemowego, dysk repo nietknięty.
 - Wydanie #2, 2026-09-25: **POMINIĘTE** — na maszynie brak Node/npm (toolchain z /dev/shm
   zniknął, instalacja niedozwolona). Do nadrobienia, gdy Node będzie dostępny.
+- Wydanie #3, 2026-09-26: **POMINIĘTE** — nadal brak Node/npm na maszynie (`node: command not found`).
 - Następny poziom: nowości Angular 19+ poza signals, `linkedSignal`, `resource()`,
   integracja signal store z HTTP.
 
