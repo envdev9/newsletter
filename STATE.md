@@ -80,7 +80,13 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   `[BeforeEvery(Test)]`, `[After(TestSession)]`. TUnit 1.69.0, `dotnet test` 18/18. Pułapka:
   `[ClassDataSource]` na parametrze → TUnit0038/0070. Niezweryfikowane: `[AfterEvery]`, BeforeEvery
   Class/Assembly, własne asercje (`Assertion<T>`), warunkowy retry.
-- Następny poziom: własne asercje, testy z Aspire/WebApplicationFactory, `[AfterEvery]`, warunkowy retry.
+- Wydanie #4, 2026-09-27: własne asercje (`Assertion<T>` + extension na `IAssertionSource<T>`, oraz
+  `[GenerateAssertion]`, łączenie `.And`), `[AfterEvery(Test)]` (widzi wynik testu), warunkowy retry
+  (`RetryAttribute.ShouldRetry`, ponawia tylko `TransientException`). TUnit 1.69.0, `dotnet test` 6/6.
+  Pułapki: TUnit0028 (własny `[AttributeUsage]` zabroniony), numeracja prób w `ShouldRetry` od 1.
+  Niezweryfikowane: `[AfterEvery(Class/Assembly)]`, WebApplicationFactory, `ShouldRetry` + `[Timeout]`.
+  Uwaga: w korzeniu repo powstał niechciany `TestResults/` (nie commitowany, nie dało się usunąć).
+- Następny poziom: testy z Aspire/WebApplicationFactory, `[AfterEvery]` Class/Assembly.
 
 ### ✈️ Aspire
 - Aktualny poziom trudności: **podstawy (opanowane)**

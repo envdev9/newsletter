@@ -18,6 +18,7 @@ Napisz `(text, out result) => int.TryParse(text, out result)` bez ani jednego ty
 → [Artykuł](teamcity/ARTICLE.md) · [Kod](teamcity/code/)
 
 ### 🧪 [TUnit](tunit/ARTICLE.md)
+Własne asercje na `Assert.That`, hook `[AfterEvery]` i retry, który ponawia tylko błędy przejściowe, a prawdziwe błędy logiki zostawia czerwone — 6/6 zielone na TUnit 1.69.
 → [Artykuł](tunit/ARTICLE.md) · [Kod](tunit/code/)
 
 ### ✈️ [Aspire](aspire/ARTICLE.md)
