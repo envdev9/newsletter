@@ -1,0 +1,1 @@
+Zmigruj nasz projekt z Newtonsoft na System.Text.Json. Ma działać.

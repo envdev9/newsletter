@@ -1,0 +1,20 @@
+# Orders - instrukcje dla Claude Code
+
+## Komendy
+- Build: `dotnet build Orders.sln -warnaserror`
+- Testy: `dotnet test Orders.sln --no-build` (jeden test: `--filter FullyQualifiedName~NazwaKlasy`)
+- Frontend: `npm ci` i `npx ng test --watch=false` w `src/web`
+
+## Reguły (z powodem)
+- Nie edytuj plików w `Migrations/` ręcznie - są generowane, a ręczna edycja rozjeżdża snapshot EF.
+  Nową migrację twórz: `dotnet ef migrations add <Nazwa>`.
+- Nie dodawaj pakietów NuGet bez pytania, ponieważ wersje są przypięte w `Directory.Packages.props`.
+- Zapytania SQL tylko parametryzowane, bo raporty przyjmują dane od użytkownika.
+- Nowy endpoint = nowy test w `tests/Orders.Api.Tests`; nie zmieniaj istniejących testów, żeby "przeszły".
+
+## Architektura (tylko to, czego nie widać w kodzie)
+- `Orders.Domain` nie zna EF ani HTTP; zależności idą tylko w stronę domeny.
+- Kwoty zawsze `decimal`, zaokrąglenie `MidpointRounding.AwayFromZero` w jednym miejscu: `Money.Round`.
+
+## Weryfikacja
+Przed zakończeniem zadania: build bez ostrzeżeń + testy zielone. Nie mówisz "gotowe" bez uruchomienia.

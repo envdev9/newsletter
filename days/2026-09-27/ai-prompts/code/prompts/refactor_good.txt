@@ -1,0 +1,21 @@
+Refaktoryzacja: metoda `CalculateTotal` w `src/Orders/OrderService.cs`, linie 40-118.
+
+Cel: wydzielić reguły rabatowe (kupon, rabat wolumenowy, rabat lojalnościowy) z jednego
+90-liniowego bloku `if/else` do osobnych małych metod prywatnych, żeby dało się dopisać
+czwartą regułę bez dotykania pozostałych. Nie wprowadzaj interfejsów ani wzorców, dopóki
+nie ma drugiej implementacji - same metody wystarczą.
+
+Zachowanie ma pozostać bez zmian, co do grosza (zaokrąglenia i kolejność stosowania rabatów też).
+
+Kroki (małymi porcjami):
+1. NAJPIERW, zanim zmienisz produkcyjny kod: napisz testy charakteryzujące dla obecnego
+   zachowania `CalculateTotal` (min. 8 przypadków: brak rabatu, każdy rabat osobno, wszystkie
+   naraz, kupon wygasły, zamówienie puste, zaokrąglenie .005). Uruchom `dotnet test --filter
+   FullyQualifiedName~OrderServiceTests` - mają być zielone na starym kodzie.
+2. Wydzielaj po jednej regule i po KAŻDYM kroku uruchamiaj ten sam `dotnet test`.
+3. Jeśli test zrobi się czerwony, cofnij ostatni krok, zamiast poprawiać test.
+
+Kryterium: wszystkie testy zielone, publiczna sygnatura `CalculateTotal` bez zmian.
+Nie zmieniaj publicznego API, nie refaktoryzuj innych plików i nie dotykaj `OrderRepository`.
+
+Format odpowiedzi: najpierw lista kroków (jedno zdanie na krok), potem diff dla każdego kroku osobno.

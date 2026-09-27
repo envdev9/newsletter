@@ -214,8 +214,12 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   promptu (3 wersje: lint 0/9→4/9→9/9). `prompt_lint.py` zweryfikowany: 9/9 zgodnych, test negatywny
   (7/9, exit 1), `--strict`. Niezweryfikowane: jakość odpowiedzi modelu — lint to heurystyka regex,
   reguły dobrane pod własne przykłady.
-- Następne: prompty do refaktoryzacji i migracji, prompty z przykładami (few-shot) i formatem wyjścia,
-  system prompt / CLAUDE.md jako trwały prompt, ewaluacja promptów na prawdziwym modelu (gdy dostępny).
+- Wydanie #4, 2026-09-27: prompty do refaktoryzacji (cel strukturalny, „zachowanie bez zmian", testy charakteryzujące),
+  migracji Newtonsoft → System.Text.Json (inwentarz→plan→zmiany, „zatrzymaj się i zapytaj"), few-shot ze schematem i formatem
+  wyjścia, CLAUDE.md jako trwały prompt. `prompt_lint2.py`: 8/8, test negatywny 6/7 (exit 1), `--strict`; golden-master (.NET 10)
+  672 przypadki/0 różnic, mutant 37 różnic. Niezweryfikowane: jakość odpowiedzi modelu (żaden model nie uruchamiany), reguły
+  lintu to regexy dobrane pod własne przykłady, próg 60 linii umowny.
+- Następne: ewaluacja promptów na prawdziwym modelu (gdy dostępny), prompty do generowania testów i dokumentacji, łańcuchy promptów.
 
 ### 🅰️ Angular
 - Aktualny poziom trudności: **podstawy (opanowane)**

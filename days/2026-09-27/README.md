@@ -44,6 +44,7 @@ Stały koszt kontekstu: `CLAUDE.md` przycięty z 1242 do 304 tokenów i jeden ga
 → [Artykuł](ai-context/ARTICLE.md) · [Kod](ai-context/code/)
 
 ### ✍️ [AI — prompty dla developera](ai-prompts/ARTICLE.md)
+Jak prosić o refaktoryzację i migrację (Newtonsoft → System.Text.Json) tak, by nic się po cichu nie zmieniło: testy charakteryzujące, few-shot z walidowanym schematem i CLAUDE.md jako trwały prompt — lint 8/8, golden master 0 vs 37 różnic; jakość odpowiedzi modelu niezweryfikowana.
 → [Artykuł](ai-prompts/ARTICLE.md) · [Kod](ai-prompts/code/)
 
 ### 🅰️ [Angular](angular/ARTICLE.md)

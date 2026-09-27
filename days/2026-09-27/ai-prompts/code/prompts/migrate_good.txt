@@ -1,0 +1,20 @@
+Migracja: z Newtonsoft.Json na System.Text.Json w projekcie `src/Orders.Api/Orders.Api.csproj`
+(pozostałe projekty w solution na razie zostają na Newtonsoft).
+
+ETAP 1 - tylko inwentarz, NIE zaczynaj zmieniać kodu. Przeszukaj projekt (grep po `Newtonsoft`,
+`JsonConvert`, `JObject`, `[JsonProperty]`, `JsonSerializerSettings`) i zwróć tabelę:
+`plik:linia | użycie | odpowiednik w System.Text.Json | ryzyko (niskie/średnie/wysokie)`.
+
+ETAP 2 - plan. Zanim cokolwiek zmienisz, wypisz różnice zachowania, które mogą zmienić kontrakt
+JSON: nazewnictwo właściwości (camelCase vs PascalCase), enumy jako stringi, obsługa `null`
+i brakujących pól, formaty `DateTime`/`DateTimeOffset`, `JObject`/`dynamic` (brak 1:1), liczby
+w cudzysłowie. Dla każdej podaj, jak to sprawdzimy (test kontraktowy na zapisanych odpowiedziach).
+
+ETAP 3 - zmiany, dopiero po mojej akceptacji planu, jeden PR-size krok na raz.
+Kryterium: `dotnet test` zielony oraz zapisane próbki odpowiedzi z `tests/contracts/*.json`
+serializują się bajt w bajt tak samo jak przed migracją.
+
+Jeśli trafisz na użycie, które nie ma prostego odpowiednika (np. `JObject`), zatrzymaj się
+i zapytaj, zamiast zgadywać. Nie zmieniaj wersji .NET ani innych pakietów, nie ruszaj `Orders.Worker`.
+
+Format: tabela w etapie 1, numerowana lista w etapie 2, diff per krok w etapie 3.

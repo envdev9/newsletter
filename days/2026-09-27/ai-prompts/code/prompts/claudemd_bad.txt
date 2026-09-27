@@ -1,0 +1,10 @@
+# Projekt
+
+Pisz czysty kod i stosuj best practices. Pamiętaj o SOLID i DRY. Kod ma być wydajny, bezpieczny,
+czytelny i dobrze przetestowany. Zawsze myśl zanim napiszesz kod. Bądź ostrożny i dokładny.
+Używaj nowoczesnych rozwiązań. Jeśli nie jesteś pewien, zapytaj.
+
+Projekt to aplikacja do zamówień napisana w .NET z frontendem w Angularze i bazą SQL Server.
+Firma została założona w 2014 roku i zajmuje się logistyką. Nasz zespół składa się z ośmiu osób,
+a szef nazywa się Kowalski. Historia projektu zaczyna się od aplikacji desktopowej, potem
+przepisaliśmy ją na web, potem na mikroserwisy, a potem połączyliśmy z powrotem w monolit.

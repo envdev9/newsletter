@@ -1,0 +1,13 @@
+Zamień komentarze z code review na JSON. Na przykład:
+
+<example>
+<input>order-list.ts:42 - subscribe bez unsubscribe, wyciek przy nawigacji</input>
+<output>{"File": "order-list.ts", "Line": 42, "Severity": "high", "Text": "wyciek subskrypcji"}</output>
+</example>
+
+<example>
+<input>zła nazwa zmiennej x</input>
+<output>Nazwa zmiennej jest niejasna, to drobiazg.</output>
+</example>
+
+Teraz zrób to samo dla poniższych komentarzy.

@@ -1,0 +1,1 @@
+Zrefaktoryzuj OrderService, żeby był czystszy i lepszy. Użyj dobrych praktyk i wzorców projektowych.
