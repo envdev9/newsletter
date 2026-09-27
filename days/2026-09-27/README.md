@@ -36,6 +36,7 @@ Skill `sql-plan-review`: Claude czyta plan wykonania i pliki `.sql`, wyłapuje b
 → [Artykuł](ai-claude-code/ARTICLE.md) · [Kod](ai-claude-code/code/)
 
 ### ⚙️ [AI — agentic loop](ai-agentic-loop/ARTICLE.md)
+Wachlarz równoległych subagentów ze scalaniem wyników, pułapka uprawnień (`dotnet test && git push` przechodzi przez `dotnet test*`) i bramka CI wokół `claude -p` — 19/19 lokalnych testów, ale samo `claude` niezweryfikowane.
 → [Artykuł](ai-agentic-loop/ARTICLE.md) · [Kod](ai-agentic-loop/code/)
 
 ### 🧠 [AI — zarządzanie kontekstem](ai-context/ARTICLE.md)

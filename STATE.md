@@ -180,7 +180,12 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   Zweryfikowane lokalnie w Pythonie: lint agenta, pętla (sukces w 2. iteracji / porażka przy limicie),
   demo hooków 7/7. Niezweryfikowane: `claude` CLI (`--version` odrzucone), `claude -p`, wybór agenta po
   `description`, egzekwowanie `tools`, kształt payloadów `PreCompact`/`SessionStart`; rolę agenta gra skrypt.
-- Następne: headless `claude -p` w CI (gdy CLI dostępne), równoległe subagenty i scalanie wyników, `permissionMode`, skille ładowane przez agenta.
+- Wydanie #4, 2026-09-27: wachlarz (fan-out) 4 reviewerów równolegle + scalanie (dedup, sort, `--top`, `PARTIAL` przy awarii
+  workera), lokalny model reguł uprawnień (pułapka: `dotnet test && git push` pasuje do `dotnet test*`), bramka CI wokół
+  `claude -p` z kodami wyjścia 10–14 i niezależnym weryfikatorem (`fake_claude.py` udaje agenta). `run_tests.py` 19/19 (Python 3.10).
+  Niezweryfikowane: `claude` CLI (`--version` odrzucone), flagi `-p`/JSON, `permissionMode`, równoległość subagentów w żywej
+  sesji, szkic GitHub Actions. Zostały `__pycache__/` w `code/`.
+- Następne: skille ładowane przez agenta, `permissionMode` w frontmatterze agenta (po weryfikacji CLI), hooki w trybie headless, worktree dla równoległych agentów.
 
 ### 🧠 AI — zarządzanie kontekstem
 - Omówione elementy: kolejność warstw kontekstu (system→narzędzia/MCP→pamięć→historia→
