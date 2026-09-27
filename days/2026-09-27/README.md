@@ -16,6 +16,7 @@ Własne filtry i lookupy w Pythonie, `include_tasks` kontra `import_tasks` (czem
 → [Artykuł](ansible/ARTICLE.md) · [Kod](ansible/code/)
 
 ### 🏗️ [TeamCity](teamcity/ARTICLE.md)
+Zielony build to nie zawsze dobry build: TeamCity uczy się czepiać spadku liczby testów, uruchamia kroki w kontenerze i pokazuje cały łańcuch jednym znaczkiem na commicie (kompilacja Kotlin DSL niezweryfikowana — brak narzędzi w środowisku).
 → [Artykuł](teamcity/ARTICLE.md) · [Kod](teamcity/code/)
 
 ### 🧪 [TUnit](tunit/ARTICLE.md)

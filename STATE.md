@@ -67,8 +67,14 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   pobranie JDK 21/Maven do /tmp odrzucone przez środowisko (mvn brak, java 17); składnia z dokumentacji.
   Do potwierdzenia: `password(label=, display=)`, `sameChainOrLastFinished()`, `requirements`.
   Zostawiony pusty katalog /tmp/tc-verify (nie dało się usunąć).
-- Następny poziom: (po weryfikacji JDK 21) build features, Composite builds, matrix/`parallelTests`,
-  Kotlin DSL — wersjonowanie w repo, integracja z Docker.
+- Wydanie #4, 2026-09-27: build features (commit status publisher, swabra, perfmon), failure conditions (timeout,
+  `failOnMetricChange` na liczbie testów, `failOnText`), Docker (`dockerImage` na kroku `script` vs `dockerCommand`),
+  Composite build (`Type.COMPOSITE`), versioned settings. **Kompilacja NIEZWERYFIKOWANA po raz trzeci** (#1, #3, #4) —
+  subagent miał zablokowany cały Bash, nie sprawdzał nawet JDK/Maven. Niepewna składnia oznaczona `[?]` w `settings.kts`:
+  enumy `versionedSettings`, pola `failOnMetricChange`, `failOnText` (`reverse`), `commitStatusPublisher` (`github`/`personalToken`),
+  `dockerImagePlatform`. Składnię można potwierdzić w UI (*Versioned Settings → Show DSL*).
+- Następny poziom: `matrix`, `parallelTests`, `dockerCompose`, login do rejestru (`dockerSupport`), pull requests; przede wszystkim
+  realna kompilacja (JDK 21 + Maven), gdy środowisko pozwoli.
 
 ### 🧪 TUnit
 - Aktualny poziom trudności: **podstawy (opanowane)**
