@@ -39,6 +39,7 @@ Napisz `(text, out result) => int.TryParse(text, out result)` bez ani jednego ty
 → [Artykuł](ai-prompts/ARTICLE.md) · [Kod](ai-prompts/code/)
 
 ### 🅰️ [Angular](angular/ARTICLE.md)
+Router sam wkłada parametry z URL-a i dane z resolvera do `input()`-ów komponentu, a `@defer` odracza ładowanie kodu komentarzy do momentu, gdy adres zawiera `?tab=comments` — build, 6/6 testów; bez `ng serve`.
 → [Artykuł](angular/ARTICLE.md) · [Kod](angular/code/)
 
 ### 🗄️ [SQL Server](sqlserver/ARTICLE.md)

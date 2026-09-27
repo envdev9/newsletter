@@ -193,8 +193,12 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   rxjs 7.8.2. Zweryfikowane: `npm ci`, `ng build`, `ng test` 8/8 (Vitest+jsdom). Pułapka: `npm install`
   bez lockfile'a padł → `--legacy-peer-deps`. Niezweryfikowane: `ng serve`, `resource()` z własnym loaderem,
   `tapResponse`. W `code/` zostały `node_modules/`, `dist/`, `.angular/` (w .gitignore).
-- Następny poziom: formularze na signals (Signal Forms), `@defer`/SSR/hydration, router (resolvers,
-  `withComponentInputBinding`), testy komponentów, `resource()` z własnym loaderem, `tapResponse`.
+- Wydanie #4, 2026-09-27: `withComponentInputBinding` (param ścieżki, query param i dane resolvera → `input()`),
+  `ResolveFn` z `RedirectCommand` na `/not-found`, `@defer (when …)` sterowany `?tab=comments` + `@loading`/`@error`.
+  Zweryfikowane: `npm ci`, `ng build` (osobny chunk komentarzy), `ng test` 6/6 (`RouterTestingHarness`). Pułapka:
+  literalne `@defer` w szablonie → NG5002 (użyć `&#64;`). Niezweryfikowane: `ng serve`/przeglądarka, `DeferBlockFixture`
+  (test czeka 300 ms — kruchy), inne wyzwalacze `@defer`.
+- Następny poziom: formularze na signals (Signal Forms), SSR/hydration, `resource()` z własnym loaderem, `tapResponse`.
 
 ### 🗄️ SQL Server
 - Aktualny poziom trudności: **podstawy (kod gotowy, niezweryfikowany)**
