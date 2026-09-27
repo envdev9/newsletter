@@ -266,7 +266,14 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   cały `run-demo.sh`, `06-cleanup.sql`, wymuszony plan po zniknięciu indeksu, Query Store hints. PSP
   optimization nie zadziałało w tym scenariuszu (przyczyny nie zbadane). Krok 0 (weryfikacja #1) nadal
   pominięty — uruchomienie `run-demo.sh` odrzucone przez uprawnienia.
-- Następny poziom: columnstore, deadlocki/blokady, Query Store hints, PSP optimization.
+- Wydanie #4, 2026-09-27: deadlock (dwie sesje, błąd 1205, graf z `system_health`, naprawa spójną kolejnością blokad `UPDLOCK`),
+  blokowanie czytelnika vs `READ_COMMITTED_SNAPSHOT` (4 762 ms vs 0 ms), columnstore vs rowstore na 5 mln wierszy (33,6 vs 189,1 MB;
+  agregacja 27 ms vs 892 ms, batch mode, eliminacja segmentów po sortowaniu: skipped 4). SQL Server 2022 RTM-CU27, skrypty 01–09
+  zweryfikowane ręcznym `docker exec sqlcmd`. Pułapki: `.xel` z opóźnieniem (ring_buffer szybciej), XML w sqlcmd wymaga `-I`,
+  `ROLLBACK IMMEDIATE` zabija pisarza, `INSERT…ORDER BY` nie sortuje rowgroupów. Niezweryfikowane: cały `run-demo.sh`, `10-cleanup.sql`,
+  nonclustered columnstore, UPDATE/DELETE w columnstore, szkic C# dla 1205, wyniki bez MAXDOP 1. Krok 0 (weryfikacja #1) nadal
+  pominięty — `run-demo.sh` odrzucone przez uprawnienia (Docker i miejsce OK).
+- Następny poziom: Query Store hints, PSP optimization, nonclustered columnstore na OLTP (delta store, `REORGANIZE`), `SERIALIZABLE`/`sp_getapplock`.
 
 ### 🧬 PostgreSQL — baza wektorowa (pgvector)
 - Aktualny poziom trudności: **podstawy (opanowane)**

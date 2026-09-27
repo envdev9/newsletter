@@ -52,6 +52,7 @@ Router sam wkłada parametry z URL-a i dane z resolvera do `input()`-ów kompone
 → [Artykuł](angular/ARTICLE.md) · [Kod](angular/code/)
 
 ### 🗄️ [SQL Server](sqlserver/ARTICLE.md)
+Deadlock wywołany na żywo i odczytany z `system_health`, czytelnik czekający 4,7 s kontra 0 ms po `READ_COMMITTED_SNAPSHOT` oraz columnstore na 5 mln wierszy: agregacja w 27 ms zamiast 892 ms — prawdziwy output z SQL Server 2022.
 → [Artykuł](sqlserver/ARTICLE.md) · [Kod](sqlserver/code/)
 
 ### 🧬 [PostgreSQL jako baza wektorowa](postgres-vector/ARTICLE.md)
