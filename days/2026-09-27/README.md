@@ -22,6 +22,7 @@ Własne asercje na `Assert.That`, hook `[AfterEvery]` i retry, który ponawia ty
 → [Artykuł](tunit/ARTICLE.md) · [Kod](tunit/code/)
 
 ### ✈️ [Aspire](aspire/ARTICLE.md)
+Skąd proces dostaje sekrety w Aspire i dlaczego `AddParameter("x", "wartość")` po cichu ignoruje konfigurację? Parametry, `WithEnvironment` i `AddExecutable` — zweryfikowane testem AppHosta (bez kontenerów).
 → [Artykuł](aspire/ARTICLE.md) · [Kod](aspire/code/)
 
 ### 📨 [Messaging .NET z MassTransit](masstransit/ARTICLE.md)

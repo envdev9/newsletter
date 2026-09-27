@@ -100,8 +100,13 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   własny ActivitySource/Meter. Aspire 13.5.2. Zweryfikowane bez curl: `Store.Verify`
   (`DistributedApplicationTestingBuilder` + HttpClient), 10× PASS. Niezweryfikowane: dashboard,
   realny eksport OTLP, retry/circuit breaker przy awarii, wildcard `Store.*` w AddSource/AddMeter.
-- Następny poziom: integracje z zewnętrznymi zasobami (Postgres/Redis, gdy Docker ma miejsce),
-  parametry/sekrety, WithEnvironment, testy AppHosta w TUnit.
+- Wydanie #4, 2026-09-27: `AddParameter` (z konfiguracji / `secret: true` / wartość stała ignorująca konfigurację),
+  przeciążenia `WithEnvironment` (literał, parametr, `ReferenceExpression`, callback z `IsRunMode`), `AddExecutable`
+  + logi przez `ResourceLoggerService`, brak sekretu → `FailedToStart`, test AppHosta z argumentami `Parameters:...`.
+  Aspire 13.5.2, `Config.Verify` → WSZYSTKO OK. Niezweryfikowane: kontenery (Postgres/Redis — brak pobranych obrazów,
+  nie pobierano), dashboard/maskowanie sekretów, user-secrets, `publish`; `appsettings.json` AppHosta jako źródło
+  `Parameters:*` w teście nie zadziałał (nie zbadano).
+- Następny poziom: integracje z kontenerami (Postgres/Redis, gdy Docker ma obrazy/miejsce), user-secrets, testy AppHosta w TUnit.
 
 ### 📨 Messaging .NET (MassTransit)
 - Aktualny poziom trudności: **podstawy (opanowane)**
