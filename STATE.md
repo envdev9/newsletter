@@ -20,7 +20,9 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   - [x] Null-conditional assignment (`a?.b = x`, `a?.b += x`; `?.` z `++` nie kompiluje się, CS1059) — wydanie #2, 2026-09-25
   - [x] `Enumerable.LeftJoin`/`RightJoin` (LINQ, .NET 10) — wydanie #3, 2026-09-26
   - [x] Partial constructors/events (C# 14; event z `add`/`remove` nie jest field-like → CS0079 przy `?.Invoke`) — wydanie #3, 2026-09-26. Zweryfikowane `dotnet run`; niezweryfikowane: LeftJoin w EF Core, prawdziwy source generator.
-  - Zostało w .NET 10 m.in.: lambda modifiers bez typów, `Span` conversions, inne nowości → potem .NET 11.
+  - [x] Modyfikatory parametrów lambdy bez typów (`(text, out r) => ...`; `params` nadal wymaga typu, CS9272) — wydanie #4, 2026-09-27
+  - [x] First-class Span (niejawne `T[]`/`string` → `ReadOnlySpan<T>`, extension methods na spanach) — wydanie #4, 2026-09-27. Zweryfikowane SDK 10.0.400; niezweryfikowane: inne metody `MemoryExtensions`, starsze TFM, `var f = (x, out y) => ...`.
+  - Zostało: inne nowości .NET 10 (np. runtime/BCL) → potem .NET 11.
 - Gdy funkcje .NET 10 się wyczerpią → .NET 11 → (dalsze nowości) → schodzimy w dół:
   9 → 8 → 7 → 6, potem wracamy do najnowszej dostępnej wersji.
 
