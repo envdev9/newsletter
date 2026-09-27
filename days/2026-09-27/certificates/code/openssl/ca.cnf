@@ -1,0 +1,83 @@
+# SZABLON konfiguracji dla `openssl ca` (wydanie #4: odwolania, OCSP, pinning).
+# Znacznik @PKI@ jest podmieniany przez setup-pki.sh na katalog wyjsciowy.
+# Certyfikaty koncowe niosa adresy CDP (CRL) i AIA (OCSP) na localhost.
+
+[ca_root]
+database         = @PKI@/root/index.txt
+new_certs_dir    = @PKI@/root/newcerts
+serial           = @PKI@/root/serial
+crlnumber        = @PKI@/root/crlnumber
+private_key      = @PKI@/root/ca.key
+certificate      = @PKI@/root/ca.pem
+default_md       = sha256
+default_days     = 365
+default_crl_days = 30
+policy           = policy_any
+unique_subject   = no
+copy_extensions  = none
+
+[ca_inter]
+database         = @PKI@/inter/index.txt
+new_certs_dir    = @PKI@/inter/newcerts
+serial           = @PKI@/inter/serial
+crlnumber        = @PKI@/inter/crlnumber
+private_key      = @PKI@/inter/ca.key
+certificate      = @PKI@/inter/ca.pem
+default_md       = sha256
+default_days     = 365
+default_crl_days = 30
+policy           = policy_any
+unique_subject   = no
+copy_extensions  = none
+
+[policy_any]
+countryName      = optional
+organizationName = optional
+commonName       = supplied
+
+[req]
+distinguished_name = req_dn
+prompt             = no
+
+[req_dn]
+
+[ext_root]
+basicConstraints     = critical,CA:TRUE
+keyUsage             = critical,keyCertSign,cRLSign
+subjectKeyIdentifier = hash
+
+# Intermediate: ma wlasne CDP (CRL roota) - potrzebne, gdy sprawdzamy CALY lancuch
+[ext_intermediate]
+basicConstraints       = critical,CA:TRUE,pathlen:0
+keyUsage               = critical,keyCertSign,cRLSign
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid
+
+# Serwer z CDP + AIA(OCSP)
+[ext_server]
+basicConstraints       = critical,CA:FALSE
+keyUsage               = critical,digitalSignature
+extendedKeyUsage       = serverAuth
+subjectAltName         = DNS:localhost,IP:127.0.0.1
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid
+crlDistributionPoints  = URI:http://127.0.0.1:18480/inter.crl
+authorityInfoAccess    = OCSP;URI:http://127.0.0.1:18481
+
+# Serwer z CDP wskazujacym na martwy port (nikt tam nie slucha)
+[ext_server_deadcdp]
+basicConstraints       = critical,CA:FALSE
+keyUsage               = critical,digitalSignature
+extendedKeyUsage       = serverAuth
+subjectAltName         = DNS:localhost,IP:127.0.0.1
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid
+crlDistributionPoints  = URI:http://127.0.0.1:18499/nigdzie.crl
+
+# Certyfikat respondera OCSP (delegowany, EKU OCSPSigning)
+[ext_ocsp]
+basicConstraints       = critical,CA:FALSE
+keyUsage               = critical,digitalSignature
+extendedKeyUsage       = OCSPSigning
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid

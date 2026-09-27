@@ -1,0 +1,11 @@
+# Klucze/certyfikaty demo generujemy poza repo (domyslnie /tmp/prasowka-rev-pki).
+*.key
+*.pem
+*.csr
+*.crl
+*.pfx
+pki/
+bin/
+obj/
+__pycache__/
+work/

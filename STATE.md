@@ -292,5 +292,12 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   `RevocationMode.NoCheck` przepuszcza odwołany cert; brak SAN przechodzi dla `localhost` (fallback do CN).
   Niezweryfikowane: cały `generate-mtls-pki.sh` jako skrypt (uruchomienie odrzucone; komendy ręcznie),
   OCSP/stapling, włączone sprawdzanie CRL w .NET, przeglądarki/AIA, Windows/PFX, nieznany status `PartialChain` w scenariuszu B.
-- Następny poziom: OCSP/stapling, revocation w .NET (CRL/CDP), magazyn certyfikatów (`X509Store`),
-  ACME/Let's Encrypt, rotacja certyfikatów, certificate pinning, TLS 1.3 na poziomie protokołu.
+- Wydanie #4, 2026-09-27: revocation w .NET (macierz `NoCheck`/`Offline`/`Online` × zdrowy/odwołany/martwy CDP, lokalny serwer CRL),
+  OCSP (`openssl ocsp` responder), stapling (`s_server -status_file`), TLS 1.3 (`-trace`, negatyw `-tls1_2`), własny `X509Store`
+  (`CurrentUser\PrasowkaDemo`), rotacja w Kestrelu bez restartu (`ServerCertificateSelector`), pinning SPKI (5 scenariuszy).
+  .NET 10.0.400, OpenSSL 3.0.2. Pułapki: `Offline` czyta tylko cache (pusty → `RevocationStatusUnknown`, `Build=false`); martwy CDP
+  ≠ „dobry"; .NET/Linux użył CRL, nie OCSP; przeterminowany CRL przepuszczony przez .NET (openssl odrzuca); klucz z
+  `CreateFromPemFile` efemeryczny (do magazynu przez PFX + `PersistKeySet`); pin SPKI nie przeżywa zmiany klucza → pin zapasowy.
+  Niezweryfikowane: `setup-pki.sh` jako całość (odrzucone; komendy ręcznie), OCSP inicjowany przez .NET, stapling w Kestrelu,
+  `SslStream` z revocation, Windows/macOS, Must-Staple, ACME; niewyjaśnione: przeterminowany CRL w .NET, `Response Verify Failure`.
+- Następny poziom: ACME/Let's Encrypt, Must-Staple, revocation w `SslStream`/Kestrelu, Windows/macOS store, CT logs, DANE/CAA.

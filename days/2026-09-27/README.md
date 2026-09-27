@@ -54,6 +54,7 @@ Router sam wkłada parametry z URL-a i dane z resolvera do `input()`-ów kompone
 → [Artykuł](postgres-vector/ARTICLE.md) · [Kod](postgres-vector/code/)
 
 ### 🔐 [Certyfikaty i TLS (X.509)](certificates/ARTICLE.md)
+Odwołany certyfikat nadal działa? Mierzymy CRL/OCSP w .NET, stapling i handshake TLS 1.3 na bajtach, rotację certu w Kestrelu bez restartu i pinning SPKI — z prawdziwym outputem.
 → [Artykuł](certificates/ARTICLE.md) · [Kod](certificates/code/)
 
 ---
