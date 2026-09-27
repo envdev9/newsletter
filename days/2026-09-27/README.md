@@ -40,6 +40,7 @@ Wachlarz równoległych subagentów ze scalaniem wyników, pułapka uprawnień (
 → [Artykuł](ai-agentic-loop/ARTICLE.md) · [Kod](ai-agentic-loop/code/)
 
 ### 🧠 [AI — zarządzanie kontekstem](ai-context/ARTICLE.md)
+Stały koszt kontekstu: `CLAUDE.md` przycięty z 1242 do 304 tokenów i jeden gadatliwy serwer MCP, który zjada 86% definicji narzędzi — audyt `ctxaudit.py` 13/13, ale na danych syntetycznych (odczyt prawdziwego transkryptu odrzucony).
 → [Artykuł](ai-context/ARTICLE.md) · [Kod](ai-context/code/)
 
 ### ✍️ [AI — prompty dla developera](ai-prompts/ARTICLE.md)

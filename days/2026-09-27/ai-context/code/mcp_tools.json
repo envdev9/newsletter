@@ -1,0 +1,377 @@
+{
+ "_note": "SYNTETYCZNE definicje (gen_mcp_fixture.py) - nie zrzut prawdziwego serwera MCP",
+ "servers": {
+  "tracker": {
+   "tools": [
+    {
+     "name": "tracker_list_issues",
+     "description": "Use this tool when you need to work with the tracker. Make sure to provide all required parameters. This tool returns JSON. If the request fails, inspect the error message and retry with corrected parameters. Action: list issues. The result contains all fields returned by the upstream API, including nested objects, so it can be large. Prefer narrow filters. Rate limits apply.",
+     "inputSchema": {
+      "type": "object",
+      "properties": {
+       "owner": {
+        "type": "string",
+        "description": "The account or organization that owns the repository, for example a user name."
+       },
+       "repo": {
+        "type": "string",
+        "description": "The name of the repository, without the owner prefix and without any URL parts."
+       },
+       "state": {
+        "type": "string",
+        "enum": [
+         "open",
+         "closed",
+         "all"
+        ],
+        "description": "Filter by state."
+       },
+       "labels": {
+        "type": "string",
+        "description": "Comma separated label names."
+       },
+       "page": {
+        "type": "integer"
+       },
+       "per_page": {
+        "type": "integer"
+       },
+       "sort": {
+        "type": "string"
+       },
+       "direction": {
+        "type": "string"
+       },
+       "since": {
+        "type": "string"
+       },
+       "assignee": {
+        "type": "string"
+       },
+       "creator": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "owner",
+       "repo"
+      ]
+     }
+    },
+    {
+     "name": "tracker_get_issue",
+     "description": "Use this tool when you need to work with the tracker. Make sure to provide all required parameters. This tool returns JSON. If the request fails, inspect the error message and retry with corrected parameters. Action: get issue. The result contains all fields returned by the upstream API, including nested objects, so it can be large. Prefer narrow filters. Rate limits apply.",
+     "inputSchema": {
+      "type": "object",
+      "properties": {
+       "owner": {
+        "type": "string",
+        "description": "The account or organization that owns the repository, for example a user name."
+       },
+       "repo": {
+        "type": "string",
+        "description": "The name of the repository, without the owner prefix and without any URL parts."
+       },
+       "number": {
+        "type": "integer",
+        "description": "Issue number."
+       }
+      },
+      "required": [
+       "owner",
+       "repo"
+      ]
+     }
+    },
+    {
+     "name": "tracker_create_issue",
+     "description": "Use this tool when you need to work with the tracker. Make sure to provide all required parameters. This tool returns JSON. If the request fails, inspect the error message and retry with corrected parameters. Action: create issue. The result contains all fields returned by the upstream API, including nested objects, so it can be large. Prefer narrow filters. Rate limits apply.",
+     "inputSchema": {
+      "type": "object",
+      "properties": {
+       "owner": {
+        "type": "string",
+        "description": "The account or organization that owns the repository, for example a user name."
+       },
+       "repo": {
+        "type": "string",
+        "description": "The name of the repository, without the owner prefix and without any URL parts."
+       },
+       "title": {
+        "type": "string",
+        "description": "Issue title."
+       },
+       "body": {
+        "type": "string",
+        "description": "Issue body in Markdown."
+       },
+       "assignees": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "labels": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       }
+      },
+      "required": [
+       "owner",
+       "repo"
+      ]
+     }
+    },
+    {
+     "name": "tracker_update_issue",
+     "description": "Use this tool when you need to work with the tracker. Make sure to provide all required parameters. This tool returns JSON. If the request fails, inspect the error message and retry with corrected parameters. Action: update issue. The result contains all fields returned by the upstream API, including nested objects, so it can be large. Prefer narrow filters. Rate limits apply.",
+     "inputSchema": {
+      "type": "object",
+      "properties": {
+       "owner": {
+        "type": "string",
+        "description": "The account or organization that owns the repository, for example a user name."
+       },
+       "repo": {
+        "type": "string",
+        "description": "The name of the repository, without the owner prefix and without any URL parts."
+       },
+       "number": {
+        "type": "integer",
+        "description": "Issue number."
+       },
+       "title": {
+        "type": "string"
+       },
+       "body": {
+        "type": "string"
+       },
+       "state": {
+        "type": "string",
+        "enum": [
+         "open",
+         "closed"
+        ]
+       }
+      },
+      "required": [
+       "owner",
+       "repo"
+      ]
+     }
+    },
+    {
+     "name": "tracker_add_comment",
+     "description": "Use this tool when you need to work with the tracker. Make sure to provide all required parameters. This tool returns JSON. If the request fails, inspect the error message and retry with corrected parameters. Action: add comment. The result contains all fields returned by the upstream API, including nested objects, so it can be large. Prefer narrow filters. Rate limits apply.",
+     "inputSchema": {
+      "type": "object",
+      "properties": {
+       "owner": {
+        "type": "string",
+        "description": "The account or organization that owns the repository, for example a user name."
+       },
+       "repo": {
+        "type": "string",
+        "description": "The name of the repository, without the owner prefix and without any URL parts."
+       },
+       "number": {
+        "type": "integer",
+        "description": "Issue number."
+       },
+       "body": {
+        "type": "string",
+        "description": "Comment in Markdown."
+       }
+      },
+      "required": [
+       "owner",
+       "repo"
+      ]
+     }
+    },
+    {
+     "name": "tracker_list_pull_requests",
+     "description": "Use this tool when you need to work with the tracker. Make sure to provide all required parameters. This tool returns JSON. If the request fails, inspect the error message and retry with corrected parameters. Action: list pull requests. The result contains all fields returned by the upstream API, including nested objects, so it can be large. Prefer narrow filters. Rate limits apply.",
+     "inputSchema": {
+      "type": "object",
+      "properties": {
+       "owner": {
+        "type": "string",
+        "description": "The account or organization that owns the repository, for example a user name."
+       },
+       "repo": {
+        "type": "string",
+        "description": "The name of the repository, without the owner prefix and without any URL parts."
+       },
+       "state": {
+        "type": "string",
+        "enum": [
+         "open",
+         "closed",
+         "all"
+        ]
+       },
+       "head": {
+        "type": "string"
+       },
+       "base": {
+        "type": "string"
+       },
+       "page": {
+        "type": "integer"
+       }
+      },
+      "required": [
+       "owner",
+       "repo"
+      ]
+     }
+    },
+    {
+     "name": "tracker_get_pull_request_diff",
+     "description": "Use this tool when you need to work with the tracker. Make sure to provide all required parameters. This tool returns JSON. If the request fails, inspect the error message and retry with corrected parameters. Action: get pull request diff. The result contains all fields returned by the upstream API, including nested objects, so it can be large. Prefer narrow filters. Rate limits apply.",
+     "inputSchema": {
+      "type": "object",
+      "properties": {
+       "owner": {
+        "type": "string",
+        "description": "The account or organization that owns the repository, for example a user name."
+       },
+       "repo": {
+        "type": "string",
+        "description": "The name of the repository, without the owner prefix and without any URL parts."
+       },
+       "number": {
+        "type": "integer",
+        "description": "Pull request number."
+       }
+      },
+      "required": [
+       "owner",
+       "repo"
+      ]
+     }
+    },
+    {
+     "name": "tracker_search_code",
+     "description": "Use this tool when you need to work with the tracker. Make sure to provide all required parameters. This tool returns JSON. If the request fails, inspect the error message and retry with corrected parameters. Action: search code. The result contains all fields returned by the upstream API, including nested objects, so it can be large. Prefer narrow filters. Rate limits apply.",
+     "inputSchema": {
+      "type": "object",
+      "properties": {
+       "owner": {
+        "type": "string",
+        "description": "The account or organization that owns the repository, for example a user name."
+       },
+       "repo": {
+        "type": "string",
+        "description": "The name of the repository, without the owner prefix and without any URL parts."
+       },
+       "query": {
+        "type": "string",
+        "description": "Search query using the code search syntax."
+       }
+      },
+      "required": [
+       "owner",
+       "repo"
+      ]
+     }
+    }
+   ]
+  },
+  "db": {
+   "tools": [
+    {
+     "name": "db_query",
+     "description": "Run a read-only SQL query; returns up to `limit` rows as JSON.",
+     "inputSchema": {
+      "type": "object",
+      "properties": {
+       "sql": {
+        "type": "string",
+        "description": "SELECT statement."
+       },
+       "limit": {
+        "type": "integer",
+        "description": "Max rows (default 50)."
+       }
+      },
+      "required": [
+       "sql"
+      ]
+     }
+    },
+    {
+     "name": "db_describe",
+     "description": "Columns and types of one table.",
+     "inputSchema": {
+      "type": "object",
+      "properties": {
+       "table": {
+        "type": "string",
+        "description": "Table name, optionally schema-qualified."
+       }
+      },
+      "required": [
+       "table"
+      ]
+     }
+    },
+    {
+     "name": "db_explain",
+     "description": "Estimated execution plan (no execution).",
+     "inputSchema": {
+      "type": "object",
+      "properties": {
+       "sql": {
+        "type": "string",
+        "description": "SELECT statement."
+       }
+      },
+      "required": [
+       "sql"
+      ]
+     }
+    }
+   ]
+  },
+  "docs": {
+   "tools": [
+    {
+     "name": "docs_search",
+     "description": "Full-text search over the internal docs; returns titles and ids only.",
+     "inputSchema": {
+      "type": "object",
+      "properties": {
+       "query": {
+        "type": "string",
+        "description": "Search terms."
+       }
+      },
+      "required": [
+       "query"
+      ]
+     }
+    },
+    {
+     "name": "docs_get",
+     "description": "Fetch one document by id (Markdown).",
+     "inputSchema": {
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": "string",
+        "description": "Document id from docs_search."
+       }
+      },
+      "required": [
+       "id"
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

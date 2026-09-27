@@ -198,7 +198,11 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   zweryfikowane na SYNTETYCZNYM transkrypcie (odczyt `~/.claude/projects` odrzucony) — liczby to
   ilustracja mechanizmu, nie pomiar. Niezweryfikowane: `/compact` z instrukcją, CLAUDE.md po compact,
   żywy łańcuch subagentów. Zostało `code/__pycache__/` (w .gitignore).
-- Następne: analiza prawdziwego transkryptu (gdy odczyt dozwolony), pamięć/CLAUDE.md jako stały koszt kontekstu, MCP i koszt definicji narzędzi.
+- Wydanie #3 rubryki, 2026-09-27: pamięć/`CLAUDE.md` jako stały koszt (hierarchia, import `@plik`, przycinanie, leniwe ładowanie
+  z podkatalogów) i koszt definicji narzędzi MCP (per serwer, what-if „wyłącz serwer"). `ctxaudit.py` (`memory`/`mcp`), test 13/13
+  (Python 3.10). Fixture: 1242→304 tok. (4,1×); MCP 2076 tok., serwer `tracker` 86%. Dane SYNTETYCZNE (odczyt `~/.claude/projects` i
+  WebFetch odrzucone); tokeny = bajty/4. Reguły ładowania pamięci z pamięci autora — niezweryfikowane (tabela w artykule).
+- Następne: analiza prawdziwego transkryptu (gdy odczyt dozwolony), filtrowanie/leniwe ładowanie narzędzi MCP, weryfikacja reguł CLAUDE.md w docs.
 
 ### ✍️ AI — prompty dla developera
 - Omówione elementy: 5 par zły/dobry prompt (konkretność+pliki/linie, "dlaczego" vs
