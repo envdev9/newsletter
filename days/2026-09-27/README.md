@@ -32,6 +32,7 @@ Nazwy kolejek, pytanie-odpowiedź z timeoutem i filtry w MassTransit: kto, doką
 → [Artykuł](masstransit/ARTICLE.md) · [Kod](masstransit/code/)
 
 ### 🤖 [AI — Claude Code dla .NET/Angular/SQL](ai-claude-code/ARTICLE.md)
+Skill `sql-plan-review`: Claude czyta plan wykonania i pliki `.sql`, wyłapuje brakujące indeksy, Key Lookupy i niejawne konwersje — skanery przetestowane 4/4 na fixturach (bez prawdziwego SQL Servera).
 → [Artykuł](ai-claude-code/ARTICLE.md) · [Kod](ai-claude-code/code/)
 
 ### ⚙️ [AI — agentic loop](ai-agentic-loop/ARTICLE.md)

@@ -159,7 +159,10 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   (exit 0). Niezweryfikowane: żywa sesja, payload `PostToolUse`, składnia/pierwszeństwo `permissions`.
   Zapis do `.claude/` był odrzucony → katalogi `claude-hooks/`, `claude-config/`. Zostały `bin/`,`obj/`
   (gitignore) i pusty `code/team-config/`.
-- Następne: skill do SQL (przegląd planu/indeksów; wymaga `sqlcmd`), Angular (review komponentu na signals).
+- Wydanie #4, 2026-09-27: skill `sql-plan-review` (`scan_sql.py` — reguły antywzorców T-SQL, `scan_plan.py` — plan XML:
+  missing index, scan, Key Lookup, niejawna konwersja, spill, rozjazd estymat). `run_tests.py` 4/4 (Python 3.10). Niezweryfikowane:
+  brak SQL Servera/sqlcmd — plany to ręczne fixtury, nazwy atrybutów XML z pamięci, progi arbitralne, żywa sesja Claude Code.
+- Następne: skill Angular (review komponentu na signals), skill SQL na prawdziwym planie z `sqlcmd`.
 
 ### ⚙️ AI — agentic loop / workflow kodowania
 - Omówione elementy: pętla tool-use, różnica komenda/skill/subagent/hook (kto naciska

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- FIXTURE napisany recznie na potrzeby testu skanera. NIE jest zrzutem z prawdziwego SQL Server
+     (sqlcmd/SQL Server niedostepny w srodowisku autora). Struktura wg pamieci autora o Showplan XML. -->
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.5">
+  <BatchSequence><Batch><Statements>
+    <StmtSimple StatementText="SELECT o.OrderId, o.Total FROM dbo.Orders o WHERE o.CustomerId = @p" StatementType="SELECT">
+      <QueryPlan>
+        <MemoryGrantInfo GrantedMemory="204800" MaxUsedMemory="512" />
+        <MissingIndexes>
+          <MissingIndexGroup Impact="93.4">
+            <MissingIndex Database="[Shop]" Schema="[dbo]" Table="[Orders]">
+              <ColumnGroup Usage="EQUALITY"><Column Name="[CustomerId]" ColumnId="2" /></ColumnGroup>
+              <ColumnGroup Usage="INCLUDE"><Column Name="[Total]" ColumnId="5" /></ColumnGroup>
+            </MissingIndex>
+          </MissingIndexGroup>
+        </MissingIndexes>
+        <Warnings>
+          <PlanAffectingConvert ConvertIssue="Seek Plan" Expression="CONVERT_IMPLICIT(nvarchar(200),[c].[Email],0)=[@p]" />
+        </Warnings>
+        <RelOp NodeId="0" PhysicalOp="Nested Loops" LogicalOp="Inner Join" EstimateRows="10" EstimatedTotalSubtreeCost="850.2">
+          <Warnings NoJoinPredicate="true" />
+          <RelOp NodeId="1" PhysicalOp="Clustered Index Scan" LogicalOp="Clustered Index Scan" EstimateRows="5000000" TableCardinality="5000000" EstimatedTotalSubtreeCost="800.1">
+            <IndexScan><Object Database="[Shop]" Schema="[dbo]" Table="[Orders]" Index="[PK_Orders]" /></IndexScan>
+            <RunTimeInformation><RunTimeCountersPerThread Thread="0" ActualRows="5000000" /></RunTimeInformation>
+          </RelOp>
+          <RelOp NodeId="2" PhysicalOp="Clustered Index Seek" LogicalOp="Key Lookup" EstimateRows="4000" TableCardinality="5000000" EstimatedTotalSubtreeCost="40.0">
+            <IndexScan Lookup="true"><Object Database="[Shop]" Schema="[dbo]" Table="[Customers]" Index="[PK_Customers]" /></IndexScan>
+          </RelOp>
+          <RelOp NodeId="3" PhysicalOp="Sort" LogicalOp="Sort" EstimateRows="10" EstimatedTotalSubtreeCost="9.0">
+            <Warnings><SpillToTempDb SpillLevel="1" /><ColumnsWithNoStatistics><ColumnReference Column="[Status]" /></ColumnsWithNoStatistics></Warnings>
+            <RunTimeInformation><RunTimeCountersPerThread Thread="0" ActualRows="250000" /></RunTimeInformation>
+          </RelOp>
+        </RelOp>
+      </QueryPlan>
+    </StmtSimple>
+  </Statements></Batch></BatchSequence>
+</ShowPlanXML>
