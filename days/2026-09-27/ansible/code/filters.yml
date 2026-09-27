@@ -1,0 +1,39 @@
+---
+# Wlasny filtr (filter_plugins/) i wlasny lookup (lookup_plugins/)
+- name: Wlasne filtry i lookup
+  hosts: web1
+  gather_facts: false
+  vars:
+    settings: {port: 8080, debug: false, name: sklep}
+  tasks:
+    - name: Filtr mask_secret
+      ansible.builtin.debug:
+        msg: "{{ db_password | mask_secret(4) }} / {{ api_key | mask_secret }}"
+
+    - name: Filtr to_env_lines
+      ansible.builtin.debug:
+        msg: "{{ settings | to_env_lines('APP_') }}"
+
+    - name: Lookup kv_file (wersja i kanal z pliku)
+      ansible.builtin.debug:
+        msg: "{{ lookup('kv_file', 'version', 'channel', file='release.env', wantlist=True) }}"
+
+    - name: Katalog roboczy
+      ansible.builtin.file: {path: "{{ out_dir }}", state: directory, mode: "0755"}
+
+    - name: Zapis pliku env z filtra
+      ansible.builtin.copy:
+        content: "{{ settings | to_env_lines('APP_') | join('\n') }}\nVERSION={{ lookup('kv_file', 'version', file='release.env') }}\n"
+        dest: "{{ out_dir }}/app.env"
+        mode: "0644"
+      tags: write
+
+    - name: Zly typ do filtra (oczekiwany blad)
+      ansible.builtin.debug:
+        msg: "{{ 12345 | mask_secret }}"
+      ignore_errors: true
+
+    - name: Brak klucza w lookupie (oczekiwany blad)
+      ansible.builtin.debug:
+        msg: "{{ lookup('kv_file', 'nie_ma', file='release.env') }}"
+      ignore_errors: true

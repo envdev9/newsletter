@@ -1,0 +1,3 @@
+out_dir: /tmp/ansible-demo-lvl4
+db_password: "{{ vault_db_password }}"
+api_key: "{{ vault_api_key }}"

@@ -1,0 +1,9 @@
+---
+- name: "krok {{ step_name | default('bez-nazwy') }} - debug"
+  ansible.builtin.debug:
+    msg: "wykonuje krok '{{ step_name | default('bez-nazwy') }}' na {{ inventory_hostname }}"
+
+- name: "krok {{ step_name | default('bez-nazwy') }} - task z wlasnym tagiem inner"
+  ansible.builtin.debug:
+    msg: "task inner w kroku '{{ step_name | default('bez-nazwy') }}'"
+  tags: inner

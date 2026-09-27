@@ -12,6 +12,7 @@ Napisz `(text, out result) => int.TryParse(text, out result)` bez ani jednego ty
 → [Artykuł](dotnet/ARTICLE.md) · [Kod](dotnet/code/)
 
 ### 🔧 [Ansible](ansible/ARTICLE.md)
+Własne filtry i lookupy w Pythonie, `include_tasks` kontra `import_tasks` (czemu `--tags` nie działa tak, jak myślisz) oraz `serial` z canary i `strategy: free` — prawdziwy output, a `ansible-vault` uczciwie oznaczony jako niezweryfikowany.
 → [Artykuł](ansible/ARTICLE.md) · [Kod](ansible/code/)
 
 ### 🏗️ [TeamCity](teamcity/ARTICLE.md)

@@ -1,0 +1,15 @@
+---
+# linear (domyslna): kazdy task konczy sie na WSZYSTKICH hostach, zanim ruszy nastepny.
+# free: kazdy host leci swoim tempem. Wolny host: web1 (spi 3 s).
+- name: Strategia wykonania
+  hosts: web
+  gather_facts: false
+  strategy: "{{ strat | default('linear') }}"
+  tasks:
+    - name: Task 1 (web1 jest wolny)
+      ansible.builtin.command: "sleep {{ 3 if inventory_hostname == 'web1' else 0 }}"
+      changed_when: false
+
+    - name: Task 2
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} skonczyl task 2"

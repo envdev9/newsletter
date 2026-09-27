@@ -1,0 +1,24 @@
+---
+# Rolling update: serial dzieli hosty na paczki. Kolejna paczka rusza dopiero po zakonczeniu poprzedniej.
+# Batch'e: 1 host, potem 2 hosty, potem cala reszta (ostatnia wartosc listy powtarza sie).
+- name: Rolling update
+  hosts: web
+  gather_facts: false
+  serial: [1, 2]
+  max_fail_percentage: 0        # jakikolwiek blad w paczce zatrzymuje kolejne paczki
+  vars:
+    fail_host: ""               # -e fail_host=web2 symuluje awarie
+  tasks:
+    - name: Paczka
+      ansible.builtin.debug:
+        msg: "paczka {{ ansible_play_batch }} ({{ ansible_play_hosts_all | length }} hostow razem)"
+      run_once: true
+
+    - name: Wdrozenie (symulacja)
+      ansible.builtin.command: "true"
+      changed_when: false
+      failed_when: inventory_hostname == fail_host
+
+    - name: Host zdrowy
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} OK"

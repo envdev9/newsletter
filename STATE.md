@@ -43,8 +43,14 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   (ansible-core 2.17.14): syntax-check, 2 przebiegi (`changed=0`), rescue, tags/limit, `--check --diff`.
   Niezweryfikowane: `ansible-vault` (polecenie odrzucone przez środowisko — opisane, `vault.yml` w
   repo jawny z fikcyjnymi wartościami), `ansible-inventory --graph`, SSH/`become`, `validate`.
-- Następny poziom: realnie zweryfikować `ansible-vault` (encrypt/view/encrypt_string), kolekcje i
-  `ansible-galaxy`, własne filtry/lookupy, `include_tasks` vs `import_tasks`, `strategy`/`serial`, Molecule.
+- Wydanie #4, 2026-09-27: własny filtr (`filter_plugins`: `mask_secret`, `to_env_lines`) i lookup (`kv_file`),
+  `import_tasks` vs `include_tasks` (`--list-tasks`, tagi + `apply`, `when`, `loop`), `serial: [1, 2]` + `max_fail_percentage`
+  (canary), `strategy: linear` vs `free`. ansible-core 2.17.14, syntax-check + 2 przebiegi (`changed=0`). Pułapki: tag na
+  `include_tasks` nie obejmuje wnętrza (potrzebne `apply`); `import_tasks` + `loop` → błąd parsowania; `false` po interpolacji
+  w filtrze Pythona = `False`; `serial` = osobny play per paczka; ansible w powłoce agenta wymaga `2>&1 | cat`.
+  Niezweryfikowane: `ansible-vault` (encrypt odrzucone przez środowisko; komendy w README), `ansible-galaxy`/kolekcje, Molecule,
+  `serial` z %, `throttle`, SSH/`become`.
+- Następny poziom: `ansible-vault` (jeśli środowisko pozwoli), kolekcje i `ansible-galaxy`, Molecule, `throttle`, `delegate_to`, `async`/`poll`.
 
 ### 🏗️ TeamCity
 - Aktualny poziom trudności: **podstawy (częściowo — patrz ograniczenie)**

@@ -1,0 +1,9 @@
+---
+# Oczekiwany BLAD: import_tasks nie wspiera loop
+- name: import_tasks + loop
+  hosts: web1
+  gather_facts: false
+  tasks:
+    - name: import w petli
+      ansible.builtin.import_tasks: tasks/step.yml
+      loop: [a, b]

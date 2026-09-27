@@ -1,0 +1,44 @@
+---
+# import_tasks = statyczne (rozwijane przy PARSOWANIU playbooka)
+# include_tasks = dynamiczne (rozwijane w TRAKCIE wykonania, task po tasku)
+- name: import_tasks vs include_tasks
+  hosts: web1
+  gather_facts: false
+  vars:
+    do_import: true
+    do_include: true
+    steps: [alfa, beta]
+  tasks:
+    # 1) import: tagi i when "wchodza" do kazdego zaimportowanego taska
+    - name: IMPORT z tagiem i when
+      ansible.builtin.import_tasks: tasks/step.yml
+      vars:
+        step_name: import
+      tags: imp
+      when: do_import | bool
+
+    # 2) include: tag dotyczy TYLKO samego include, nie wnetrza pliku
+    - name: INCLUDE z tagiem i when
+      ansible.builtin.include_tasks: tasks/step.yml
+      vars:
+        step_name: include
+      tags: inc
+      when: do_include | bool
+
+    # 3) include + loop: dziala (import + loop jest niedozwolony)
+    - name: INCLUDE w petli
+      ansible.builtin.include_tasks: tasks/step.yml
+      loop: "{{ steps }}"
+      loop_control:
+        loop_var: step_name
+      tags: loop
+
+    # 4) include + apply: przenies tag do wnetrza pliku
+    - name: INCLUDE z apply
+      ansible.builtin.include_tasks:
+        file: tasks/step.yml
+        apply:
+          tags: [applied]
+      vars:
+        step_name: apply
+      tags: applied
