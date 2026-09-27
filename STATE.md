@@ -296,8 +296,14 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   Zweryfikowane realnie SQL-em (ręcznie docker exec), dane SYNTETYCZNE (deterministyczne, bez modelu).
   Niezweryfikowane: cały `run-demo.sh`, partycjonowanie, `halfvec` jako typ kolumny, Npgsql+Pgvector (.NET),
   kod z wydania #2 (nadal niezweryfikowany).
-- Następny poziom: pgvector z .NET (Npgsql + Pgvector, EF Core), partycjonowanie, weryfikacja kodu z #2
-  (fastembed), binary quantization na realnych embeddingach.
+- Wydanie #4, 2026-09-27: pgvector z .NET — Npgsql 10.0.3 + `Pgvector` 0.3.2 (`UseVector()`, typ `Vector`, binary COPY 20 000 wierszy
+  w 825 ms), kNN z parametrem, HNSW `ef_search` 10/40/200 → recall@10 0,972/1,0/1,0 (1,47–2,54 ms vs Seq Scan 22,1 ms), `SET LOCAL`,
+  EF Core (`Pgvector.EntityFrameworkCore` 0.3.0: `vector(64)`, indeks HNSW z modelu, `CosineDistance`). .NET 10.0.400, PG 16.15, pgvector
+  0.8.6, dane SYNTETYCZNE. Pułapki: `float[]`→`real[]` (`operator does not exist`), zły wymiar, EF `Id=0` → `ValueGeneratedNever()`, pakiet EF
+  ściąga EF Core 9, budowa HNSW niedeterministyczna (recall 0,956–0,994). Niezweryfikowane: `run-demo.sh` jako całość, migracje `dotnet ef`,
+  `L2Distance`/`MaxInnerProduct`, użycie HNSW przez zapytanie EF, `halfvec` w C#, kod z #2 (fastembed) nadal niezweryfikowany.
+- Następny poziom: partycjonowanie z HNSW, migracje EF z indeksem HNSW, `HalfVector`, `iterative_scan` w .NET z pulą połączeń,
+  naprawa i uruchomienie kodu z #2 (realne embeddingi).
 
 ### 🔐 Certyfikaty i TLS (X.509)
 - Aktualny poziom trudności: **podstawy (opanowane)**

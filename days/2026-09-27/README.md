@@ -56,6 +56,7 @@ Deadlock wywołany na żywo i odczytany z `system_health`, czytelnik czekający 
 → [Artykuł](sqlserver/ARTICLE.md) · [Kod](sqlserver/code/)
 
 ### 🧬 [PostgreSQL jako baza wektorowa](postgres-vector/ARTICLE.md)
+pgvector z C#: Npgsql + `Pgvector` + EF Core `CosineDistance`, indeks HNSW z modelu i pułapka `float[]` kontra `Vector` — 20 000 wektorów, recall 0,97–1,00 przy ~1,5–2,5 ms (Seq Scan: 22 ms), prawdziwy output na .NET 10.
 → [Artykuł](postgres-vector/ARTICLE.md) · [Kod](postgres-vector/code/)
 
 ### 🔐 [Certyfikaty i TLS (X.509)](certificates/ARTICLE.md)
