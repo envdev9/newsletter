@@ -26,6 +26,7 @@ Skąd proces dostaje sekrety w Aspire i dlaczego `AddParameter("x", "wartość")
 → [Artykuł](aspire/ARTICLE.md) · [Kod](aspire/code/)
 
 ### 📨 [Messaging .NET z MassTransit](masstransit/ARTICLE.md)
+Nazwy kolejek, pytanie-odpowiedź z timeoutem i filtry w MassTransit: kto, dokąd i przez co — plus pułapka, że `Publish` omija filtr `Send` (zmierzone na in-memory, RabbitMQ niezweryfikowany).
 → [Artykuł](masstransit/ARTICLE.md) · [Kod](masstransit/code/)
 
 ### 🤖 [AI — Claude Code dla .NET/Angular/SQL](ai-claude-code/ARTICLE.md)

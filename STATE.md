@@ -123,7 +123,13 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   `Fault<T>` przy evencie w złym stanie; pułapka: handler składnika composite biegnie po przejściu
   composite → guard. 6 scenariuszy zweryfikowane `dotnet run` (8.5.10, in-memory). Niezweryfikowane:
   trwałe repozytoria sag (EF/Mongo/Redis), RabbitMQ/ASB scheduler, wyścig płatność vs timeout, kompensacje.
-- Następny poziom: routing (topologia, exchange), przejście na RabbitMQ, trwałe repozytorium sag.
+- Wydanie #4, 2026-09-27: `KebabCaseEndpointNameFormatter` + `ConfigureEndpoints` (kolejka `dev-price`),
+  `ConsumerDefinition` (jawny `EndpointName`, `ConcurrentMessageLimit`), Request/Response (`GetResponse<A, B>`,
+  `RequestFaultException`, `RequestTimeoutException`), filtry consume/send (`IFilter`, open generic w DI), `Send` po adresie
+  `queue:`. Pułapki: `Publish` nie przechodzi przez filtr `Send`; klient dostaje odpowiedź przed końcem filtra consume.
+  MassTransit 8.5.10, in-memory, `dotnet run`. Niezweryfikowane: RabbitMQ (exchange'e/bindingi), `UsePublishFilter`,
+  kolejność filtrów, RoutingSlip/Courier, trwałe repozytoria sag.
+- Następny poziom: przejście na RabbitMQ (topologia, exchange), RoutingSlip/Courier, trwałe repozytorium sag.
 
 ### 🤖 AI — Claude Code dla .NET/Angular/SQL
 - Omówione przypadki użycia: slash command generujący testy xUnit dla klasy C#, hook
