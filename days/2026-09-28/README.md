@@ -26,6 +26,7 @@ Pierwszy prawdziwy kontener w tej rubryce: `AddRedis("cache")` odpala realny Doc
 → [Artykuł](aspire/ARTICLE.md) · [Kod](aspire/code/)
 
 ### 📨 [Messaging .NET z MassTransit](masstransit/ARTICLE.md)
+Pierwsze cztery wydania uczyły MassTransit na in-memory — dziś prawdziwy RabbitMQ w Dockerze: realna topologia (exchange→exchange→kolejka) i trwałość, którą pokazują trzy osobne procesy (publish bez konsumenta → wiadomości czekają na brokerze → nowy proces je odbiera).
 → [Artykuł](masstransit/ARTICLE.md) · [Kod](masstransit/code/)
 
 ### 🤖 [AI — Claude Code dla .NET/Angular/SQL](ai-claude-code/ARTICLE.md)

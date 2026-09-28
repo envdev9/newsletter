@@ -171,7 +171,20 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   `queue:`. Pułapki: `Publish` nie przechodzi przez filtr `Send`; klient dostaje odpowiedź przed końcem filtra consume.
   MassTransit 8.5.10, in-memory, `dotnet run`. Niezweryfikowane: RabbitMQ (exchange'e/bindingi), `UsePublishFilter`,
   kolejność filtrów, RoutingSlip/Courier, trwałe repozytoria sag.
-- Następny poziom: przejście na RabbitMQ (topologia, exchange), RoutingSlip/Courier, trwałe repozytorium sag.
+- Wydanie #5, 2026-09-28: pierwsze przejście z in-memory na prawdziwy **RabbitMQ** (`cfg.UsingRabbitMq`, RabbitMQ
+  `4.3-management` w Dockerze) — topologia realnie utworzona przez `ConfigureEndpoints` (exchange wiadomości →
+  exchange kolejki → kolejka, fanout, potwierdzone REST API + `rabbitmqctl list_exchanges`/`list_bindings`),
+  i trwałość niezależna od procesu klienta (3 osobne procesy CLI: `publish`/`inspect`/`consume` — wiadomości
+  przetrwały zamknięcie procesu publikującego, odebrane przez zupełnie nowy proces). MassTransit 8.5.10 +
+  MassTransit.RabbitMQ 8.5.10. Zweryfikowane realnym `dotnet run` przeciw żywemu kontenerowi (posprzątany po
+  demie: `docker stop`/`docker rm`, potwierdzone `docker ps -a`). Pułapki: domyślna nazwa kolejki na RabbitMQ to
+  PascalCase (`Order`), nie kebab-case jak z formatterem z #4; REST API statystyk ma opóźnienie ~5-6s (nieaktualny
+  `messages_ready` zaraz po operacji); `guest`/`guest` nieoczekiwanie zadziałał przez Docker (obalona częściowo
+  powszechna wiedza o `loopback_users` — zależne od konfiguracji sieci). Niezweryfikowane: retry/`_error` na
+  RabbitMQ, RoutingSlip/Courier, trwałe sagi na RabbitMQ, topic/direct exchange, klaster, TLS/AMQPS,
+  `ConcurrentMessageLimit` na prawdziwym brokerze, `docker-compose.yml` sam plik (compose niedostępny w
+  środowisku, zweryfikowany tylko równoważny `docker run`).
+- Następny poziom: RoutingSlip/Courier (transakcje rozproszone z kompensacją), trwałe repozytorium sag (EF/Mongo/Redis) na RabbitMQ, retry/error queue na prawdziwym brokerze, topic/direct exchange.
 
 ### 🤖 AI — Claude Code dla .NET/Angular/SQL
 - Omówione przypadki użycia: slash command generujący testy xUnit dla klasy C#, hook
