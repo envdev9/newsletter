@@ -251,7 +251,15 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   Zweryfikowane: `npm ci`, `ng build` (osobny chunk komentarzy), `ng test` 6/6 (`RouterTestingHarness`). Pułapka:
   literalne `@defer` w szablonie → NG5002 (użyć `&#64;`). Niezweryfikowane: `ng serve`/przeglądarka, `DeferBlockFixture`
   (test czeka 300 ms — kruchy), inne wyzwalacze `@defer`.
-- Następny poziom: formularze na signals (Signal Forms), SSR/hydration, `resource()` z własnym loaderem, `tapResponse`.
+- Wydanie #5, 2026-09-28: Signal Forms (`@angular/forms/signals` — potwierdzone `@publicApi 22.0` w `.d.ts`, nie
+  `@experimental`): `form()`/`schema()` jako drzewo pól bez kopiowania modelu, walidatory sync (`required`/`minLength`/
+  `pattern`/`email`), `[formField]`/`[formRoot]`, `validateAsync` + `resource()` własny loader z `AbortSignal`
+  (kolejność: sync przed async, potwierdzone testem), `submit()` z błędem "z serwera" na `fieldTree` konkretnego pola.
+  Angular 22.2.0, Node v22.23.3. Zweryfikowane: `npm ci` (274 pakiety), `ng build` OK, `ng test` 15/15 (Vitest+jsdom).
+  Pułapka złapana na żywym teście: jeden skok fake timera (600 ms) na łańcuch debounce→fetch zawodzi, trzeba dwa
+  oddzielne `advanceTimersByTimeAsync` kroki. Niezweryfikowane: `ng serve`/przeglądarka, blokada concurrent submit,
+  `validateHttp`, SSR/hydration, `tapResponse`.
+- Następny poziom: `validateHttp`, `applyEach`/`schema()` wielokrotnego użytku, własny `FormValueControl`, SSR/hydration, `tapResponse`, `ng serve` w przeglądarce.
 
 ### 🗄️ SQL Server
 - Aktualny poziom trudności: **podstawy (kod gotowy, niezweryfikowany)**

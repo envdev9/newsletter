@@ -39,6 +39,7 @@ Kryptografia postkwantowa (`MLDsa`/`MLKem`, FIPS 203/204) i generyczne uchwyty G
 → [Artykuł](ai-prompts/ARTICLE.md) · [Kod](ai-prompts/code/)
 
 ### 🅰️ [Angular](angular/ARTICLE.md)
+Signal Forms (`@angular/forms/signals`, potwierdzone jako `@publicApi 22.0`): formularz bez `FormGroup`, walidacja async przez `resource()` z realnym `AbortSignal` i błąd z serwera trafiający na konkretne pole — 15/15 testów, w tym złapana na żywo pułapka z fake timerami.
 → [Artykuł](angular/ARTICLE.md) · [Kod](angular/code/)
 
 ### 🗄️ [SQL Server](sqlserver/ARTICLE.md)
