@@ -22,6 +22,7 @@ Prawdziwe minimalne API pod testem przez `WebApplicationFactory<Program>` + TUni
 → [Artykuł](tunit/ARTICLE.md) · [Kod](tunit/code/)
 
 ### ✈️ [Aspire](aspire/ARTICLE.md)
+Pierwszy prawdziwy kontener w tej rubryce: `AddRedis("cache")` odpala realny Docker, a Aspire po cichu dorzuca losowe hasło i TLS do connection stringa, o które nikt nie prosił — 3 przebiegi, za każdym razem 8/8 PASS.
 → [Artykuł](aspire/ARTICLE.md) · [Kod](aspire/code/)
 
 ### 📨 [Messaging .NET z MassTransit](masstransit/ARTICLE.md)

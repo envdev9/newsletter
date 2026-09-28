@@ -136,7 +136,19 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   Aspire 13.5.2, `Config.Verify` → WSZYSTKO OK. Niezweryfikowane: kontenery (Postgres/Redis — brak pobranych obrazów,
   nie pobierano), dashboard/maskowanie sekretów, user-secrets, `publish`; `appsettings.json` AppHosta jako źródło
   `Parameters:*` w teście nie zadziałał (nie zbadano).
-- Następny poziom: integracje z kontenerami (Postgres/Redis, gdy Docker ma obrazy/miejsce), user-secrets, testy AppHosta w TUnit.
+- Wydanie #5, 2026-09-28: pierwszy prawdziwy kontener — `AddRedis("cache")` + `WithReference`/`WaitFor` (jak w #3, ale
+  po drugiej stronie kontener Docker, nie projekt .NET), `CacheApi` z `AddRedisClient`/`IConnectionMultiplexer`
+  (PUT/GET realnie przez Redis), `Cache.Verify` (DistributedApplicationTestingBuilder faktycznie odpalający Docker).
+  Docker Engine 29.1.3, Aspire 13.5.2, .NET SDK 10.0.400. Środowisko miało 43 GB wolnego (`df -h /`) — bezpiecznie na
+  kontener; obrazy `redis:7-alpine` (58 MB) i `redis:8.6` (~200 MB, domyślny tag `AddRedis`) zostały w lokalnym cache
+  Dockera (nie w repo) — przyszłe wydania nie muszą ich pobierać ponownie. Zweryfikowane: 3 niezależne przebiegi,
+  za każdym razem 8/8 PASS, kontener posprzątany automatycznie po każdym. Odkryte i zmierzone (nieudokumentowane w
+  kodzie): `AddRedis` domyślnie startuje `redis:8.6` (nie `7-alpine`) i generuje losowe hasło + TLS bez żadnej
+  konfiguracji — connection string wstrzyknięty przez `WithReference` ma to wbudowane (`connectionHasPassword`/
+  `connectionHasSsl` = true). Niezweryfikowane: dashboard, `WithDataVolume`/trwałość, rozjazd portu z `docker ps`
+  vs portu użytego przez klienta w procesie (niewyjaśniony), `redis-cli` z zewnątrz, user-secrets (wątek z #4 nadal
+  otwarty).
+- Następny poziom: `user-secrets` z AppHostem (dokończyć wątek z #4), Postgres/inny kontener z trwałością danych (`WithDataVolume`), testy AppHosta w TUnit (połączenie z rubryką TUnit), dashboard.
 
 ### 📨 Messaging .NET (MassTransit)
 - Aktualny poziom trudności: **podstawy (opanowane)**
