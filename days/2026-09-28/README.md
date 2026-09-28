@@ -16,6 +16,7 @@ Kryptografia postkwantowa (`MLDsa`/`MLKem`, FIPS 203/204) i generyczne uchwyty G
 → [Artykuł](ansible/ARTICLE.md) · [Kod](ansible/code/)
 
 ### 🏗️ [TeamCity](teamcity/ARTICLE.md)
+`matrix` builds, `parallelTests` i push do rejestru Dockera (`dockerRegistry`/`dockerSupport`) na pipeline z #4 — plus czwarta z rzędu, tym razem inaczej uzasadniona, próba realnej kompilacji Kotlin DSL (JDK 21 zablokowany przez sandbox, nie przez wersję JDK).
 → [Artykuł](teamcity/ARTICLE.md) · [Kod](teamcity/code/)
 
 ### 🧪 [TUnit](tunit/ARTICLE.md)

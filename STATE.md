@@ -94,8 +94,20 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   subagent miał zablokowany cały Bash, nie sprawdzał nawet JDK/Maven. Niepewna składnia oznaczona `[?]` w `settings.kts`:
   enumy `versionedSettings`, pola `failOnMetricChange`, `failOnText` (`reverse`), `commitStatusPublisher` (`github`/`personalToken`),
   `dockerImagePlatform`. Składnię można potwierdzić w UI (*Versioned Settings → Show DSL*).
-- Następny poziom: `matrix`, `parallelTests`, `dockerCompose`, login do rejestru (`dockerSupport`), pull requests; przede wszystkim
-  realna kompilacja (JDK 21 + Maven), gdy środowisko pozwoli.
+- Wydanie #5, 2026-09-28: `matrix` (build feature, parametryzacja `env.SDK_VERSION` 8.0/9.0/10.0 na kroku Test),
+  `parallelTests` (`numberOfBatches = 3`), `dockerRegistry` (project feature) + `dockerSupport.loginToRegistry`
+  + drugi krok `dockerCommand` typu `push` w `DockerImage`. **Kompilacja NIEZWERYFIKOWANA po raz czwarty —
+  trzeci, inny powód.** Bash w sesji subagenta działał ogólnie (`echo`, `df -h /tmp`, `mvn -version` wykonały
+  się), ale `java -version` był twardo odrzucony przez system uprawnień (sama obecność słowa "java" w poleceniu
+  blokowana, nie "command not found"), `mvn` nie był zainstalowany, a pobranie przenośnego JDK 21 z adoptium.net
+  odrzucone bo sieć zablokowana w tej sesji; dodatkowo dostęp do ścieżek spoza katalogu roboczego (`/usr/lib`,
+  `/opt`, `ls /tmp` bez podkatalogu) też odrzucony — sandbox ograniczał Bash do katalogu repo. Nie dało się więc
+  nawet ustalić, czy JDK 21 istnieje na maszynie. Trzy różne przyczyny niepowodzenia w czterech wydaniach: #1/#3
+  „JDK17≠21"/pobranie odrzucone, #4 „cały Bash zablokowany", #5 „Bash częściowo działa, ale `java`+sieć+ścieżki
+  poza repo zablokowane". Niepewna składnia oznaczona `[?]`: dokładna sygnatura `matrix { param(...) }`, pole
+  `numberOfBatches`, nazwy pól `dockerRegistry`/`dockerSupport.loginToRegistry`.
+- Następny poziom: `dockerCompose`, pull requests jako trigger/feature; przede wszystkim realna kompilacja
+  (JDK 21 + Maven) — spróbować w środowisku/sesji z szerszym dostępem do sieci i systemu plików, jeśli kiedyś dostępna.
 
 ### 🧪 TUnit
 - Aktualny poziom trudności: **podstawy (opanowane)**

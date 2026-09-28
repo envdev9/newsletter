@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Projekt Maven do OFFLINE weryfikacji Kotlin DSL configu TeamCity (settings.kts)
+    bez żywego serwera (wtyczka teamcity-configs-maven-plugin, goal "generate").
+
+    UWAGA: wymaga JDK 21. W wydaniu #5 tej rubryki podjęto CZWARTĄ z rzędu próbę
+    uruchomienia tego pom.xml (po #1, #3, #4) - i czwarty raz się nie udało, tym razem
+    z innego powodu niż JDK 17 vs 21: środowisko agenta odmówiło samego wykonania
+    polecenia "java" (blokada na poziomie systemu uprawnień, niezależna od tego, czy
+    JDK 21 w ogóle jest zainstalowane) oraz odmówiło dostępu do sieci (próba pobrania
+    przenośnego JDK 21 przez curl też odrzucona). Zobacz code/README.md po pełny log
+    prób. Ten pom.xml pozostaje więc NIEZWERYFIKOWANY.
+
+    Uruchomienie (gdy JDK 21 będzie dostępne): mvn compile
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>pl.prasowka.teamcity</groupId>
+    <artifactId>settings-dsl-matrix</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <teamcity-dsl.version>2026.3-dsl6</teamcity-dsl.version>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>jetbrains-teamcity-repository</id>
+            <url>https://download.jetbrains.com/teamcity-repository</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>jetbrains-teamcity-repository</id>
+            <url>https://download.jetbrains.com/teamcity-repository</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jetbrains.teamcity</groupId>
+            <artifactId>configs-dsl-kotlin-latest</artifactId>
+            <version>${teamcity-dsl.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jetbrains.teamcity</groupId>
+                <artifactId>teamcity-configs-maven-plugin</artifactId>
+                <version>${teamcity-dsl.version}</version>
+                <executions>
+                    <execution>
+                        <id>generate-teamcity-config</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <dstDir>${project.build.directory}/teamcity-generated</dstDir>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
