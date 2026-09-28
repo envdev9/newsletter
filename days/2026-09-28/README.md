@@ -18,6 +18,7 @@ Kryptografia postkwantowa (`MLDsa`/`MLKem`, FIPS 203/204) i generyczne uchwyty G
 → [Artykuł](teamcity/ARTICLE.md) · [Kod](teamcity/code/)
 
 ### 🧪 [TUnit](tunit/ARTICLE.md)
+Prawdziwe minimalne API pod testem przez `WebApplicationFactory<Program>` + TUnit-owy odpowiednik `IClassFixture<T>` (`[ClassDataSource]` + `SharedType.PerClass`) — 5/5 testów, plus zmierzona (nie zgadywana) pułapka współdzielonego stanu i empiryczne obalenie rady o `partial class Program`.
 → [Artykuł](tunit/ARTICLE.md) · [Kod](tunit/code/)
 
 ### ✈️ [Aspire](aspire/ARTICLE.md)

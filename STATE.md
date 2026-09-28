@@ -106,7 +106,17 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   Pułapki: TUnit0028 (własny `[AttributeUsage]` zabroniony), numeracja prób w `ShouldRetry` od 1.
   Niezweryfikowane: `[AfterEvery(Class/Assembly)]`, WebApplicationFactory, `ShouldRetry` + `[Timeout]`.
   Uwaga: w korzeniu repo powstał niechciany `TestResults/` (nie commitowany, nie dało się usunąć).
-- Następny poziom: testy z Aspire/WebApplicationFactory, `[AfterEvery]` Class/Assembly.
+- Wydanie #5, 2026-09-28: `WebApplicationFactory<Program>` + TUnit (odpowiednik xUnitowego `IClassFixture<T>` przez
+  `[ClassDataSource<TodoApiFixture>(Shared = SharedType.PerClass)]` + `IAsyncInitializer` na fixture dziedziczącym
+  po `WebApplicationFactory`), realne minimalne API Todo pod testem HTTP. TUnit 1.70.1 (nowsza niż 1.69.0),
+  `Microsoft.AspNetCore.Mvc.Testing` 10.0.12, .NET SDK 10.0.400. Zweryfikowane `dotnet test` 5/5. Ustalenie
+  empiryczne: `public partial class Program {}` okazał się ZBĘDNY na tym SDK (`typeof(Program).IsPublic == true`
+  bez niego) — zostawiony w kodzie tylko defensywnie. Pułapka zmierzona (nie zgadywana): fixture `SharedType.PerClass`
+  współdzieli stan aplikacji (singleton store) między testami klasy — asercja o globalnym stanie ("lista ma N
+  elementów") jest bombą zegarową, trzeba asercjonować tylko o własnym zasobie. Niezweryfikowane: `SharedType.PerTestSession`
+  z WebApplicationFactory (host między wieloma klasami), `[AfterEvery(Class/Assembly)]`, Aspire+TUnit, auth/JWT w
+  WebApplicationFactory, `partial class Program` na starszych SDK (8/9 — nie sprawdzone retroaktywnie).
+- Następny poziom: `SharedType.PerTestSession` z WebApplicationFactory, `[AfterEvery(Class/Assembly)]`, Aspire + TUnit (DistributedApplicationTestingBuilder), auth w testach integracyjnych.
 
 ### ✈️ Aspire
 - Aktualny poziom trudności: **podstawy (opanowane)**
