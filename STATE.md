@@ -22,7 +22,15 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   - [x] Partial constructors/events (C# 14; event z `add`/`remove` nie jest field-like → CS0079 przy `?.Invoke`) — wydanie #3, 2026-09-26. Zweryfikowane `dotnet run`; niezweryfikowane: LeftJoin w EF Core, prawdziwy source generator.
   - [x] Modyfikatory parametrów lambdy bez typów (`(text, out r) => ...`; `params` nadal wymaga typu, CS9272) — wydanie #4, 2026-09-27
   - [x] First-class Span (niejawne `T[]`/`string` → `ReadOnlySpan<T>`, extension methods na spanach) — wydanie #4, 2026-09-27. Zweryfikowane SDK 10.0.400; niezweryfikowane: inne metody `MemoryExtensions`, starsze TFM, `var f = (x, out y) => ...`.
-  - Zostało: inne nowości .NET 10 (np. runtime/BCL) → potem .NET 11.
+  - [x] Kryptografia postkwantowa `MLDsa`/`MLKem` (FIPS 204/203, `System.Security.Cryptography`) — wydanie #5, 2026-09-28.
+    Potwierdzone empirycznie jako nowość .NET 10 (SDK 9.0.316 vs 10.0.400: `CS0103` na net9.0). Na tej maszynie
+    `IsSupported=false` (OpenSSL 3.0.2, wymaga 3.5+) — zweryfikowany tylko `PlatformNotSupportedException`, NIE
+    zweryfikowano realnego sign/verify ani encapsulate/decapsulate.
+  - [x] Generyczne uchwyty GC `GCHandle<T>`/`PinnedGCHandle<T>`/`WeakGCHandle<T>` (`System.Runtime.InteropServices`)
+    — wydanie #5, 2026-09-28. W pełni zweryfikowane (`dotnet run -c Release`, 5 sekcji), potwierdzone jako nowość
+    .NET 10 (`CS0308` na net9.0). Znaleziona i zmierzona, ale niewyjaśniona różnica: `PinnedGCHandle<string[]>` nie
+    rzuca `ArgumentException: Object contains references`, w przeciwieństwie do starego `GCHandle.Alloc(_, Pinned)`.
+  - Zostało: inne nowości .NET 10 runtime/BCL (np. System.Text.Json, LINQ, source-generated regex) → potem .NET 11.
 - Gdy funkcje .NET 10 się wyczerpią → .NET 11 → (dalsze nowości) → schodzimy w dół:
   9 → 8 → 7 → 6, potem wracamy do najnowszej dostępnej wersji.
 
