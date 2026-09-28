@@ -1,0 +1,48 @@
+# throttle: limit rownoleglosci dla POJEDYNCZEGO taska, niezalezny od `serial` i `forks`.
+# Bez throttle, Ansible i tak rusza max `forks` hostow rownolegle (domyslnie 5) - przy 3 hostach
+# w tym demo i tak wszystkie 3 poszlyby naraz. throttle: 1 wymusza, zeby TEN JEDEN task wykonal
+# sie po kolei, host po hoscie - reszta taskow w tym samym play nadal leci normalnie rownolegle.
+- name: throttle - wymuszona serializacja jednego taska
+  hosts: app
+  gather_facts: false
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl5
+    log_file: "{{ demo_dir }}/throttle_log.txt"
+  tasks:
+    - name: Upewnij sie, ze katalog istnieje (raz)
+      run_once: true
+      ansible.builtin.file:
+        path: "{{ demo_dir }}"
+        state: directory
+
+    - name: Czysty log (raz)
+      run_once: true
+      ansible.builtin.copy:
+        dest: "{{ log_file }}"
+        content: ""
+
+    - name: "Task ROWNOLEGLY (bez throttle) - kazdy host spi 2s"
+      ansible.builtin.shell: >
+        echo "start $(date +%H:%M:%S.%3N) {{ inventory_hostname }}" >> {{ log_file }};
+        sleep 2;
+        echo "koniec $(date +%H:%M:%S.%3N) {{ inventory_hostname }}" >> {{ log_file }}
+      changed_when: false
+
+    - name: "Task Z throttle=1 - kazdy host spi 2s, ale PO KOLEI"
+      throttle: 1
+      ansible.builtin.shell: >
+        echo "start $(date +%H:%M:%S.%3N) {{ inventory_hostname }}" >> {{ log_file }};
+        sleep 2;
+        echo "koniec $(date +%H:%M:%S.%3N) {{ inventory_hostname }}" >> {{ log_file }}
+      changed_when: false
+
+    - name: Pokaz log (raz, na koncu)
+      run_once: true
+      ansible.builtin.command: "cat {{ log_file }}"
+      register: throttle_log
+      changed_when: false
+
+    - name: Wypisz log
+      run_once: true
+      ansible.builtin.debug:
+        msg: "{{ throttle_log.stdout_lines }}"

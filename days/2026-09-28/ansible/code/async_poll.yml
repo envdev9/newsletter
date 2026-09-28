@@ -1,0 +1,71 @@
+# async / poll: odpalenie taska w tle na hoscie docelowym (nie na kontrolerze - to co innego
+# niz "background" w Twoim terminalu; kontroler i tak czeka/pyta, ale SAM TASK dziala w tle
+# po stronie hosta, wiec kontroler nie trzyma polaczenia SSH otwartego przez caly czas).
+- name: async i poll - podstawy
+  hosts: app1
+  gather_facts: false
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl5
+  tasks:
+    - name: Katalog roboczy
+      ansible.builtin.file:
+        path: "{{ demo_dir }}"
+        state: directory
+
+    # 1) async z poll > 0: Ansible sam odpytuje co `poll` sekund, az sie skonczy albo minie `async`.
+    #    Dla czytelnika wyglada jak zwykly, synchroniczny task - roznica jest niewidoczna w YAML,
+    #    tylko w czasie wykonania (i w tym, ze polaczenie nie stoi caly czas w tym samym trybie).
+    - name: "Backup (trwa ok. 6s), async=20 poll=2 - Ansible sam czeka i odpytuje"
+      ansible.builtin.command: "sleep 6"
+      async: 20
+      poll: 2
+      register: backup_result
+      changed_when: false
+
+    - ansible.builtin.debug:
+        msg: "Backup zakonczony, finished={{ backup_result.finished }}, jid={{ backup_result.ansible_job_id }}"
+
+    # 2) poll: 0 = "fire and forget". Task konczy sie natychmiast, zwraca job id (jid),
+    #    a SPRAWDZENIE wyniku robisz pozniej recznie modulem async_status.
+    # UWAGA: `command` NIE przechodzi przez powloke - `&&`/`>` trafilyby jako dosl. argumenty
+    # do sleep (i tak sie stalo przy pierwszym podejsciu: "sleep: invalid time interval '&&'").
+    # Do potoków/przekierowań/`&&` trzeba `shell`, nie `command`.
+    - name: "Dlugie zadanie w tle (trwa ok. 8s), poll=0 - nie czekaj"
+      ansible.builtin.shell: "sleep 8 && echo GOTOWE > {{ demo_dir }}/async_job_done.txt"
+      async: 30
+      poll: 0
+      register: bg_job
+
+    - ansible.builtin.debug:
+        msg: "Task oddal sterowanie natychmiast. jid={{ bg_job.ansible_job_id }}, finished={{ bg_job.finished }}"
+
+    - name: Sprawdz status od razu (prawdopodobnie jeszcze nie skonczone)
+      ansible.builtin.async_status:
+        jid: "{{ bg_job.ansible_job_id }}"
+      register: early_check
+      failed_when: false
+
+    - ansible.builtin.debug:
+        msg: "Sprawdzenie natychmiastowe: finished={{ early_check.finished }}"
+
+    - name: "Poczekaj na dokonczenie jobu (recznie - until/retries/delay + async_status)"
+      ansible.builtin.async_status:
+        jid: "{{ bg_job.ansible_job_id }}"
+      register: final_check
+      until: final_check.finished
+      retries: 6
+      delay: 2
+
+    - ansible.builtin.debug:
+        msg: "Sprawdzenie koncowe: finished={{ final_check.finished }}, rc={{ final_check.rc }}"
+
+    # 3) Co sie dzieje, gdy zadanie NIE zdazy w czasie `async`? To najczestsze pytanie o async.
+    - name: "Zadanie trwa 6s, ale async=3 - za malo czasu"
+      ansible.builtin.command: "sleep 6"
+      async: 3
+      poll: 1
+      register: too_slow
+      ignore_errors: true
+
+    - ansible.builtin.debug:
+        msg: "too_slow: failed={{ too_slow.failed }} msg={{ too_slow.msg | default('brak') }}"

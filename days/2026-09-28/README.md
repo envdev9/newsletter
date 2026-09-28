@@ -12,6 +12,7 @@ Kryptografia postkwantowa (`MLDsa`/`MLKem`, FIPS 203/204) i generyczne uchwyty G
 → [Artykuł](dotnet/ARTICLE.md) · [Kod](dotnet/code/)
 
 ### 🔧 [Ansible](ansible/ARTICLE.md)
+`delegate_to` łamie schemat "task robi swoje na bieżącym hoście" (rolling deploy z drenowaniem load balancera), plus `async`/`poll` (praca w tle, realny timeout) i `throttle` (limit równoległości jednego taska) — ze złapaną na żywo pułapką `run_once` przy `serial: 1`.
 → [Artykuł](ansible/ARTICLE.md) · [Kod](ansible/code/)
 
 ### 🏗️ [TeamCity](teamcity/ARTICLE.md)

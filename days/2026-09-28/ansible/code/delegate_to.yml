@@ -1,0 +1,77 @@
+# Rolling deploy z "drenowaniem" load balancera.
+# Grupa `app` (app1..app3) to hosty, ktore dostaja deploy. Grupa `lb` (lb1) to fikcyjny
+# load balancer - w rzeczywistym swiecie osobna maszyna, tu ta sama (ansible_connection=local),
+# ale pod INNA nazwa w inventory, zeby delegate_to mial sens do zademonstrowania.
+#
+# UWAGA (prawdziwa pulapka znaleziona przy pisaniu tego przykladu): przygotowanie puli LB
+# NIE MOZE siedziec w pre_tasks tego playa, bo play ma `serial: 1`. Kazda paczka `serial`
+# to osobny mini-play (patrz wydanie #4), wiec `run_once` w pre_tasks oznacza "raz NA PACZKE",
+# nie "raz na cala role" - przy 3 hostach pula zostalaby cicho zresetowana 3 razy. Dlatego
+# inicjalizacja jest w OSOBNYM playu, celujacym wprost w grupe `lb` (tam jest tylko 1 host,
+# wiec problem znika sam z siebie).
+- name: Przygotuj lb1 (osobny play, bez serial)
+  hosts: lb
+  gather_facts: false
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl5
+    pool_file: "{{ demo_dir }}/lb_pool.txt"
+  tasks:
+    - name: Utworz katalog roboczy
+      ansible.builtin.file:
+        path: "{{ demo_dir }}"
+        state: directory
+
+    - name: Zainicjuj pule LB wszystkimi hostami z grupy app
+      ansible.builtin.copy:
+        dest: "{{ pool_file }}"
+        content: "{{ groups['app'] | join('\n') }}\n"
+
+- name: Rolling deploy z drenowaniem LB
+  hosts: app
+  gather_facts: false
+  serial: 1
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl5
+    pool_file: "{{ demo_dir }}/lb_pool.txt"
+  tasks:
+    - name: "[{{ inventory_hostname }}] wyjmij mnie z puli LB (zadanie leci na lb1!)"
+      delegate_to: lb1
+      ansible.builtin.lineinfile:
+        path: "{{ pool_file }}"
+        regexp: "^{{ inventory_hostname }}$"
+        state: absent
+
+    - name: Odczytaj stan puli LB po wyjeciu (na lb1)
+      delegate_to: lb1
+      ansible.builtin.command: "cat {{ pool_file }}"
+      register: pool_after_drain
+      changed_when: false
+
+    - name: Pokaz stan puli
+      ansible.builtin.debug:
+        msg: "Pula LB podczas deployu {{ inventory_hostname }}: {{ pool_after_drain.stdout_lines }}"
+
+    - name: "[{{ inventory_hostname }}] deploy (zadanie leci LOKALNIE na tym hoscie)"
+      ansible.builtin.copy:
+        content: "wdrozono {{ inventory_hostname }} o {{ lookup('pipe', 'date +%H:%M:%S') }}\n"
+        dest: "{{ demo_dir }}/deployed_{{ inventory_hostname }}.txt"
+
+    - name: "[{{ inventory_hostname }}] wroc do puli LB (zadanie znowu na lb1)"
+      delegate_to: lb1
+      ansible.builtin.lineinfile:
+        path: "{{ pool_file }}"
+        line: "{{ inventory_hostname }}"
+        create: true
+
+  post_tasks:
+    - name: Koncowy stan puli LB (raz, na lb1)
+      run_once: true
+      delegate_to: lb1
+      ansible.builtin.command: "cat {{ pool_file }}"
+      register: pool_final
+      changed_when: false
+
+    - name: Pokaz koncowy stan puli
+      run_once: true
+      ansible.builtin.debug:
+        msg: "Pula LB na koniec: {{ pool_final.stdout_lines }}"

@@ -58,7 +58,20 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   w filtrze Pythona = `False`; `serial` = osobny play per paczka; ansible w powłoce agenta wymaga `2>&1 | cat`.
   Niezweryfikowane: `ansible-vault` (encrypt odrzucone przez środowisko; komendy w README), `ansible-galaxy`/kolekcje, Molecule,
   `serial` z %, `throttle`, SSH/`become`.
-- Następny poziom: `ansible-vault` (jeśli środowisko pozwoli), kolekcje i `ansible-galaxy`, Molecule, `throttle`, `delegate_to`, `async`/`poll`.
+- Wydanie #5, 2026-09-28: `delegate_to` (rolling deploy z drenowaniem fikcyjnego LB, `[host -> lb1]` w logu),
+  `async`/`poll` (poll>0 auto-polling, `poll:0` + ręczny `async_status` + `until`/`retries`/`delay`, timeout
+  `async` → realny komunikat "did not complete within..."), `throttle: 1` vs brak (zmierzone znaczniki czasu:
+  równoległy start w ~150ms vs ścisła sekwencja). ansible-core 2.17.14, wszystkie 3 playbooki zweryfikowane
+  realnym `ansible-playbook` (syntax-check + uruchomienie, reprodukowalne). Pułapki: `run_once` w `pre_tasks`
+  play'a z `serial: 1` NIE chroni przed powtórnym wykonaniem (każda paczka to osobny mini-play, patrz #4) —
+  cicho resetowało stan przy każdym hoście, naprawione przeniesieniem inicjalizacji do osobnego play'a bez
+  `serial`; `ansible.builtin.command` nie przechodzi przez powłokę (`&&`/`>` jako dosłowne argumenty) →
+  potrzebny `ansible.builtin.shell`. Niezweryfikowane: `delegate_facts`, `run_once`+`serial` inne niż `[1]`,
+  czy proces w tle żyje dalej po przekroczeniu `async`, `throttle` > 1. `ansible-vault`/`ansible-galaxy` nadal
+  odrzucone przez środowisko — tym razem odrzucone też gołe `ansible --version` i cały `ansible-galaxy`
+  (szerzej niż w #3/#4, gdzie działało samo sprawdzanie wersji).
+- Następny poziom: `ansible-vault` (jeśli środowisko kiedyś pozwoli), kolekcje i `ansible-galaxy`, Molecule,
+  `delegate_facts`, `throttle` > 1, `run_once` z różnymi wartościami `serial`.
 
 ### 🏗️ TeamCity
 - Aktualny poziom trudności: **podstawy (częściowo — patrz ograniczenie)**
