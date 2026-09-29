@@ -1,0 +1,95 @@
+# run_once w kombinacji z ROZNYMI wartosciami serial.
+#
+# W wydaniu #5 (delegate_to.yml) odkrylismy pulapke: `run_once` w playu z `serial: 1` liczy sie
+# "raz NA PACZKE", nie "raz na caly play" - bo `serial` dzieli play na osobne mini-playe.
+# Tu idziemy o krok dalej i sprawdzamy DWIE rzeczy naraz:
+#   1) Czy przy `serial: 2` (2 paczki po 2 hosty, z 4 hostow) `run_once` faktycznie odpala sie
+#      DWA razy (raz na kazda paczke), a nie raz na caly play ani 4 razy (raz na host)?
+#   2) KTORY konkretnie host w danej paczce faktycznie wykonuje task oznaczony `run_once`?
+#      Dokumentacja Ansible mowi "pierwszy host w biezacej paczce" - sprawdzamy to realnie
+#      magiczna zmienna `ansible_play_batch` (lista hostow aktywnych w BIEZACEJ paczce).
+# Dla kontrastu: druga play w tym samym pliku, BEZ serial (caly play to jedna paczka = wszystkie
+# 4 hosty), gdzie run_once naprawde odpala sie raz na caly play.
+- name: "run_once + serial: 2 (2 paczki po 2 hosty z 4)"
+  hosts: app
+  gather_facts: false
+  serial: 2
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl5
+    marker_file: "{{ demo_dir }}/run_once_serial2_marker.txt"
+  tasks:
+    - name: Upewnij sie, ze katalog istnieje (na kazdym hoscie, nie polegamy tu na run_once)
+      ansible.builtin.file:
+        path: "{{ demo_dir }}"
+        state: directory
+
+    - name: Wyczysc znacznik PRZED pierwsza paczka (tylko raz na caly plik, na pierwszym hoscie)
+      run_once: true
+      ansible.builtin.copy:
+        dest: "{{ marker_file }}"
+        content: ""
+      when: inventory_hostname == groups['app'][0]
+
+    - name: "[batch] Zapisz znacznik run_once (oczekiwane: RAZ NA PACZKE, czyli 2 razy total)"
+      run_once: true
+      ansible.builtin.lineinfile:
+        path: "{{ marker_file }}"
+        line: >-
+          run_once wykonany przez {{ inventory_hostname }} o
+          {{ lookup('pipe', 'date +%H:%M:%S.%3N') }} | paczka widziana przez ten host
+          (ansible_play_batch) = {{ ansible_play_batch }}
+        create: true
+      register: run_once_result
+
+    - name: Pokaz czy TEN KONKRETNY host wykonal task run_once (changed=true = to on byl "wybrany")
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }}: task run_once changed={{ run_once_result.changed }}"
+
+- name: "run_once BEZ serial (caly play = jedna paczka, wszystkie 4 hosty naraz)"
+  hosts: app
+  gather_facts: false
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl5
+    marker_file: "{{ demo_dir }}/run_once_noserial_marker.txt"
+  tasks:
+    - name: Wyczysc znacznik (raz)
+      run_once: true
+      ansible.builtin.copy:
+        dest: "{{ marker_file }}"
+        content: ""
+
+    - name: "[caly play] Zapisz znacznik run_once (oczekiwane: RAZ, bo jedna paczka = caly play)"
+      run_once: true
+      ansible.builtin.lineinfile:
+        path: "{{ marker_file }}"
+        line: >-
+          run_once wykonany przez {{ inventory_hostname }} o
+          {{ lookup('pipe', 'date +%H:%M:%S.%3N') }} | ansible_play_batch = {{ ansible_play_batch }}
+        create: true
+
+- name: Podsumowanie - wypisz oba znaczniki
+  hosts: app
+  gather_facts: false
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl5
+  tasks:
+    - name: Wczytaj znacznik z serial=2
+      run_once: true
+      ansible.builtin.command: "cat {{ demo_dir }}/run_once_serial2_marker.txt"
+      register: marker_serial2
+      changed_when: false
+
+    - name: Wczytaj znacznik bez serial
+      run_once: true
+      ansible.builtin.command: "cat {{ demo_dir }}/run_once_noserial_marker.txt"
+      register: marker_noserial
+      changed_when: false
+
+    - name: Pokaz oba znaczniki
+      run_once: true
+      ansible.builtin.debug:
+        msg:
+          - "=== serial: 2 (oczekiwane 2 linie, jedna na paczke) ==="
+          - "{{ marker_serial2.stdout_lines }}"
+          - "=== bez serial (oczekiwana 1 linia, caly play to jedna paczka) ==="
+          - "{{ marker_noserial.stdout_lines }}"

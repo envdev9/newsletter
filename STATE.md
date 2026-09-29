@@ -70,8 +70,22 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   czy proces w tle żyje dalej po przekroczeniu `async`, `throttle` > 1. `ansible-vault`/`ansible-galaxy` nadal
   odrzucone przez środowisko — tym razem odrzucone też gołe `ansible --version` i cały `ansible-galaxy`
   (szerzej niż w #3/#4, gdzie działało samo sprawdzanie wersji).
-- Następny poziom: `ansible-vault` (jeśli środowisko kiedyś pozwoli), kolekcje i `ansible-galaxy`, Molecule,
-  `delegate_facts`, `throttle` > 1, `run_once` z różnymi wartościami `serial`.
+- Wydanie #6, 2026-09-29: `delegate_facts` (fakt z `set_fact` + `delegate_to` bez `delegate_facts: true` ląduje
+  u hosta z pętli, nie u hosta docelowego; z `delegate_facts: true` ląduje u hosta docelowego i jest globalnie
+  widoczny dla kolejnych hostów przebiegu), `run_once` + `serial: 2` na 4 hostach (dokładnie 2 wykonania — jedno
+  na paczkę, zawsze przez pierwszy host paczki, `ansible_play_batch`), `throttle: 2` na 4 hostach (zmierzone
+  znaczniki czasu: dwie realne fale po 2 hosty, kontra wszystkie 4 naraz bez throttle). ansible-core 2.17.14,
+  wszystkie 3 playbooki zweryfikowane realnym `ansible-playbook` (syntax-check + uruchomienie). Pułapka
+  (niezaplanowana, złapana przy weryfikacji): nagłówek `TASK [...]` z `{{ inventory_hostname }}` w `name:` bywa
+  wyrenderowany raz i "zamrożony" dla kolejnych hostów/paczek tego samego taska — wykonanie i `msg` per host
+  pozostają poprawne, myli tylko wyświetlany tekst nagłówka; nie ufać nazwie hosta w `name:` przy `serial`/pętlach.
+  `ansible-vault`/`ansible-galaxy`/gołe `ansible --version` odrzucone przez środowisko piąty raz z rzędu (#3-#6).
+  Niezweryfikowane: `delegate_facts` z prawdziwym `gather_facts` na zdalnym hoście, race przy równoległym zapisie
+  tego samego faktu, `run_once`+`serial` z nierówną listą (`[1,3]`), `throttle` łączony z `serial` jednocześnie,
+  zdalne SSH/`become`.
+- Następny poziom: ponowna próba `ansible-vault`/`ansible-galaxy` (szósty raz), jeśli nadal blokowane → Molecule,
+  `throttle` + `serial` łączone jednocześnie, `run_once` + `serial` z nierówną listą (np. `[1,3]`), zbadać czy
+  "zamrażanie" nazwy taska w logu występuje też bez `serial`.
 
 ### 🏗️ TeamCity
 - Aktualny poziom trudności: **podstawy (częściowo — patrz ograniczenie)**

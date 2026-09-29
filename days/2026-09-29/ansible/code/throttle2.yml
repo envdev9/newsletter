@@ -1,0 +1,48 @@
+# throttle > 1 (w #5 sprawdzilismy tylko throttle: 1 vs brak throttle).
+# 4 hosty (app1..app4). Domyslny `forks` to 5, wiec BEZ throttle wszystkie 4 hosty i tak
+# ida rownolegle. `throttle: 2` ma wymusic, zeby TEN JEDEN task wykonywal sie NAJWYZEJ po 2
+# hosty naraz - czyli 2 "fale" po 2 hosty, a nie 4 hosty jednoczesnie i nie 4 hosty po kolei.
+- name: throttle > 1 - najwyzej 2 hosty rownoczesnie dla JEDNEGO taska (z 4 dostepnych)
+  hosts: app
+  gather_facts: false
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl5
+    log_file: "{{ demo_dir }}/throttle2_log.txt"
+  tasks:
+    - name: Upewnij sie, ze katalog istnieje (raz)
+      run_once: true
+      ansible.builtin.file:
+        path: "{{ demo_dir }}"
+        state: directory
+
+    - name: Czysty log (raz)
+      run_once: true
+      ansible.builtin.copy:
+        dest: "{{ log_file }}"
+        content: ""
+
+    - name: "Task BEZ throttle (4 hosty, forks domyslnie 5 -> wszystkie naraz)"
+      ansible.builtin.shell: >
+        echo "start $(date +%H:%M:%S.%3N) {{ inventory_hostname }}" >> {{ log_file }};
+        sleep 2;
+        echo "koniec $(date +%H:%M:%S.%3N) {{ inventory_hostname }}" >> {{ log_file }}
+      changed_when: false
+
+    - name: "Task z throttle=2 (4 hosty, max 2 naraz -> 2 fale)"
+      throttle: 2
+      ansible.builtin.shell: >
+        echo "start $(date +%H:%M:%S.%3N) {{ inventory_hostname }}" >> {{ log_file }};
+        sleep 2;
+        echo "koniec $(date +%H:%M:%S.%3N) {{ inventory_hostname }}" >> {{ log_file }}
+      changed_when: false
+
+    - name: Pokaz log (raz, na koncu)
+      run_once: true
+      ansible.builtin.command: "cat {{ log_file }}"
+      register: throttle2_log
+      changed_when: false
+
+    - name: Wypisz log
+      run_once: true
+      ansible.builtin.debug:
+        msg: "{{ throttle2_log.stdout_lines }}"

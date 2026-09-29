@@ -1,0 +1,57 @@
+# delegate_facts: gdzie NAPRAWDE laduje fakt ustawiony przez set_fact + delegate_to.
+#
+# Scenariusz z zycia: w rolling deployu (patrz wydanie #5, delegate_to.yml) kazdy z hostow
+# app1..app4 PRZY OKAZJI wlasnego deployu chce raz sprawdzic cos na wspolnym zasobie - tu:
+# fikcyjny "stan lb1" (w realu: ile wolnego miejsca ma NFS, jaka wersja configu jest na LB,
+# itp.). Naturalna pokusa: `delegate_to: lb1` + `set_fact`. PROBLEM: bez `delegate_facts: true`
+# ten fakt i tak ląduje w hostvars BIEZACEGO hosta z petli (np. app1), NIE w hostvars['lb1'] -
+# mimo ze sam task fizycznie wykonal sie na lb1. `delegate_facts: true` naprawia to: fakt trafia
+# do hostvars hosta DELEGOWANEGO (lb1) i - to jest ta czesc, ktora robi z tego cos uzytecznego -
+# jest odtad widoczny dla WSZYSTKICH kolejnych hostow w tym samym przebiegu, nie tylko dla tego,
+# ktory go ustawil. To wzorzec "sprawdz raz na wspolnym zasobie, uzyj wszedzie", odpowiednik
+# jednorazowego zapytania do wspolnego serwisu, ktorego wynik cache'ujesz w polu statycznym
+# widocznym dla wszystkich watkow/requestow - a nie tylko lokalnej zmiennej watku, ktory je wykonal.
+- name: delegate_facts - gdzie ladują fakty ustawione przez set_fact + delegate_to
+  hosts: app
+  gather_facts: false
+  serial: 1
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl5
+  tasks:
+    - name: Upewnij sie, ze katalog istnieje
+      ansible.builtin.file:
+        path: "{{ demo_dir }}"
+        state: directory
+
+    - name: "[{{ inventory_hostname }}] Co juz widac w hostvars['lb1'] PRZED tym przebiegiem (dowod wspoldzielenia)"
+      ansible.builtin.debug:
+        msg: >-
+          hostvars['lb1'].lb_seen_with_delegate_facts (przed) =
+          {{ hostvars['lb1'].lb_seen_with_delegate_facts | default('BRAK - jeszcze nikt nie ustawil') }}
+
+    - name: "[{{ inventory_hostname }}] BEZ delegate_facts: set_fact leci na lb1, ale fakt ma wyladowac tutaj"
+      delegate_to: lb1
+      ansible.builtin.set_fact:
+        lb_seen_without_delegate_facts: "ustawil {{ inventory_hostname }} o {{ lookup('pipe', 'date +%H:%M:%S') }}"
+
+    - name: "[{{ inventory_hostname }}] Pokaz gdzie fakt NAPRAWDE wyladowal (bez delegate_facts)"
+      ansible.builtin.debug:
+        msg: >-
+          hostvars[{{ inventory_hostname }}].lb_seen_without_delegate_facts =
+          {{ hostvars[inventory_hostname].lb_seen_without_delegate_facts | default('BRAK') }}
+          || hostvars['lb1'].lb_seen_without_delegate_facts =
+          {{ hostvars['lb1'].lb_seen_without_delegate_facts | default('BRAK') }}
+
+    - name: "[{{ inventory_hostname }}] Z delegate_facts: set_fact leci na lb1 I fakt ma tam wyladowac"
+      delegate_to: lb1
+      delegate_facts: true
+      ansible.builtin.set_fact:
+        lb_seen_with_delegate_facts: "ustawil {{ inventory_hostname }} o {{ lookup('pipe', 'date +%H:%M:%S') }}"
+
+    - name: "[{{ inventory_hostname }}] Pokaz gdzie fakt NAPRAWDE wyladowal (z delegate_facts)"
+      ansible.builtin.debug:
+        msg: >-
+          hostvars[{{ inventory_hostname }}].lb_seen_with_delegate_facts =
+          {{ hostvars[inventory_hostname].lb_seen_with_delegate_facts | default('BRAK') }}
+          || hostvars['lb1'].lb_seen_with_delegate_facts =
+          {{ hostvars['lb1'].lb_seen_with_delegate_facts | default('BRAK') }}
