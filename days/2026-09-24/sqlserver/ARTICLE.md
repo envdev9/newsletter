@@ -106,44 +106,46 @@ kroku, na prawdziwej instancji SQL Server 2022 (w kontenerze Dockera):
 
 ---
 
-## ⚠️ Ograniczenie środowiska przy weryfikacji tego wydania
+## ✅ Weryfikacja — prawdziwe liczby (dopisane 2026-09-29)
 
-Zgodnie z zasadą tej prasówki "zero fikcji" — uczciwie: **nie udało mi się
-realnie uruchomić powyższych skryptów w tym środowisku** i wkleić prawdziwych
-liczb `logical reads`/czasu, mimo próby. Powód jest czysto infrastrukturalny, nie
-merytoryczny:
+Wydanie #1 pierwotnie nie miało realnie zmierzonych liczb (na maszynie brakowało
+miejsca na dysku pod obraz SQL Server 2022). Pięć dni później, gdy dysk miał już
+43 GB wolnego, przykład został odpalony naprawdę — na SQL Server 2022 w Dockerze,
+ręcznie przez `docker exec ... sqlcmd` (identycznie jak sekwencja komend w
+`run-demo.sh`). Wynik:
 
-Maszyna, na której działa ten agent, ma dysk **40 GB, w praktyce pełny** (w trakcie
-tej sesji spadło z 845 MB do 231 MB wolnego miejsca — inne procesy na tej samej
-współdzielonej maszynie zużywają go równolegle). Obraz
-`mcr.microsoft.com/mssql/server:2022-latest` (kilka GB po rozpakowaniu) nie mieści
-się. Próba pobrania (`docker pull mcr.microsoft.com/mssql/server:2022-latest`)
-zakończyła się realnym błędem:
+| Krok | Operator w planie | `logical reads` | Czas (CPU / elapsed) |
+|---|---|---|---|
+| **02** — `SELECT` bez indeksu | **Clustered Index Scan** (cała tabela) | **2495** | 49 ms / 48 ms |
+| **04** — `SELECT` z indeksem | **Index Seek** + **Key Lookup** | **30** | 2 ms / 2 ms |
 
-```
-failed to extract layer (application/vnd.docker.image.rootfs.diff.tar.gzip
-sha256:cb5e374be662a562b8271158639e918b9c634aa4dfdc8b3aa31ccfc99cf8c077) to
-overlayfs as "extract-903847685-KScw ...": mount callback failed on
-/var/lib/containerd/tmpmounts/containerd-mount2254423097: write
-/var/lib/containerd/tmpmounts/containerd-mount2254423097/usr/lib/locale/C.utf8/LC_CTYPE:
-no space left on device
-```
+Dokładnie tak, jak przewidywała teoria: bez indeksu SQL Server musiał przejrzeć
+całą tabelę (2495 stron po 8 KB), z indeksem — **83× mniej odczytów** (2495 → 30),
+bo B-drzewo pozwoliło od razu "skoczyć" do 9 wierszy klienta `CustomerId = 1`
+(`Index Seek`), a resztę kolumn dociągnąć pojedynczym `Clustered Index Seek
+... LOOKUP` na każdy trafiony wiersz (`Key Lookup`).
 
-Sprzątanie nieużywanych obrazów Dockera (`docker system prune`) należących do
-innych, równolegle działających projektów na tej maszynie zostało celowo
-zablokowane (klasyfikator uprawnień) — słusznie, bo mogłoby to zepsuć pracę innych
-zadań na tej samej maszynie. Lokalnego `sqlcmd` też nie ma na hoście.
+Druga strona medalu — koszt zapisu (krok **05**, 20 000 nowych wierszy):
 
-**Co to oznacza dla czytelnika:** skrypty `.sql` w `code/` są kompletne, spójne
-logicznie i gotowe do odpalenia (składnia i wzorce sprawdzone ręcznie — m.in.
-generator wierszy przez `ROW_NUMBER()`/`CROSS JOIN`, `SET STATISTICS
-IO/TIME/PROFILE`, `sys.dm_db_index_physical_stats`, wszystko to standardowe,
-udokumentowane konstrukcje T-SQL), ale **nie mam realnych zmierzonych liczb do
-pokazania** — i zgodnie z zasadą "zero fikcji" tej prasówki, żadnych nie zmyślam.
-Opis "co powinieneś zobaczyć" w sekcji 1 i 2 powyżej opiera się na udokumentowanym
-mechanizmie działania SQL Server (Clustered Index Scan → Index Seek + Key Lookup),
-nie na wymyślonym pomiarze. Jeśli masz Dockera z wolnym miejscem na dysku — `cd
-code && ./run-demo.sh` odpali cały przykład od zera i pokaże prawdziwe liczby.
+| Tabela | Czas INSERT (CPU / elapsed) |
+|---|---|
+| bez indeksu na `CustomerId` | 179 ms / 186 ms |
+| z indeksem na `CustomerId` | 464 ms / 477 ms |
+
+Ten sam batch wstawiania jest **2,6× wolniejszy**, gdy trzeba dodatkowo
+zaktualizować B-drzewo indeksu przy każdym wierszu — dokładnie ten kompromis
+"szybszy SELECT, wolniejszy INSERT" opisany w sekcji 1.
+
+**Napotkany i naprawiony błąd:** `03-create-index.sql` nie miał na początku `USE
+PrasowkaDemo;` — każde wywołanie `docker exec ... sqlcmd -i plik.sql` to osobna
+sesja, więc kontekst bazy ustawiony w poprzednim pliku (`02-...`) się nie
+przenosi. Bez tej poprawki `CREATE INDEX` kończył się błędem `Cannot find the
+object "dbo.Orders"`. Plik w repo jest już poprawiony.
+
+Indeks `IX_Orders_CustomerId` zajął **869 stron** (866 liść + 2 pośredni + 1
+root = 3 poziomy B-drzewa), czyli ok. 6,77 MB dla 500 000 wierszy.
+
+Kontener po weryfikacji usunięty (`docker rm -f`), zero śladów na dysku.
 
 ---
 

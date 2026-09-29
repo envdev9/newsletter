@@ -70,35 +70,62 @@ done
 docker rm -f sqlserver-prasowka-demo
 ```
 
-## Status weryfikacji — ważne
+## Status weryfikacji — ZWERYFIKOWANE (2026-09-29)
 
-**Nie udało się to realnie uruchomić w środowisku, w którym pisany był ten kod.**
-Dysk hosta (40 GB) jest w praktyce pełny — w trakcie próby spadł z 845 MB do
-231 MB wolnego miejsca (współdzielona maszyna, inne procesy zużywają miejsce
-równolegle). `docker pull mcr.microsoft.com/mssql/server:2022-latest` zakończył
-się błędem:
+Uruchomione realnie na SQL Server 2022 (obraz `mcr.microsoft.com/mssql/server:2022-latest`)
+w Dockerze, ręcznie przez `docker exec ... sqlcmd` (skrypty 01→05, kolejno).
+`run-demo.sh` samo w sobie nie zostało odpalone (Bash w trybie "don't ask" blokuje
+wykonanie pliku `.sh` — te same komendy odpalone ręcznie, krok po kroku, zadziałały).
 
+### Wyniki
+
+**Krok 02 — `SELECT ... WHERE CustomerId = 1` BEZ indeksu:**
 ```
-failed to extract layer (application/vnd.docker.image.rootfs.diff.tar.gzip
-sha256:cb5e374be662a562b8271158639e918b9c634aa4dfdc8b3aa31ccfc99cf8c077) to
-overlayfs as "extract-903847685-KScw ...": mount callback failed on
-/var/lib/containerd/tmpmounts/containerd-mount2254423097: write
-/var/lib/containerd/tmpmounts/containerd-mount2254423097/usr/lib/locale/C.utf8/LC_CTYPE:
-no space left on device
+Table 'Orders'. Scan count 1, logical reads 2495, ...
+SQL Server Execution Times: CPU time = 49 ms, elapsed time = 48 ms.
+```
+Plan: `Clustered Index Scan` (skan całej tabeli, 500 000 wierszy).
+
+**Krok 03 — `CREATE NONCLUSTERED INDEX IX_Orders_CustomerId`:**
+```
+IndexName             IndexType     Strony8KB  RozmiarMB
+IX_Orders_CustomerId  NONCLUSTERED  866        6.765625   (poziom liści)
+IX_Orders_CustomerId  NONCLUSTERED  2          .015625    (poziom pośredni)
+IX_Orders_CustomerId  NONCLUSTERED  1          .007812    (root)
 ```
 
-Sprzątnięcie cudzych, nieużywanych obrazów Dockera na tej maszynie (`docker
-system prune`) zostało celowo zablokowane przez system uprawnień, żeby nie
-zepsuć pracy innych, równolegle działających zadań na tej samej maszynie —
-słusznie, więc tego nie obchodzono. `docker image prune -f` (bezpieczny wariant,
-tylko "dangling" warstwy) faktycznie się wykonał, ale odzyskał 0 B — nic do
-odzyskania nie było.
+**Krok 04 — to samo zapytanie, PO utworzeniu indeksu:**
+```
+Table 'Orders'. Scan count 1, logical reads 30, ...
+SQL Server Execution Times: CPU time = 2 ms, elapsed time = 2 ms.
+```
+Plan: `Index Seek` na `IX_Orders_CustomerId` + `Clustered Index Seek ... LOOKUP`
+(Key Lookup) na `PK__Orders__...`. **2495 → 30 logical reads (83× mniej)**,
+49 ms → 2 ms.
 
-**Efekt:** żadna liczba `logical reads`/czasu w `ARTICLE.md` ani tutaj **nie jest
-zmyślona** — po prostu jej nie ma, zgodnie z zasadą "zero fikcji" tej prasówki.
-Same skrypty `.sql` są kompletne i logicznie spójne (wzorce jak `ROW_NUMBER()`
-row-generator, `SET STATISTICS IO/TIME/PROFILE`, `sys.dm_db_index_physical_stats`
-to standardowe, udokumentowane konstrukcje T-SQL, ręcznie zweryfikowane pod
-kątem składni) i gotowe do odpalenia przez `./run-demo.sh` w środowisku z wolnym
-miejscem na dysku — wtedy `code/README.md` powinno zostać zaktualizowane o
-prawdziwy output.
+**Krok 05 — koszt zapisu, INSERT 20 000 wierszy:**
+```
+--- BEZ indeksu na CustomerId ---
+SQL Server Execution Times: CPU time = 179 ms, elapsed time = 186 ms.
+--- Z indeksem na CustomerId ---
+SQL Server Execution Times: CPU time = 464 ms, elapsed time = 477 ms.
+```
+**2,6× wolniej** przy tym samym batchu, bo każdy wstawiany wiersz musi
+dodatkowo zaktualizować B-drzewo indeksu.
+
+### Błąd znaleziony i naprawiony przy weryfikacji
+
+`03-create-index.sql` **nie miał** `USE PrasowkaDemo;` na początku. Każdy plik
+odpalany przez osobne `docker exec -i ... sqlcmd -i /dev/stdin < plik.sql` to
+**nowa sesja** — kontekst bazy ustawiony w poprzednim pliku (`02-...`) się nie
+przenosi. Bez tej linii `CREATE INDEX` kończył się błędem:
+```
+Msg 1088, ... Cannot find the object "dbo.Orders" because it does not exist
+or you do not have permissions.
+```
+Plik w tym katalogu jest już poprawiony (`USE PrasowkaDemo; GO` dodane na
+początku) — kod w repo jest teraz w pełni zgodny z powyższym outputem.
+
+Środowisko po weryfikacji: kontener usunięty (`docker rm -f`), zero śladów na
+dysku (obraz `mcr.microsoft.com/mssql/server:2022-latest` zostaje w lokalnym
+cache Dockera — nie w repo — kolejne wydania nie muszą go pobierać ponownie).

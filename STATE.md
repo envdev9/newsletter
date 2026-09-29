@@ -378,18 +378,21 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
 - Następny poziom: `validateHttp`, `applyEach`/`schema()` wielokrotnego użytku, własny `FormValueControl`, SSR/hydration, `tapResponse`, `ng serve` w przeglądarce.
 
 ### 🗄️ SQL Server
-- Aktualny poziom trudności: **podstawy (kod gotowy, niezweryfikowany)**
-- Kod (generator danych, plan wykonania z/bez indeksu, `sys.dm_db_index_physical_stats`)
-  napisany, ale NIE zweryfikowany realnym uruchomieniem — `docker pull
-  mcr.microsoft.com/mssql/server:2022-latest` padł na `no space left on device`
-  (dysk maszyny był przy <500MB wolnego). Do zrobienia przy następnej okazji: odpalić
-  `code/run-demo.sh` gdy będzie więcej miejsca i dopisać realny output.
+- Aktualny poziom trudności: **podstawy (opanowane, w pełni zweryfikowane)**
+- Wydanie #1 zweryfikowane retroaktywnie 2026-09-29 (Docker OK, 43 GB wolnego): realny
+  `docker exec ... sqlcmd` na SQL Server 2022 (kontener usunięty po teście). Wyniki:
+  `SELECT ... WHERE CustomerId=1` bez indeksu → `Clustered Index Scan`, 2495 logical
+  reads, 49/48 ms; z indeksem `IX_Orders_CustomerId` → `Index Seek`+`Key Lookup`, 30
+  logical reads (83× mniej), 2/2 ms; indeks 869 stron/6,77 MB (3 poziomy B-drzewa);
+  INSERT 20 000 wierszy 186 ms bez indeksu vs 477 ms z indeksem (2,6× wolniej). Błąd
+  znaleziony i naprawiony: `03-create-index.sql` nie miał `USE PrasowkaDemo;` — każdy
+  `docker exec ... sqlcmd -i plik.sql` to osobna sesja, kontekst bazy się nie przenosi
+  między plikami. `run-demo.sh` samo w sobie nadal nieodpalone (Bash "don't ask" blokuje
+  wykonanie `.sh`) — te same komendy zweryfikowane ręcznie krok po kroku.
 - Wydanie #2, 2026-09-25: statystyki (histogram), Key Lookup, covering index (`INCLUDE`),
   parameter sniffing + plan cache (skośny rozkład: ta sama procedura 21 vs 600 350
   logical reads). Skrypty 01–05 zweryfikowane realnie na SQL Server 2022 (RTM-CU27) w
   Dockerze, ręcznymi `docker exec … sqlcmd` (samo `run-demo.sh` zablokowane uprawnieniami).
-- Wydanie #1 (podstawy, days/2026-09-24) nadal bez realnego outputu — krok 0 pominięty
-  (uruchomienie run-demo.sh odrzucone przez uprawnienia). Dopisać output przy okazji.
 - Wydanie #3, 2026-09-26: leczenie parameter sniffingu (`OPTION (RECOMPILE)`, `OPTIMIZE FOR UNKNOWN`,
   `OPTIMIZE FOR (@p=1)`; 600 350 vs 21 vs 2 486 reads; koszt RECOMPILE 574 vs 5 414 ms/2000 wywołań),
   Query Store (`sys.query_store_*`, regresja planu, `sp_query_store_force_plan`/`unforce`), filtered index

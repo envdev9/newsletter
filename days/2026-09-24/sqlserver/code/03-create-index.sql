@@ -1,6 +1,9 @@
 -- 03-create-index.sql
 -- Tworzymy nieklastrowany indeks (nonclustered index) na CustomerId.
 --
+USE PrasowkaDemo;
+GO
+--
 -- Co to jest indeks, w skrócie: to osobna, posortowana struktura danych
 -- (B-drzewo - "B-tree") trzymana obok tabeli. Węzły liścia B-drzewa
 -- zawierają wartości CustomerId w kolejności rosnącej + wskaźnik
