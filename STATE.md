@@ -408,7 +408,23 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   `ROLLBACK IMMEDIATE` zabija pisarza, `INSERT…ORDER BY` nie sortuje rowgroupów. Niezweryfikowane: cały `run-demo.sh`, `10-cleanup.sql`,
   nonclustered columnstore, UPDATE/DELETE w columnstore, szkic C# dla 1205, wyniki bez MAXDOP 1. Krok 0 (weryfikacja #1) nadal
   pominięty — `run-demo.sh` odrzucone przez uprawnienia (Docker i miejsce OK).
-- Następny poziom: Query Store hints, PSP optimization, nonclustered columnstore na OLTP (delta store, `REORGANIZE`), `SERIALIZABLE`/`sp_getapplock`.
+- Wydanie #7, 2026-09-29: **nonclustered columnstore index (NCCI) na tabeli OLTP** (obok zwykłego klucza klastrowanego,
+  optymalizator sam wybiera Clustered Index Seek dla punktowego odczytu vs Columnstore Index Scan dla `GROUP BY`: 3
+  logical reads vs 99 ms/1536 lob reads (NCCI) vs 278 ms/5098 reads (rowstore wymuszony hintem)), **delta store**
+  (trickle insert 5×2000 → nowy rowgroup `OPEN`, zapytania widzą dane poprawnie od razu), eliminacja segmentów + delta
+  store razem (filtr na "dziś" pomija WSZYSTKIE 3 compressed rowgroupy: `Segment reads 0 skipped 3`, 5 ms vs 119 ms),
+  `REORGANIZE WITH (COMPRESS_ALL_ROW_GROUPS=ON)` (kompresuje delta store I scala małe rowgroupy w większy — stare
+  dostają `TOMBSTONE`); **`SERIALIZABLE` vs `sp_getapplock`** na generatorze `MAX(InvoiceNo)+1`: `READ COMMITTED` →
+  realny duplikat; `SERIALIZABLE` → poprawność OK, ale przez **deadlock 1205** (obie sesje dostają kompatybilny
+  `RangeS-S` na tym samym zakresie, potwierdzone `sys.dm_tran_locks`, konflikt dopiero przy `INSERT`); `sp_getapplock`
+  (`@LockOwner='Transaction'`) → zero błędów, druga sesja grzecznie czeka (zmierzone 1919 ms) i liczy numer na nowo.
+  SQL Server 2022 RTM-CU27 (16.0.4295.3), **zweryfikowane dwukrotnie od zera** (identyczne wyniki), ręcznie przez
+  `docker exec ... sqlcmd` (sesje A/B jako równoległe procesy). Niezweryfikowane: `run-demo.sh` jako całość (Bash
+  "don't ask" blokuje `.sh` — znany problem z poprzednich wydań), przyczyna 3 rowgroupów zamiast 2 przy buildzie NCCI
+  (kontener ma tylko 2 CPU, związek nie zbadany), mechanizm/harmonogram czyszczenia `TOMBSTONE` w tle, `UPDATE`/`DELETE`
+  na tabeli z NCCI, `sp_getapplock` z `@LockOwner='Session'`, więcej niż 2 równoległe sesje generatora.
+- Następny poziom: `UPDATE`/`DELETE` na tabeli z nonclustered columnstore (bitmapa skasowanych wierszy), Query Store
+  hints (`sp_query_store_set_hints`), ponowna próba Parameter Sensitive Plan optimization (nie zadziałało w #3).
 
 ### 🧬 PostgreSQL — baza wektorowa (pgvector)
 - Aktualny poziom trudności: **podstawy (opanowane)**

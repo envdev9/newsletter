@@ -45,6 +45,7 @@ Kto wybiera skill? Nie hook, nie harness — model, wyłącznie na podstawie `de
 → [Artykuł](angular/ARTICLE.md) · [Kod](angular/code/)
 
 ### 🗄️ [SQL Server](sqlserver/ARTICLE.md)
+Nonclustered columnstore obok zwykłego OLTP — optymalizator sam wybiera Index Seek albo skan kolumnowy — a osobno: `SERIALIZABLE` "naprawia" wyścig o numer faktury deadlockiem 1205, `sp_getapplock` tym samym problemem zajmuje się bez błędu.
 → [Artykuł](sqlserver/ARTICLE.md) · [Kod](sqlserver/code/)
 
 ### 🧬 [PostgreSQL jako baza wektorowa](postgres-vector/ARTICLE.md)
