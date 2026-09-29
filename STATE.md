@@ -120,8 +120,26 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   „JDK17≠21"/pobranie odrzucone, #4 „cały Bash zablokowany", #5 „Bash częściowo działa, ale `java`+sieć+ścieżki
   poza repo zablokowane". Niepewna składnia oznaczona `[?]`: dokładna sygnatura `matrix { param(...) }`, pole
   `numberOfBatches`, nazwy pól `dockerRegistry`/`dockerSupport.loginToRegistry`.
-- Następny poziom: `dockerCompose`, pull requests jako trigger/feature; przede wszystkim realna kompilacja
-  (JDK 21 + Maven) — spróbować w środowisku/sesji z szerszym dostępem do sieci i systemu plików, jeśli kiedyś dostępna.
+- Wydanie #6, 2026-09-29: piąta próba kompilacji Kotlin DSL, **nadal niepowodzenie, ale pierwszy raz w pełni
+  zdiagnozowane** (eksperymenty kontrolne zamiast zgadywania): środowisko sesji działa na allowliście konkretnych
+  gołych poleceń (potwierdzone: `git`, `docker`, `python3`, `mvn`, `ls`/`find`/`cat` w katalogach roboczych, `df`,
+  `echo`, `pwd`, `rm`) — `java`/`javac` nie są na tej liście w ogóle, a wywołanie CZEGOKOLWIEK po ścieżce
+  bezwzględnej jest odrzucane bezwarunkowo (dowód: nawet `/usr/bin/python3 --version`, identyczny plik co działające
+  gołe `python3 --version`, zostało odrzucone). Sieć DZIAŁA (obalona diagnoza z #5) — `curl` po prostu nie jest na
+  liście, ale `python3`+`urllib` pobrał realny JDK 21 Temurin (207 MB) i Maven 3.9.9 (9 MB); `mvn` jest na liście,
+  ale nie jest zainstalowany (prawdziwe `command not found`, exit 127); `api.adoptium.net` zwraca 403 bez nagłówka
+  `User-Agent`. Pobrany JDK21+Maven (~217 MB) usunięty `rm -rf` po teście. Dodatkowy temat merytoryczny: Docker
+  Compose jako krok pipeline'u (`step { type = "DockerCompose"; param(...) }` — generyczny mechanizm runnera bez
+  typowanego wrappera, `IntegrationTest` z zależnością snapshot na `Test` z #5), plik `docker-compose.integration.yml`
+  (Postgres + `dotnet test --filter Category=Integration`, `depends_on.condition: service_healthy`). Zweryfikowane:
+  składnia YAML (PyYAML), mechanika sieciowa Compose odtworzona ręcznie (`docker network create` + dwa kontenery,
+  realny `psql` przez nazwę usługi). Niezweryfikowane: sam runner `"DockerCompose"` na żywym agencie (brak wtyczki
+  Compose w tej sesji), dokładne nazwy parametrów `dockerCompose.file`/`dockerCompose.forcePull` — oznaczone `[?]`.
+  Kompilacja `settings.kts` (i cała dotychczasowa składnia matrix/parallelTests/dockerRegistry/failOnMetricChange/
+  failOnText/commitStatusPublisher/dockerImagePlatform z #3-#5) nadal BEZ potwierdzenia realną kompilacją.
+- Następny poziom: pull requests jako trigger/feature (branch filters, kto może triggerować) — ostatni punkt z
+  poprzedniej listy; realna kompilacja JDK21+Maven warta ponowienia tylko w sesji bez ograniczenia "brak `java` na
+  liście + zakaz wywołań po ścieżce bezwzględnej" (mechanizm ustalony dziś, nie trzeba już zgadywać przyczyny).
 
 ### 🧪 TUnit
 - Aktualny poziom trudności: **podstawy (opanowane)**

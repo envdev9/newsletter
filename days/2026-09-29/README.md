@@ -15,6 +15,7 @@
 → [Artykuł](ansible/ARTICLE.md) · [Kod](ansible/code/)
 
 ### 🏗️ [TeamCity](teamcity/ARTICLE.md)
+Piąta próba kompilacji Kotlin DSL nadal bez sukcesu, ale pierwszy raz w pełni zdiagnozowana (allowlist poleceń + zakaz wywołań po ścieżce bezwzględnej, sieć jednak działa) — plus nowy krok pipeline'u: Docker Compose z Postgresem dla testów integracyjnych.
 → [Artykuł](teamcity/ARTICLE.md) · [Kod](teamcity/code/)
 
 ### 🧪 [TUnit](tunit/ARTICLE.md)
