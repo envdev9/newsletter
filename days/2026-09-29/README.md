@@ -49,6 +49,7 @@ Nonclustered columnstore obok zwykłego OLTP — optymalizator sam wybiera Index
 → [Artykuł](sqlserver/ARTICLE.md) · [Kod](sqlserver/code/)
 
 ### 🧬 [PostgreSQL jako baza wektorowa](postgres-vector/ARTICLE.md)
+`dotnet ef migrations add` naprawdę umie złożyć migrację z indeksem HNSW od zera (włącznie z `CREATE EXTENSION`) — a zmiana parametrów `m`/`ef_construction` nie robi `ALTER`, tylko pełny `DROP`+`CREATE` indeksu (zmierzone: ~19,4 s na 20k wierszy).
 → [Artykuł](postgres-vector/ARTICLE.md) · [Kod](postgres-vector/code/)
 
 ### 🔐 [Certyfikaty i TLS (X.509)](certificates/ARTICLE.md)

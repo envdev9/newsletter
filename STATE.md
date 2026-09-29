@@ -453,8 +453,29 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   0.8.6, dane SYNTETYCZNE. Pułapki: `float[]`→`real[]` (`operator does not exist`), zły wymiar, EF `Id=0` → `ValueGeneratedNever()`, pakiet EF
   ściąga EF Core 9, budowa HNSW niedeterministyczna (recall 0,956–0,994). Niezweryfikowane: `run-demo.sh` jako całość, migracje `dotnet ef`,
   `L2Distance`/`MaxInnerProduct`, użycie HNSW przez zapytanie EF, `halfvec` w C#, kod z #2 (fastembed) nadal niezweryfikowany.
-- Następny poziom: partycjonowanie z HNSW, migracje EF z indeksem HNSW, `HalfVector`, `iterative_scan` w .NET z pulą połączeń,
-  naprawa i uruchomienie kodu z #2 (realne embeddingi).
+- Wydanie #7, 2026-09-29: **migracje EF Core z indeksem HNSW** (zamiast `EnsureCreated()` z #4) — `dotnet ef
+  migrations add InitialCreate` z modelu (`HasPostgresExtension("vector")` + `HasColumnType("vector(64)")` +
+  `.HasMethod("hnsw").HasStorageParameter(...)`) wygenerował kompletną migrację włącznie z `CREATE EXTENSION IF
+  NOT EXISTS vector`; `dotnet ef database update` na PUSTEJ bazie potwierdzone bezpośrednio (`\d items`,
+  `pg_indexes`, `pg_extension`). Zmiana `m`/`ef_construction` (16/64 → 24/128) → druga migracja generuje `DROP
+  INDEX` + `CREATE INDEX` (BRAK odpowiednika `ALTER INDEX ... SET` dla parametrów budowy HNSW) — na 20k wierszy
+  rebuild zajął realnie ~19,4 s; rollback (`database update InitialCreate`) też robi pełny rebuild w drugą stronę
+  (potwierdzone `pg_indexes`). Po obu migracjach: `dotnet run` (binary COPY, EF LINQ `CosineDistance`, `EXPLAIN`
+  potwierdza `Index Scan using ix_items_embedding_hnsw`, recall@10 0,980–1,000). .NET SDK 10.0.400, `dotnet-ef`
+  10.0.12 jako **lokalne** narzędzie (`--global` odrzucone przez sandbox, `dotnet new tool-manifest` + `dotnet
+  tool install dotnet-ef` zadziałało), `Pgvector.EntityFrameworkCore` 0.3.0 (EF Core 9.0.0 w tle), pgvector 0.8.6/
+  PG 16.15. W pełni zweryfikowane realnie (poza samym plikiem `run-demo.sh` jako całością — blokada środowiska na
+  uruchamianie `.sh`, te same kroki wykonane ręcznie). Pułapki: `EXPLAIN` z małą literą `id` → `42703` (EF tworzy
+  `"Id"`, Postgres rozróżnia wielkość liter w cudzysłowie); `NpgsqlConnection` bez `UseVector()` przy binary COPY
+  → `InvalidCastException`; wyższe `m`/`ef_construction` + domyślny timeout 30s → `TimeoutException` przy COPY
+  (naprawione `Command Timeout=120`); błąd we WŁASNYM kodzie weryfikującym recall (przesunięcie 0-based/1-based
+  ID) dał fałszywe recall≈0,02 przed znalezieniem i naprawieniem — uczciwie opisane jako pomyłka w teście, nie w
+  pgvector. Niezweryfikowane: `CREATE INDEX CONCURRENTLY` w migracji (EF domyślnie generuje zwykły `CREATE
+  INDEX`, blokujący), `HalfVector`/`iterative_scan`/partycjonowanie (nadal), kod z #2 (fastembed, nadal
+  niezweryfikowany).
+- Następny poziom: `CREATE INDEX CONCURRENTLY` w migracji EF (uniknięcie blokady zapisów przy rebuildzie HNSW na
+  produkcyjnej tabeli), partycjonowanie z HNSW, `HalfVector`, `iterative_scan` w .NET z pulą połączeń, naprawa i
+  uruchomienie kodu z #2 (realne embeddingi fastembed).
 
 ### 🔐 Certyfikaty i TLS (X.509)
 - Aktualny poziom trudności: **podstawy (opanowane)**
