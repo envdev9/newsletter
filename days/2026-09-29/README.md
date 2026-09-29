@@ -32,6 +32,7 @@ Skill do code-review Angulara skoncentrowany na Signals — deterministyczny ska
 → [Artykuł](ai-claude-code/ARTICLE.md) · [Kod](ai-claude-code/code/)
 
 ### ⚙️ [AI — agentic loop](ai-agentic-loop/ARTICLE.md)
+Kto wybiera skill? Nie hook, nie harness — model, wyłącznie na podstawie `description`; symulacja pokazuje, jak identyczna procedura z lepiej napisanym opisem łapie parafrazę zadania, a z gorszym opisem daje totalny miss.
 → [Artykuł](ai-agentic-loop/ARTICLE.md) · [Kod](ai-agentic-loop/code/)
 
 ### 🧠 [AI — zarządzanie kontekstem](ai-context/ARTICLE.md)

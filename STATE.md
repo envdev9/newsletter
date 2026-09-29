@@ -297,7 +297,19 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   `claude -p` z kodami wyjścia 10–14 i niezależnym weryfikatorem (`fake_claude.py` udaje agenta). `run_tests.py` 19/19 (Python 3.10).
   Niezweryfikowane: `claude` CLI (`--version` odrzucone), flagi `-p`/JSON, `permissionMode`, równoległość subagentów w żywej
   sesji, szkic GitHub Actions. Zostały `__pycache__/` w `code/`.
-- Następne: skille ładowane przez agenta, `permissionMode` w frontmatterze agenta (po weryfikacji CLI), hooki w trybie headless, worktree dla równoległych agentów.
+- Wydanie #6, 2026-09-29: jak model (nie harness) sam wybiera skill wyłącznie na podstawie `description` — mechanizm
+  fundamentalnie inny niż deterministyczne hooki/`tools` z #1-#4 (żaden `if`, żaden wyzwalacz zewnętrzny). 5 skilli-fixture
+  w `code/skills/` (dobry konkretny opis, dobry pod parafrazy, zbyt wąski, dwa złe/ogólne), w tym para v1-narrow/v2-broad:
+  IDENTYCZNA treść proceduralna, różni się tylko `description` — dowód, że samo pole decyduje, czy skill dostanie szansę.
+  Symulacja (`skill_router_sim.py`, ważony bag-of-words `1/df`, PRÓG a nie ranking) — jawnie NIE model semantyczny, tylko
+  mechanizm decyzyjny. `run_tests.py` 11/11 na 5 scenariuszach (Python 3.10, bez zależności). `claude`/`claude --version`
+  odrzucone przez uprawnienia (jak #3/#4) — potwierdzone ponownie, nie sprawdzano dalej. Ustalenia: (1) nieważony recall
+  przy niższym progu daje realny false-positive ogólnego skilla nad wąskim-ale-trafnym (sprawdzone ręcznie przed dodaniem
+  wagi `1/df`); (2) polska odmiana (`kolumnę`/`kolumny`, `migracji`/`migracje`) gubi trafny skill w heurystyce bag-of-words
+  bez stemmingu — ograniczenie SYMULACJI, nie mechanizmu Claude Code; (3) domyślny stan przy braku trafienia to "nic się
+  nie ładuje", nie "zgadnij najbliższe". Niezweryfikowane: czy Claude Code faktycznie ładuje na starcie tylko `name`+
+  `description` (z pamięci, bez dokumentacji w sesji), zachowanie przy kilku pasujących skillach naraz w żywej sesji.
+- Następne: `permissionMode` w frontmatterze agenta (po weryfikacji CLI), hooki w trybie headless, worktree dla równoległych agentów.
 
 ### 🧠 AI — zarządzanie kontekstem
 - Omówione elementy: kolejność warstw kontekstu (system→narzędzia/MCP→pamięć→historia→
