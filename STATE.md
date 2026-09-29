@@ -262,7 +262,19 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
 - Wydanie #4, 2026-09-27: skill `sql-plan-review` (`scan_sql.py` — reguły antywzorców T-SQL, `scan_plan.py` — plan XML:
   missing index, scan, Key Lookup, niejawna konwersja, spill, rozjazd estymat). `run_tests.py` 4/4 (Python 3.10). Niezweryfikowane:
   brak SQL Servera/sqlcmd — plany to ręczne fixtury, nazwy atrybutów XML z pamięci, progi arbitralne, żywa sesja Claude Code.
-- Następne: skill Angular (review komponentu na signals), skill SQL na prawdziwym planie z `sqlcmd`.
+- Wydanie #6, 2026-09-29: skill `angular-signals-review` — deterministyczny skaner regexowy `scan_signals.py` na 6 antywzorców
+  Angular Signals: `EFFECT-STATE-SYNC` (`effect()` liczący i `.set()`-ujący inny sygnał zamiast `computed()`), `EFFECT-SELF-WRITE`
+  (effect czyta i zapisuje ten sam sygnał), `COMPUTED-SIDE-EFFECT` (mutacja innego sygnału wewnątrz `computed()`), `MUTATING-UPDATE`
+  (mutacja w miejscu w `.update()` zamiast nowej referencji), `ONPUSH-MISSING` (signals bez `ChangeDetectionStrategy.OnPush`),
+  `UNTRACKED-CANDIDATE` (INFO — ≥2 odczyty w effekcie bez `untracked()`). `run_tests.py` 2/2 (Python 3.10.4, tylko stdlib): 6/6
+  reguł na `bad.component.ts`, cisza na `good.component.ts`. Dwa realne bugi znalezione i naprawione w trakcie pisania: (1) regex
+  deklaracji sygnału bez zakotwiczenia do początku linii (`re.MULTILINE`) i z adnotacją typu obejmującą `\n` przeskakiwał przez
+  komentarz/nagłówek klasy do przypadkowego `= signal(` gdzie indziej w pliku, gubiąc prawdziwą nazwę sygnału; (2) komentarz w
+  przykładzie BAD tłumaczący regułę `ONPUSH-MISSING` zawierał dosłowną frazę `ChangeDetectionStrategy.OnPush`, co dawało fałszywy
+  negatyw w sprawdzeniu `not in body` — wniosek: skaner tekstowy nie odróżnia kodu od komentarza *o* tym kodzie. Niezweryfikowane:
+  brak Node/Angular CLI/`tsc` w środowisku (pliki `.ts` napisane ręcznie wg API, nie skompilowane), auto-aktywacja skilla w żywej
+  sesji Claude Code, fałszywe alarmy regexu na destrukturyzacji/aliasach importów (`effect as fx`).
+- Następne: skill SQL na prawdziwym planie z `sqlcmd`, kolejny głębszy przypadek Angular/.NET do code-review.
 
 ### ⚙️ AI — agentic loop / workflow kodowania
 - Omówione elementy: pętla tool-use, różnica komenda/skill/subagent/hook (kto naciska

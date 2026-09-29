@@ -28,6 +28,7 @@ Piąta próba kompilacji Kotlin DSL nadal bez sukcesu, ale pierwszy raz w pełni
 → [Artykuł](masstransit/ARTICLE.md) · [Kod](masstransit/code/)
 
 ### 🤖 [AI — Claude Code dla .NET/Angular/SQL](ai-claude-code/ARTICLE.md)
+Skill do code-review Angulara skoncentrowany na Signals — deterministyczny skaner wykrywa `effect()` udający `computed()`, mutacje w `.update()` i komponenty bez `OnPush`, zanim model w ogóle zacznie oceniać sens kodu.
 → [Artykuł](ai-claude-code/ARTICLE.md) · [Kod](ai-claude-code/code/)
 
 ### ⚙️ [AI — agentic loop](ai-agentic-loop/ARTICLE.md)
