@@ -1,0 +1,10 @@
+# Klucze/certyfikaty demo generujemy poza repo (domyslnie code/work/).
+*.key
+*.pem
+*.csr
+*.crl
+*.pfx
+*.bin
+work/
+bin/
+obj/

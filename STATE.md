@@ -437,4 +437,27 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   `CreateFromPemFile` efemeryczny (do magazynu przez PFX + `PersistKeySet`); pin SPKI nie przeżywa zmiany klucza → pin zapasowy.
   Niezweryfikowane: `setup-pki.sh` jako całość (odrzucone; komendy ręcznie), OCSP inicjowany przez .NET, stapling w Kestrelu,
   `SslStream` z revocation, Windows/macOS, Must-Staple, ACME; niewyjaśnione: przeterminowany CRL w .NET, `Response Verify Failure`.
-- Następny poziom: ACME/Let's Encrypt, Must-Staple, revocation w `SslStream`/Kestrelu, Windows/macOS store, CT logs, DANE/CAA.
+- Wydanie #5 (28.09) NIE POWSTAŁO — nic do pominięcia, po prostu nie ma (kontynuacja liczona od #4, 27.09).
+- Wydanie #6, 2026-09-29: **Certificate Transparency (RFC 6962) od zera** — precertyfikat + rozszerzenie krytyczne
+  `CT Precertificate Poison` (`1.3.6.1.4.1.11129.2.4.3`), ręczna implementacja `MerkleTreeLeaf`/leaf hash przez
+  chirurgię DER na surowych bajtach (`System.Formats.Asn1`, bez żadnej biblioteki CT), SCT podpisany własnym
+  demo-"logiem" (klucz EC P-256), osadzenie SCT w certyfikacie finalnym (`1.3.6.1.4.1.11129.2.4.2`), rekonstrukcja
+  precertu z finalnego certu + weryfikacja podpisu SCT jak robi to monitor CT, drzewo Merkle (audit path/dowód
+  inkluzji) i Signed Tree Head. .NET SDK 10.0.400, OpenSSL 3.0.2. Zweryfikowane realnie: pełny łańcuch openssl→C#
+  ręcznie (skrypt-jako-całość odrzucony przez sandbox, jak w #4 — komendy pojedynczo), `openssl asn1parse` jako
+  NIEZALEŻNY parser potwierdził bajt-w-bajt zawartość rozszerzenia SCT, rekonstrukcja precertu z finalnego certu dała
+  identyczny SHA-256 co oryginalny precert (`OK`), negatywny test (ten sam SCT wklejony do certu z innym SAN →
+  `FAILED`, exit 6), self-test drzewa Merkle dla 10 rozmiarów drzewa × wszystkie indeksy (wszystkie `OK`), STH
+  zbudowany/podpisany/zweryfikowany i odrzucony przy zmanipulowanym korzeniu. Pułapki: precert i finalny cert
+  wymagają identycznego serial+dat, a `openssl ca` nie pozwala użyć tego samego numeru seryjnego dwa razy w tej
+  samej bazie index.txt → potrzebne dwie niezależne bazy CA (`precertdb/`, `finaldb/`) z tym samym kluczem CA;
+  OpenSSL 3.0.2 (Debian) rozpoznaje OID SCT po nazwie, ale nie ma dla niego pretty-printera (surowy dump bajtów) —
+  wymusiło użycie `asn1parse` do niezależnej weryfikacji; pole podpisywane w SCT (`certificate_timestamp`) i pole
+  `MerkleTreeLeaf` (`timestamped_entry`) są bajt-w-bajt identyczne (obie wartości enum = 0), jedna funkcja obsługuje
+  oba. Niezweryfikowane (brak dostępu do sieci zewnętrznej w tej sesji, potwierdzone empirycznie — `openssl
+  s_client`/`curl` do google.com odrzucone): realny log CT (Google/Cloudflare/DigiCert), SCT przez rozszerzenie TLS
+  lub OCSP stapling, `consistency proof` między dwoma STH, wiele SCT/wiele logów jednocześnie, przyczyna braku
+  pretty-printera w OpenSSL 3.0.2, Windows/macOS.
+- Następny poziom: `consistency proof` (RFC 6962 §2.1.2) między dwoma STH + gossip protocol, Must-Staple + SCT razem,
+  weryfikacja SCT "na żywo" w `SslStream`/Kestrelu (callback odrzucający połączenie bez ważnego SCT), ACME/`pebble`
+  lokalnie (jeśli da się postawić bez sieci zewnętrznej — nigdy nie próbowane), Windows/macOS store, DANE/CAA.

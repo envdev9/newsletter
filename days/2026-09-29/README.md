@@ -49,6 +49,7 @@ Piąta próba kompilacji Kotlin DSL nadal bez sukcesu, ale pierwszy raz w pełni
 → [Artykuł](postgres-vector/ARTICLE.md) · [Kod](postgres-vector/code/)
 
 ### 🔐 [Certyfikaty i TLS (X.509)](certificates/ARTICLE.md)
+Certificate Transparency od zera: własny precertyfikat z rozszerzeniem poison, ręcznie liczony hash liścia drzewa Merkle i podpisany SCT — a potem dowód, że wklejenie cudzego SCT do innego certyfikatu natychmiast się wysypuje.
 → [Artykuł](certificates/ARTICLE.md) · [Kod](certificates/code/)
 
 ---
