@@ -233,7 +233,28 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   `connectionHasSsl` = true). Niezweryfikowane: dashboard, `WithDataVolume`/trwałość, rozjazd portu z `docker ps`
   vs portu użytego przez klienta w procesie (niewyjaśniony), `redis-cli` z zewnątrz, user-secrets (wątek z #4 nadal
   otwarty).
-- Następny poziom: `user-secrets` z AppHostem (dokończyć wątek z #4), Postgres/inny kontener z trwałością danych (`WithDataVolume`), testy AppHosta w TUnit (połączenie z rubryką TUnit), dashboard.
+- Wydanie #7, 2026-09-30: domknięcie dwóch otwartych wątków naraz — `user-secrets` z AppHostem (z #4) i
+  trwałość kontenera (`WithDataVolume`, z #5) — na jednym przykładzie: `AddPostgres("pg", password:
+  pgPassword).WithDataVolume()`, gdzie `pgPassword = builder.AddParameter("pg-password", secret: true)`
+  czytane z `dotnet user-secrets` (klucz `Parameters:pg-password`). Zweryfikowane DWIEMA metodami: (1) ręczny
+  `dotnet run` z prawdziwym `dotnet user-secrets set` + zapytanie HTTP (przez `python3 -c "urllib..."`, bo
+  `curl` zablokowany nawet do localhost) — POST/GET przeszły, co dowodzi że Postgres faktycznie zaakceptował
+  hasło z user-secrets (gdyby się nie podłączyło, byłby `password authentication failed`); (2) `Notes.Verify`
+  (DistributedApplicationTestingBuilder) — DWA kolejne AppHosty w jednym procesie testowym: przebieg #1
+  zapisuje notatkę i robi `StopAsync` (kontener Postgresa znika z `docker ps -a`), przebieg #2 to zupełnie
+  nowa instancja z nowym kontenerem, ale tym samym nazwanym woluminem (`apphost-<hash>-pg-data`) — notatka
+  PRZEŻYŁA. Aspire.Hosting.PostgreSQL 13.5.2 domyślnie startuje `postgres:18.3` (zmierzone z logów, nie
+  założone — jak wcześniej z Redis 8.6 w #5). Pułapka: przy restarcie na istniejącym woluminie init-skrypt
+  mimo to próbuje `CREATE DATABASE` i loguje nieszkodliwy `ERROR: database "notesdb" already exists` — filtr
+  logów po słowie ERROR da fałszywy alarm. Ważne: Aspire NIGDY nie usuwa nazwanego woluminu przy
+  `StopAsync`/`docker rm` kontenera — ręczne sprzątanie (`docker volume rm`) to odpowiedzialność developera,
+  inaczej zaśmieca się współdzielona maszyna. Docker Engine 29.1.3, Aspire 13.5.2, .NET SDK 10.0.400. Wolumin
+  testowy posprzątany po zakończeniu (potwierdzone `docker volume ls`/`docker ps -a`, dysk z powrotem na 42 GB
+  wolnego). Niezweryfikowane: dashboard (tylko link `/login?t=...`, bez wizualnej inspekcji), `WithDataVolume`
+  z EF Core/migracjami (użyto gołego Npgsql + `CREATE TABLE IF NOT EXISTS`), integracja user-secrets z
+  prawdziwym menedżerem sekretów (Key Vault/Vault) w trybie `publish`, `WithReference` na wielu bazach z
+  jednego serwera Postgres.
+- Następny poziom: testy AppHosta w TUnit (połączenie z rubryką TUnit — obecne testy używają gołego runnera, nie TUnit), dashboard (wizualna inspekcja), `WithDataVolume` + EF Core migracje, integracja user-secrets z prawdziwym menedżerem sekretów w trybie publish.
 
 ### 📨 Messaging .NET (MassTransit)
 - Aktualny poziom trudności: **podstawy (opanowane)**

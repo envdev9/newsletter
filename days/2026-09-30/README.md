@@ -22,6 +22,7 @@ Tasowanie bez ręcznego Fisher-Yatesa (`Enumerable.Shuffle<T>()`) i JSON, który
 → [Artykuł](tunit/ARTICLE.md) · [Kod](tunit/code/)
 
 ### ✈️ [Aspire](aspire/ARTICLE.md)
+Postgres z trwałym `WithDataVolume()` i hasłem z `dotnet user-secrets` zamiast kodu — notatka zapisana w pierwszym AppHoście przeżywa `StopAsync`, usunięcie kontenera i start zupełnie nowego AppHosta na tym samym woluminie.
 → [Artykuł](aspire/ARTICLE.md) · [Kod](aspire/code/)
 
 ### 📨 [Messaging .NET z MassTransit](masstransit/ARTICLE.md)
