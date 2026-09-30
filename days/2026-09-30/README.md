@@ -39,6 +39,7 @@ Tasowanie bez ręcznego Fisher-Yatesa (`Enumerable.Shuffle<T>()`) i JSON, który
 → [Artykuł](ai-prompts/ARTICLE.md) · [Kod](ai-prompts/code/)
 
 ### 🅰️ [Angular](angular/ARTICLE.md)
+Signal Forms, część 2: `schema<T>()` reużywalna na tablicy pozycji przez `applyEach()`, własny `FormValueControl` (stepper ilości) podpięty pod `[formField]` zamiast `<input>` — i dowód testem, że `submit()` naprawdę blokuje podwójne kliknięcie.
 → [Artykuł](angular/ARTICLE.md) · [Kod](angular/code/)
 
 ### 🗄️ [SQL Server](sqlserver/ARTICLE.md)

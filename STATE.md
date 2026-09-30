@@ -389,7 +389,26 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   Pułapka złapana na żywym teście: jeden skok fake timera (600 ms) na łańcuch debounce→fetch zawodzi, trzeba dwa
   oddzielne `advanceTimersByTimeAsync` kroki. Niezweryfikowane: `ng serve`/przeglądarka, blokada concurrent submit,
   `validateHttp`, SSR/hydration, `tapResponse`.
-- Następny poziom: `validateHttp`, `applyEach`/`schema()` wielokrotnego użytku, własny `FormValueControl`, SSR/hydration, `tapResponse`, `ng serve` w przeglądarce.
+- Wydanie #7, 2026-09-30 (poprzedni dzień, 2026-09-29, pominięty dla całego bloku "programowanie" — brak
+  artykułu tego dnia): reużywalna `schema<T>()` w osobnym pliku + `applyEach(f.tablica, schemaT)` na tablicy
+  pól o zmiennej długości (formularz zamówienia: klient + dynamiczna lista pozycji), dodawanie/usuwanie
+  elementu tablicy to zwykły `signal.update()` na modelu (bez ręcznej rejestracji/wyrejestrowania jak
+  `FormArray` w Reactive Forms), własny `FormValueControl<TValue>` (`QuantityStepper`, kontrakt strukturalny:
+  wymagane tylko `value: ModelSignal<TValue>`) wpięty pod `[formField]` zamiast `<input>`, automatyczne
+  przekazanie `min`/`max` z walidatorów schemy do `input()`-ów kontrolka przez `FormUiControl` (bez ręcznego
+  bindowania w szablonie), oraz domknięcie niezweryfikowanego wątku z #5: `submit()` faktycznie blokuje
+  wywołania współbieżne (drugie wywołanie w trakcie trwającej submisji zwraca `false`, `action` odpalone
+  raz — potwierdzone przechodzącym testem z fake timerami, nie tylko z `.d.ts`). Angular/forms 22.2.0, Node
+  v22.23.3, TypeScript 6.0.3, Vitest 5.0.2. Zweryfikowane: `npm ci` (274 pakiety), `ng build` OK (8,07 s),
+  `ng test` 15/15 za pierwszym razem (bez poprawek, w odróżnieniu od #5). Pułapka procesowa (nie w kodzie):
+  `npx vitest run` bezpośrednio failuje (`Need to call TestBed.initTestEnvironment() first`) — trzeba przez
+  `ng test`/`npm test`, builder Angulara konfiguruje TestBed+jsdom przed Vitestem. Niezweryfikowane: `ng
+  serve`/przeglądarka, pełny kontrakt `FormUiControl` na własnym kontrolce (`errors`/`touched`/`focus()`/
+  `reset()` — tylko `value`/`disabled`/`min`/`max` użyte), `transformedValue()`, SSR/hydration, `tapResponse`,
+  `validateHttp`.
+- Następny poziom: `validateHttp` (async walidacja wprost na `httpResource`), `transformedValue()` z realnym
+  parsowaniem błędnych wartości UI, pełna implementacja `errors`/`touch`/`focus()`/`reset()` na własnym
+  `FormValueControl`, SSR/hydration, `tapResponse` z `@ngrx/operators`, `ng serve` w przeglądarce.
 
 ### 🗄️ SQL Server
 - Aktualny poziom trudności: **podstawy (opanowane, w pełni zweryfikowane)**
