@@ -18,6 +18,7 @@ Tasowanie bez ręcznego Fisher-Yatesa (`Enumerable.Shuffle<T>()`) i JSON, który
 → [Artykuł](teamcity/ARTICLE.md) · [Kod](teamcity/code/)
 
 ### 🧪 [TUnit](tunit/ARTICLE.md)
+`SharedType.PerTestSession` daje jeden `WebApplicationFactory` współdzielony przez dwie różne klasy testowe naraz — dowód nie z logów, tylko z endpointu `/instance-id` po stronie serwera — plus `[AfterEvery(Assembly)]` na raport zbiorczy po całym zestawie.
 → [Artykuł](tunit/ARTICLE.md) · [Kod](tunit/code/)
 
 ### ✈️ [Aspire](aspire/ARTICLE.md)

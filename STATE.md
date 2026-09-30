@@ -187,7 +187,21 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   elementów") jest bombą zegarową, trzeba asercjonować tylko o własnym zasobie. Niezweryfikowane: `SharedType.PerTestSession`
   z WebApplicationFactory (host między wieloma klasami), `[AfterEvery(Class/Assembly)]`, Aspire+TUnit, auth/JWT w
   WebApplicationFactory, `partial class Program` na starszych SDK (8/9 — nie sprawdzone retroaktywnie).
-- Następny poziom: `SharedType.PerTestSession` z WebApplicationFactory, `[AfterEvery(Class/Assembly)]`, Aspire + TUnit (DistributedApplicationTestingBuilder), auth w testach integracyjnych.
+- Wydanie #7, 2026-09-30: `SharedType.PerTestSession` z `WebApplicationFactory<Program>` między **dwiema
+  różnymi klasami testowymi** (`TodoApiTests` + nowa `NotesApiTests`, ten sam typ `TodoApiFixture`) — jeden
+  host na cały przebieg, nie jeden na klasę. Dowód nie z logów fixture'a, tylko z serwera: endpoint
+  `GET /instance-id` (Guid wygenerowany raz przy starcie top-level statements) zwraca IDENTYCZNĄ wartość
+  z obu klas (`InitializeCount=1`, `DisposeCount=1`); kontrola kontrastowa (te same testy z `PerClass`) dała
+  `InitializeCount=2` i dwa różne instance-id — potwierdza, że różnica jest realna. `[AfterEvery(Assembly)]`
+  (`static void Method(AssemblyHookContext context)`) — zadziałał za pierwszym razem. Zmierzona kolejność:
+  `DisposeAsync` fixture'a `PerTestSession` kończy się PRZED `[AfterEvery(Assembly)]` (fixture może być już
+  zamknięty, gdy hook go raportuje — raportować tylko dane zebrane wcześniej, nie żywe połączenie). TUnit
+  1.72.4 (nowsza niż 1.70.1 z #5), `Microsoft.AspNetCore.Mvc.Testing` 10.0.12, .NET SDK 10.0.400. `dotnet
+  test` 11/11, powtórzone dwukrotnie bez flakowania. Niezweryfikowane: `[AfterEvery(Class)]`, zachowanie
+  `[AfterEvery(Assembly)]` przy wielu projektach testowych w jednym `dotnet test` (tylko jeden projekt w
+  repo, więc "raz na assembly" vs "raz na cały przebieg" teoretyczne, nie zmierzone), Aspire+TUnit
+  (`DistributedApplicationTestingBuilder`), auth/JWT w `WebApplicationFactory`.
+- Następny poziom: `[AfterEvery(Class)]`, `[AfterEvery(Assembly)]` z wieloma projektami testowymi w jednym `dotnet test`, Aspire + TUnit (DistributedApplicationTestingBuilder), auth/JWT w testach integracyjnych.
 
 ### ✈️ Aspire
 - Aktualny poziom trudności: **podstawy (opanowane)**
