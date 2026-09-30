@@ -12,6 +12,7 @@ Tasowanie bez ręcznego Fisher-Yatesa (`Enumerable.Shuffle<T>()`) i JSON, który
 → [Artykuł](dotnet/ARTICLE.md) · [Kod](dotnet/code/)
 
 ### 🔧 [Ansible](ansible/ARTICLE.md)
+`serial` + `throttle` na tym samym tasku naraz — dwie zagnieżdżone fale równoległości wewnątrz każdej paczki, zmierzone co do milisekundy — plus dowód, że `run_once` przy nierównych paczkach (`serial: [1, 3]`) nadal wykonuje się dokładnie raz na falę.
 → [Artykuł](ansible/ARTICLE.md) · [Kod](ansible/code/)
 
 ### 🏗️ [TeamCity](teamcity/ARTICLE.md)

@@ -1,0 +1,71 @@
+# run_once + serial Z NIEROWNA LISTA PACZEK, np. serial: [1, 3] (w #6 sprawdzono tylko
+# rowne paczki serial: 2 na 4 hostach). Hipoteza z #6: run_once wykonuje sie RAZ NA PACZKE,
+# zawsze przez PIERWSZY host danej paczki - sprawdzamy, czy to sie utrzymuje gdy paczki NIE
+# sa rowne, i co sie dzieje z hostami, ktore zostaja PO wyczerpaniu listy serial.
+#
+# 5 hostow (app1..app5, grupa "app5"), serial: [1, 3]:
+#   - Ansible konsumuje liste po kolei: pierwsza paczka = 1 host, druga paczka = 3 hosty.
+#   - Lista ma tylko 2 pozycje, a hostow jest 5 (1+3=4, zostaje 1 host). Dokumentacja mowi,
+#     ze gdy lista sie wyczerpie, Ansible POWTARZA OSTATNIA wartosc (tu: 3) dla kolejnych
+#     paczek - ale poniewaz zostal juz tylko 1 host, faktyczna trzecia paczka bedzie miala
+#     rozmiar 1 (ograniczona liczba dostepnych hostow), nie 3. To sprawdzamy empirycznie.
+- name: Przygotowanie - wyczysc znacznik przed testem (raz, brak serial w tym playu)
+  hosts: app_uneven
+  gather_facts: false
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl7
+  tasks:
+    - name: Upewnij sie, ze katalog demo istnieje
+      run_once: true
+      ansible.builtin.file:
+        path: "{{ demo_dir }}"
+        state: directory
+
+    - name: Czysty znacznik
+      run_once: true
+      ansible.builtin.copy:
+        dest: "{{ demo_dir }}/run_once_uneven_marker.txt"
+        content: ""
+
+- name: "run_once + serial: [1, 3] na 5 hostach (nierowne paczki + reszta po wyczerpaniu listy)"
+  hosts: app_uneven
+  gather_facts: false
+  serial: [1, 3]
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl7
+    marker_file: "{{ demo_dir }}/run_once_uneven_marker.txt"
+  tasks:
+    - name: "[batch] Zapisz znacznik run_once (oczekiwane: 1 wpis NA PACZKE, przez pierwszy host paczki)"
+      run_once: true
+      ansible.builtin.lineinfile:
+        path: "{{ marker_file }}"
+        line: >-
+          run_once wykonany przez {{ inventory_hostname }} o
+          {{ lookup('pipe', 'date +%H:%M:%S.%3N') }} | rozmiar paczki = {{ ansible_play_batch | length }}
+          | paczka (ansible_play_batch) = {{ ansible_play_batch }}
+        create: true
+      register: run_once_result
+
+    - name: Pokaz czy TEN KONKRETNY host wykonal task run_once (changed=true = to on byl "wybrany")
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }}: task run_once changed={{ run_once_result.changed }}"
+
+- name: Podsumowanie - wypisz znacznik (raz, na koncu)
+  hosts: app_uneven
+  gather_facts: false
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl7
+    marker_file: "{{ demo_dir }}/run_once_uneven_marker.txt"
+  tasks:
+    - name: Wczytaj znacznik
+      run_once: true
+      ansible.builtin.command: "cat {{ marker_file }}"
+      register: marker_uneven
+      changed_when: false
+
+    - name: Pokaz znacznik
+      run_once: true
+      ansible.builtin.debug:
+        msg:
+          - "=== serial: [1, 3] na 5 hostach (oczekiwane 3 wpisy: paczka 1, paczka 3, reszta 1) ==="
+          - "{{ marker_uneven.stdout_lines }}"

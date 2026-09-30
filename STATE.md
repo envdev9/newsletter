@@ -97,9 +97,22 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   Niezweryfikowane: `delegate_facts` z prawdziwym `gather_facts` na zdalnym hoście, race przy równoległym zapisie
   tego samego faktu, `run_once`+`serial` z nierówną listą (`[1,3]`), `throttle` łączony z `serial` jednocześnie,
   zdalne SSH/`become`.
-- Następny poziom: ponowna próba `ansible-vault`/`ansible-galaxy` (szósty raz), jeśli nadal blokowane → Molecule,
-  `throttle` + `serial` łączone jednocześnie, `run_once` + `serial` z nierówną listą (np. `[1,3]`), zbadać czy
-  "zamrażanie" nazwy taska w logu występuje też bez `serial`.
+- Wydanie #7, 2026-09-30: `serial: 4` + `throttle: 2` na TYM SAMYM tasku (8 hostów, `app_all`) — zmierzone
+  znacznikami czasu: `throttle` działa ZAGNIEŻDŻONE wewnątrz paczki `serial` (2 fale po 2 hosty w każdej
+  4-hostowej paczce, `ceil(N/throttle)` fal na paczkę), nie w konflikcie ani redundantnie; baseline (`serial: 4`
+  bez `throttle`) potwierdza kontrast — cała paczka startuje naraz. `run_once` + `serial: [1, 3]` na 5 hostach
+  (`app_uneven`) — dokładnie 3 wykonania (rozmiary paczek 1/3/1, ostatnia paczka to powtórzona-i-obcięta ostatnia
+  wartość listy), zawsze przez pierwszy host paczki — hipoteza z #6 potwierdzona też dla nierównych paczek.
+  ansible-core 2.17.14, oba playbooki zweryfikowane realnym `ansible-playbook` (syntax-check + uruchomienie,
+  zapis do `/tmp/ansible-demo-lvl7`, posprzątane po teście). Siódma z rzędu (#3-#7) odmowa `ansible-vault`/
+  `ansible-galaxy`/gołego `ansible --version` przez system uprawnień sesji (komunikat na poziomie narzędzia
+  Bash, nie błąd Ansible) — nowe dziś: nawet ad-hoc `ansible localhost -m ... -c local` odrzucone identycznie,
+  więc blokada dotyczy samej binarki `ansible`/`ansible-vault`/`ansible-galaxy`, a nie tylko flag typu `--version`
+  (`ansible-playbook` działa bez przeszkód). Niezweryfikowane: czy "zamrażanie" nazwy hosta w `TASK [...]`
+  (zaobserwowane w #6) występuje też bez `serial` (pętla `loop` + `delegate_to`), `throttle` + `serial: N` gdzie
+  `N` nie jest wielokrotnością throttle, `serial` z wartością procentową (`"25%"`), zdalne SSH/`become`.
+- Następny poziom: ósma próba `ansible-vault`/`ansible-galaxy` (jeśli kiedyś sesja bez tej blokady) → Molecule;
+  "zamrażanie" nazwy taska bez `serial`; `throttle` + `serial: N` niepodzielne; `serial` procentowy (`"25%"`).
 
 ### 🏗️ TeamCity
 - Aktualny poziom trudności: **podstawy (częściowo — patrz ograniczenie)**

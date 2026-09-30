@@ -1,0 +1,78 @@
+# throttle + serial UZYTE JEDNOCZESNIE na tym samym playu (w #6 zbadano throttle i serial
+# OSOBNO - to nowy, niezbadany dotad przypadek POLACZENIA obu warstw).
+#
+# 8 hostow (app1..app8), serial: 4 (2 paczki po 4 hosty) + throttle: 2 na TYM SAMYM tasku
+# (najwyzej 2 hosty naraz w ramach jednej paczki). Pytanie: czy throttle ogranicza
+# rownoleglosc WEWNATRZ paczki serial (czyli w kazdej paczce 4-hostowej beda 2 fale po 2),
+# czy throttle i serial sa w konflikcie / throttle jest redundantny wobec serial?
+#
+# Dla kontrastu w tym samym pliku: identyczny task BEZ throttle (sam serial: 4) - powinien
+# pokazac wszystkie 4 hosty paczki naraz (forks domyslnie 5 >= 4).
+- name: Przygotowanie - wyczysc log przed testami (raz, cala grupa to jedna paczka bo brak serial)
+  hosts: app_all
+  gather_facts: false
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl7
+  tasks:
+    - name: Upewnij sie, ze katalog demo istnieje
+      run_once: true
+      ansible.builtin.file:
+        path: "{{ demo_dir }}"
+        state: directory
+
+    - name: Czysty log
+      run_once: true
+      ansible.builtin.copy:
+        dest: "{{ demo_dir }}/throttle_serial_log.txt"
+        content: ""
+
+- name: "BASELINE - serial: 4 BEZ throttle (oczekiwane: 4 hosty naraz w kazdej z 2 paczek)"
+  hosts: app_all
+  gather_facts: false
+  serial: 4
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl7
+    log_file: "{{ demo_dir }}/throttle_serial_log.txt"
+  tasks:
+    - name: "Task BEZ throttle (paczka 4-hostowa, forks domyslnie 5 -> caly serial batch naraz)"
+      ansible.builtin.shell: >
+        echo "BASELINE start $(date +%H:%M:%S.%3N) {{ inventory_hostname }}
+        paczka={{ ansible_play_batch }}" >> {{ log_file }};
+        sleep 2;
+        echo "BASELINE koniec $(date +%H:%M:%S.%3N) {{ inventory_hostname }}" >> {{ log_file }}
+      changed_when: false
+
+- name: "KOMBINACJA - serial: 4 + throttle: 2 na tym samym tasku (glowny temat wydania)"
+  hosts: app_all
+  gather_facts: false
+  serial: 4
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl7
+    log_file: "{{ demo_dir }}/throttle_serial_log.txt"
+  tasks:
+    - name: "Task z throttle: 2 WEWNATRZ paczki serial: 4 (oczekiwane: 2 fale po 2 hosty, w KAZDEJ z 2 paczek)"
+      throttle: 2
+      ansible.builtin.shell: >
+        echo "COMBO start $(date +%H:%M:%S.%3N) {{ inventory_hostname }}
+        paczka={{ ansible_play_batch }}" >> {{ log_file }};
+        sleep 2;
+        echo "COMBO koniec $(date +%H:%M:%S.%3N) {{ inventory_hostname }}" >> {{ log_file }}
+      changed_when: false
+
+- name: Podsumowanie - wypisz caly log (raz, na koncu)
+  hosts: app_all
+  gather_facts: false
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl7
+    log_file: "{{ demo_dir }}/throttle_serial_log.txt"
+  tasks:
+    - name: Wczytaj log
+      run_once: true
+      ansible.builtin.command: "cat {{ log_file }}"
+      register: combo_log
+      changed_when: false
+
+    - name: Wypisz log
+      run_once: true
+      ansible.builtin.debug:
+        msg: "{{ combo_log.stdout_lines }}"
