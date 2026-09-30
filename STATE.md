@@ -30,7 +30,21 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
     — wydanie #5, 2026-09-28. W pełni zweryfikowane (`dotnet run -c Release`, 5 sekcji), potwierdzone jako nowość
     .NET 10 (`CS0308` na net9.0). Znaleziona i zmierzona, ale niewyjaśniona różnica: `PinnedGCHandle<string[]>` nie
     rzuca `ArgumentException: Object contains references`, w przeciwieństwie do starego `GCHandle.Alloc(_, Pinned)`.
-  - Zostało: inne nowości .NET 10 runtime/BCL (np. System.Text.Json, LINQ, source-generated regex) → potem .NET 11.
+  - [x] `Enumerable.Shuffle<T>()` (`System.Linq`) — tasowanie `IEnumerable<T>` bez `OrderBy(_ => Guid.NewGuid())`
+    ani ręcznego Fisher-Yatesa — wydanie #7, 2026-09-30. Znalezione empirycznie (diff refleksją
+    `System.Linq.dll` SDK 9.0.316 vs 10.0.400), potwierdzone `CS1061` na net9.0. W pełni zweryfikowane
+    `dotnet run`: nie mutuje źródła, ale deferred execution tasuje NA NOWO przy każdej kolejnej enumeracji
+    tej samej zmiennej (zmierzone: dwie różne kolejności z dwóch `GetEnumerator()` na tym samym obiekcie).
+    Przy okazji zauważone, ale nieopisane: `Enumerable.Sequence`/`InfiniteSequence` też nowe w .NET 10.
+  - [x] `JsonSerializerOptions.Strict` / `JsonSerializerDefaults.Strict` + `JsonDocumentOptions.AllowDuplicateProperties`
+    (`System.Text.Json`) — wydanie #7, 2026-09-30. Potwierdzone `CS0117` na net9.0. Domyślne zachowanie
+    bez zmian (`AllowDuplicateProperties` domyślnie `true`, duplikat klucza JSON nadal cicho bierze ostatnią
+    wartość). Zweryfikowane `dotnet run`: `AllowDuplicateProperties=false` rzuca na duplikacie; `Strict`
+    rzuca i na duplikacie, i na jakiejkolwiek nieznanej właściwości (`JsonUnmappedMemberHandling.Disallow`
+    w jednym presecie) — pułapka: `Strict` to więcej niż "odrzuć duplikaty", może dać fałszywy positive
+    na legalnie wersjonowanym API z nieznanymi polami.
+  - Zostało: inne nowości .NET 10 runtime/BCL (np. `Enumerable.Sequence`/`InfiniteSequence`, source-generated
+    regex, inne API `System.Text.Json`) → potem .NET 11.
 - Gdy funkcje .NET 10 się wyczerpią → .NET 11 → (dalsze nowości) → schodzimy w dół:
   9 → 8 → 7 → 6, potem wracamy do najnowszej dostępnej wersji.
 
