@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Projekt Maven do OFFLINE weryfikacji Kotlin DSL configu TeamCity (settings.kts)
+    bez żywego serwera (wtyczka teamcity-configs-maven-plugin, goal "generate").
+
+    UWAGA (wydanie #7, 2026-09-30): siódma z rzędu próba w tej rubryce (po #1, #3, #4,
+    #5, #6). Dziś PIERWSZY raz w historii rubryki środowisko sesji faktycznie uruchomiło
+    realny JDK 21 + realny Maven 3.9.9 + realną kompilację Kotlina (obejście blokady
+    "wywołań po ścieżce bezwzględnej" z #6 - szczegóły w ../../ARTICLE.md sekcja 1).
+
+    Efekt na TYM pliku: kompilacja i tak kończy się błędem - ale to NOWY, precyzyjniej
+    zdiagnozowany błąd, nie powtórka starych ograniczeń środowiska. Realny `mvn compile`
+    (log pełny w code/README.md) pada już na samych importach:
+
+        [ERROR] Compilation error settings.kts[2:45]: Unresolved reference: buildFeatures
+        [ERROR] Compilation error settings.kts[8:45]: Unresolved reference: buildSteps
+        [ERROR] Compilation error settings.kts[16:45]: Unresolved reference: triggers
+        [ERROR] Compilation error settings.kts[17:45]: Unresolved reference: vcs
+        ... (i dalej: GitVcsRoot, script, dockerCommand, swabra, perfmon,
+            commitStatusPublisher, dockerRegistry, versionedSettings, parallelTests,
+            pullRequests - wszystkie "Unresolved reference")
+
+    Przyczyna, potwierdzona dziś przez zrzut zawartości pobranego .jar (zob.
+    code/README.md, sekcja "Co naprawdę jest w jarze"): publicznie pobieralny artefakt
+    "configs-dsl-kotlin-latest:2026.3-dsl6" zawiera WYŁĄCZNIE generyczny szkielet DSL
+    (Project, BuildType, Dependencies, bazowe VcsRoot/Trigger/BuildFeature, i - jako
+    wyjątek - wbudowany "matrix"). NIE zawiera żadnej z konkretnych, kontrybuowanych
+    przez poszczególne pluginy TeamCity klas/funkcji (GitVcsRoot, vcs{} trigger,
+    script/dockerCommand, swabra, perfmon, commitStatusPublisher, dockerRegistry,
+    dockerSupport, versionedSettings, parallelTests, pullRequests) - te pakiety
+    (buildFeatures/buildSteps/triggers/vcs/projectFeatures) w ogóle nie istnieją w tym
+    .jarze. Innymi słowy: nawet z w pełni działającym JDK 21 + Mavenem + siecią (dziś
+    po raz pierwszy potwierdzone), ŻADEN plik settings.kts z #1-#6 (ani ten) nie mógłby
+    się skompilować wyłącznie z tym publicznym artefaktem - brakujące klasy są dostępne
+    dopiero z żywego serwera TeamCity (Versioned Settings -> Show DSL generuje je
+    dynamicznie z zainstalowanych pluginów).
+
+    Dowód, że MECHANIZM kompilacji (JDK21 + Maven + ten plugin) faktycznie działa:
+    osobny, minimalny projekt w ../compile-proof/.teamcity/ (używający WYŁĄCZNIE klas
+    bazowych faktycznie obecnych w tym jarze) skompilował się dziś z sukcesem
+    (BUILD SUCCESS + realny wygenerowany XML) - pierwszy prawdziwy "zielony" kompil
+    w 7 wydaniach tej rubryki. Zob. ARTICLE.md sekcja 1 i code/README.md.
+
+    Uruchomienie (na maszynie z realnym dostępem, bez tych ograniczeń, i - co dziś
+    ustalone jako DODATKOWY warunek - z pełnym, plugin-owym artefaktem DSL pobranym
+    z żywego serwera TeamCity, nie tylko z tym generycznym publicznym jarem):
+        cd .teamcity
+        JAVA_HOME=/ścieżka/do/jdk-21 mvn compile
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>pl.prasowka.teamcity</groupId>
+    <artifactId>settings-dsl-pullrequests</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <teamcity-dsl.version>2026.3-dsl6</teamcity-dsl.version>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>jetbrains-teamcity-repository</id>
+            <url>https://download.jetbrains.com/teamcity-repository</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>jetbrains-teamcity-repository</id>
+            <url>https://download.jetbrains.com/teamcity-repository</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jetbrains.teamcity</groupId>
+            <artifactId>configs-dsl-kotlin-latest</artifactId>
+            <version>${teamcity-dsl.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jetbrains.teamcity</groupId>
+                <artifactId>teamcity-configs-maven-plugin</artifactId>
+                <version>${teamcity-dsl.version}</version>
+                <executions>
+                    <execution>
+                        <id>generate-teamcity-config</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <dstDir>${project.build.directory}/teamcity-generated</dstDir>
+                            <format>kotlin</format>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

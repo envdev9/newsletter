@@ -16,6 +16,7 @@ Tasowanie bez ręcznego Fisher-Yatesa (`Enumerable.Shuffle<T>()`) i JSON, który
 → [Artykuł](ansible/ARTICLE.md) · [Kod](ansible/code/)
 
 ### 🏗️ [TeamCity](teamcity/ARTICLE.md)
+Pull Requests jako trigger/feature (`filterAuthorRole = MEMBER` odpowiada na "kto może triggerować build z forka") — i po sześciu porażkach z rzędu, pierwszy w historii rubryki prawdziwy `BUILD SUCCESS` realnego `mvn compile`, plus dowód dlaczego reszta configu i tak się nie skompiluje: publiczny jar DSL nie zawiera klas kontrybuowanych przez pluginy.
 → [Artykuł](teamcity/ARTICLE.md) · [Kod](teamcity/code/)
 
 ### 🧪 [TUnit](tunit/ARTICLE.md)

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Ten pom.xml, w odróżnieniu od ../../.teamcity/pom.xml, NAPRAWDĘ SKOMPILOWAŁ SIĘ
+    dziś (wydanie #7, 2026-09-30) - pierwszy realny "BUILD SUCCESS" w 7 wydaniach tej
+    rubryki. Sekret: settings.kts obok używa wyłącznie klas bazowych, które faktycznie
+    są częścią publicznie pobieralnego artefaktu "configs-dsl-kotlin-latest:2026.3-dsl6"
+    (VcsRoot/Trigger/BuildFeature + generyczne "type"/"param(...)"), nie konkretnych,
+    kontrybuowanych przez pluginy klas jak GitVcsRoot/pullRequests{}/commitStatusPublisher{}
+    (tych w ogóle nie ma w tym .jarze - zob. ../../README.md).
+
+    Odtworzenie od zera (dokładnie te same kroki co w tej sesji):
+
+    1. Pobierz JDK 21 (Eclipse Temurin) i Maven 3.9.9, np.:
+       curl -L -H "User-Agent: Mozilla/5.0" \
+         https://api.adoptium.net/v3/binary/latest/21/ga/linux/x64/jdk/hotspot/normal/eclipse \
+         -o jdk21.tar.gz && tar xf jdk21.tar.gz
+       curl -L https://archive.apache.org/dist/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz \
+         -o maven.tar.gz && tar xf maven.tar.gz
+
+    2. cd compile-proof/.teamcity
+       JAVA_HOME=/ścieżka/do/jdk-21.0.12.1+1 \
+         /ścieżka/do/apache-maven-3.9.9/bin/mvn -Dmaven.repo.local=/tmp/m2repo compile
+
+    Oczekiwany wynik: BUILD SUCCESS, XML-e w target/teamcity-generated/RootProjectId/
+    (project-config.xml, vcsRoots/RootProjectId_GenericGitRoot.xml,
+    buildTypes/RootProjectId_Build.xml) - treść tych plików wklejona w README.md.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>pl.prasowka.teamcity</groupId>
+    <artifactId>settings-dsl-compile-proof</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <teamcity-dsl.version>2026.3-dsl6</teamcity-dsl.version>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>jetbrains-teamcity-repository</id>
+            <url>https://download.jetbrains.com/teamcity-repository</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>jetbrains-teamcity-repository</id>
+            <url>https://download.jetbrains.com/teamcity-repository</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jetbrains.teamcity</groupId>
+            <artifactId>configs-dsl-kotlin-latest</artifactId>
+            <version>${teamcity-dsl.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jetbrains.teamcity</groupId>
+                <artifactId>teamcity-configs-maven-plugin</artifactId>
+                <version>${teamcity-dsl.version}</version>
+                <executions>
+                    <execution>
+                        <id>generate-teamcity-config</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <dstDir>${project.build.directory}/teamcity-generated</dstDir>
+                            <format>kotlin</format>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
