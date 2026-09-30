@@ -26,6 +26,7 @@ Postgres z trwałym `WithDataVolume()` i hasłem z `dotnet user-secrets` zamiast
 → [Artykuł](aspire/ARTICLE.md) · [Kod](aspire/code/)
 
 ### 📨 [Messaging .NET z MassTransit](masstransit/ARTICLE.md)
+RoutingSlip/Courier na prawdziwym RabbitMQ: rozproszona transakcja rezerwacja→płatność, która przy błędzie płatności SAMA cofa wcześniejszy krok, zanim ktokolwiek zobaczy `RoutingSlipFaulted` — zmierzone w timestampach, nie założone.
 → [Artykuł](masstransit/ARTICLE.md) · [Kod](masstransit/code/)
 
 ### 🤖 [AI — Claude Code dla .NET/Angular/SQL](ai-claude-code/ARTICLE.md)

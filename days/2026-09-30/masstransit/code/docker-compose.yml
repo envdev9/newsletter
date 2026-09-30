@@ -1,0 +1,15 @@
+# RabbitMQ z pluginem management (REST API + UI na porcie 15672) na potrzeby TEGO wydania.
+#
+# UWAGA (repo publiczne): login/hasło poniżej to jednorazowe, DEWELOPERSKIE dane tworzone
+# lokalnie na czas demo - nie domyślny "guest/guest" i nie sekret produkcyjny (patrz wydanie #5).
+# Po zakończeniu pracy z tym wydaniem: `docker compose down -v` (usuwa też wolumin).
+services:
+  rabbitmq:
+    image: rabbitmq:4.3-management
+    container_name: mt-routingslip-demo
+    ports:
+      - "5672:5672"    # AMQP - tu łączy się MassTransit
+      - "15672:15672"  # REST API / UI managementu - tu łączy się tryb `inspect`
+    environment:
+      RABBITMQ_DEFAULT_USER: newsletter_dev
+      RABBITMQ_DEFAULT_PASS: newsletter_dev_local_only

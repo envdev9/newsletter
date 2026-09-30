@@ -290,7 +290,28 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   RabbitMQ, RoutingSlip/Courier, trwałe sagi na RabbitMQ, topic/direct exchange, klaster, TLS/AMQPS,
   `ConcurrentMessageLimit` na prawdziwym brokerze, `docker-compose.yml` sam plik (compose niedostępny w
   środowisku, zweryfikowany tylko równoważny `docker run`).
-- Następny poziom: RoutingSlip/Courier (transakcje rozproszone z kompensacją), trwałe repozytorium sag (EF/Mongo/Redis) na RabbitMQ, retry/error queue na prawdziwym brokerze, topic/direct exchange.
+- Wydanie #7, 2026-09-30: **RoutingSlip/Courier** na RabbitMQ z #5 — dwie aktywności, `ReserveInventoryActivity`
+  (`IActivity<TArgs,TLog>`, ma kompensację) i `ChargePaymentActivity` (tylko `IExecuteActivity<TArgs>`,
+  execute-only), połączone w `RoutingSlipBuilder` itinerary. Ścieżka sukcesu (250 zł, limit 1000 zł):
+  `RoutingSlipCompleted`, zero kompensacji. Ścieżka błędu (1500 zł): `ChargePayment` rzuca, MassTransit
+  SAM wywołuje `Compensate` na `ReserveInventoryActivity` (log z `context.Completed(log)` wraca w
+  `CompensateContext.Log`), i dopiero PO zakończeniu kompensacji publikuje `RoutingSlipFaulted` (zmierzona
+  kolejność w timestampach: COMPENSATE przed Faulted). Adresy kolejek execute/compensate czytane z
+  `IEndpointNameFormatter` (`formatter.ExecuteActivity<T,TArgs>()`), nie zgadywane — unika pułapki nazw z #5.
+  Topologia (REST API + `rabbitmqctl list_queues`/`list_exchanges`, identyczne): kolejki execute/compensate
+  mają TYLKO exchange kolejki (bo RoutingSlip idzie przez adresowany `Send`, nie `Publish`), a
+  `RoutingSlipCompleted`/`Faulted` mają pełny łańcuch exchange wiadomości→exchange kolejki→kolejka (bo
+  `RoutingSlipEventsConsumer` to zwykły `IConsumer<T>`); `MassTransit:Fault--...RoutingSlip--` auto-deklarowany,
+  ale nieużywany. Pułapka: `AddActivity<T,TArgs,TLog>` wymaga POŁĄCZONEGO interfejsu `IActivity<TArgs,TLog>`,
+  osobne `IExecuteActivity`+`ICompensateActivity` na tej samej klasie nie wystarczą do rejestracji. Reguła z #5
+  o opóźnieniu REST API potwierdzona też dla licznika `consumers` (nie tylko `messages_ready`) — ok. 6s
+  nieaktualności po zatrzymaniu hosta. MassTransit 8.5.10 + MassTransit.RabbitMQ 8.5.10, RabbitMQ
+  `4.3-management`, .NET SDK 10.0.400. Kontener posprzątany po teście (`docker stop`/`rm`, potwierdzone
+  `docker ps -a`). Niezweryfikowane: kompensacja, która sama zawodzi (`context.Failed(ex)`), itinerary z 3+
+  aktywnościami, `ReviseItinerary`, trwałe repozytorium sag na Courierze (z natury bezstanowy, więc osobny
+  temat), interakcja z `UseMessageRetry` z #2, `ConcurrentMessageLimit` na aktywności, topic/direct exchange,
+  klaster/TLS.
+- Następny poziom: trwałe repozytorium sag (EF/Mongo/Redis) na RabbitMQ, retry/error queue na prawdziwym brokerze, topic/direct exchange, itinerary z 3+ aktywnościami i częściową kompensacją.
 
 ### 🤖 AI — Claude Code dla .NET/Angular/SQL
 - Omówione przypadki użycia: slash command generujący testy xUnit dla klasy C#, hook
