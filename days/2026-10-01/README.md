@@ -15,6 +15,7 @@
 → [Artykuł](ansible/ARTICLE.md) · [Kod](ansible/code/)
 
 ### 🏗️ [TeamCity](teamcity/ARTICLE.md)
+Po siedmiu porażkach z rzędu — żywy serwer TeamCity w Dockerze, reverse engineering jego własnego szyfrowania RSA haseł, i w końcu prawdziwy `BUILD SUCCESS` na CAŁYM pipeline z nowym tematem: build feature Automatic Merge.
 → [Artykuł](teamcity/ARTICLE.md) · [Kod](teamcity/code/)
 
 ### 🧪 [TUnit](tunit/ARTICLE.md)

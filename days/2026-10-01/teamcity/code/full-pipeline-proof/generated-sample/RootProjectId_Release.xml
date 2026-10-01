@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<build-type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2025.3/project-config.xsd">
+  <name>5. Release (composite)</name>
+  <description />
+  <settings>
+    <options>
+      <option name="branchFilter" value="+:*&#xA;-:&lt;default&gt;" />
+      <option name="buildConfigurationType" value="COMPOSITE" />
+    </options>
+    <vcs-settings>
+      <vcs-entry-ref root-id="RootProjectId_PrasowkaVcs" />
+    </vcs-settings>
+    <build-triggers>
+      <build-trigger id="TRIGGER_1" type="vcsTrigger">
+        <parameters>
+          <param name="branchFilter"><![CDATA[+:<default>
++:refs/pull/*/head]]></param>
+        </parameters>
+      </build-trigger>
+    </build-triggers>
+    <build-extensions>
+      <extension id="BUILD_EXT_1" type="commit-status-publisher">
+        <parameters>
+          <param name="github_authentication_type" value="token" />
+          <param name="github_host" value="https://api.github.com" />
+          <param name="publisherId" value="githubStatusPublisher" />
+          <param name="secure:github_access_token" value="credentialsJSON:00000000-0000-0000-0000-000000000000" />
+          <param name="vcsRootId" value="RootProjectId_PrasowkaVcs" />
+        </parameters>
+      </extension>
+      <extension id="BUILD_EXT_2" type="AutoMergeFeature">
+        <parameters>
+          <param name="teamcity.automerge.buildStatusCondition" value="noNewTests" />
+          <param name="teamcity.automerge.dstBranch" value="refs/heads/main" />
+          <param name="teamcity.automerge.run.policy" value="runBeforeBuildFinish" />
+          <param name="teamcity.automerge.srcBranchFilter" value="+:refs/pull/*/head" />
+          <param name="teamcity.merge.policy" value="fastForward" />
+        </parameters>
+      </extension>
+    </build-extensions>
+    <dependencies>
+      <depend-on sourceBuildTypeId="RootProjectId_DockerImage">
+        <options>
+          <option name="take-started-build-with-same-revisions" value="true" />
+          <option name="take-successful-builds-only" value="true" />
+        </options>
+      </depend-on>
+    </dependencies>
+  </settings>
+</build-type>
+

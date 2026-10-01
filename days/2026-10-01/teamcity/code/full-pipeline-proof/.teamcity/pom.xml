@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    POM, KTÓRY NAPRAWDĘ DAŁ "BUILD SUCCESS" dla settings.kts w tym katalogu
+    (wydanie #8, 2026-10-01) - wymaga ŻYWEGO serwera TeamCity, bo dwie
+    kluczowe zależności istnieją TYLKO w jego własnym, efemerycznym
+    repozytorium Maven ("/app/dsl-plugins-repository"), nie na Maven Central
+    ani na download.jetbrains.com.
+
+    Odtworzenie od zera (dokładne kroki w ../../README.md, sekcja 2 i 3):
+
+    1. docker run -d --name tc-demo -p 8111:8111 jetbrains/teamcity-server:2025.07
+       (poczekaj ~1-2 min, przejdź kreator pierwszego startu - patrz README.md,
+       tam skrypt Pythona z reverse-engineeringiem szyfrowania RSA/PKCS1 hasła).
+
+    2. Utwórz PRZEZ REST API: projekt, VCS root, buildType, feature typu
+       "AutoMergeFeature" (szczegóły i przykładowe żądania: README.md).
+
+    3. Podstaw adres TWOJEGO serwera poniżej, w <repository> "teamcity-server-local"
+       (domyślnie zakłada localhost:8111 - zmień, jeśli serwer jest gdzie indziej).
+
+    4. cd full-pipeline-proof/.teamcity
+       docker run --rm --network host \
+         -v "$PWD":/work -w /work \
+         maven:3.9-eclipse-temurin-21 mvn -B compile
+
+    Oczekiwany wynik: BUILD SUCCESS, pliki XML w target/teamcity-generated/.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>pl.prasowka.teamcity</groupId>
+    <artifactId>settings-dsl-full-pipeline-proof</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <kotlin.version>2.0.21</kotlin.version>
+        <!-- MUSI odpowiadać wersji TWOJEGO serwera (sprawdź: GET /app/rest/server) -->
+        <teamcity.dsl.version>2025.07</teamcity.dsl.version>
+    </properties>
+
+    <repositories>
+        <!-- Publiczne repo JetBrains - wystarcza dla bazowego szkieletu DSL
+             (ten SAM, co we wszystkich poprzednich 7 wydaniach) i dla samej
+             wtyczki Maven. -->
+        <repository>
+            <id>jetbrains-teamcity-repository</id>
+            <url>https://download.jetbrains.com/teamcity-repository</url>
+        </repository>
+        <!-- KLUCZOWE ODKRYCIE #8: repozytorium Maven wystawiane przez SAM,
+             ŻYWY serwer TeamCity - zawiera PER-PLUGINOWE artefakty DSL
+             ("configs-dsl-kotlin-<plugin>-latest", wersja "1.0-SNAPSHOT",
+             regenerowana przy starcie serwera), których nie ma NIGDZIE
+             publicznie. Podmień host:port na adres TWOJEGO serwera. -->
+        <repository>
+            <id>teamcity-server-local</id>
+            <url>http://localhost:8111/app/dsl-plugins-repository</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>jetbrains-teamcity-repository</id>
+            <url>https://download.jetbrains.com/teamcity-repository</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <dependencies>
+        <!-- Generyczny szkielet DSL - PUBLICZNY, dla wersji 2025.07 (stabilny
+             release, NIE eap/snapshot "2026.3-dsl6" z #1-#7!) istnieje
+             naprawdę na download.jetbrains.com. -->
+        <dependency>
+            <groupId>org.jetbrains.teamcity</groupId>
+            <artifactId>configs-dsl-kotlin-latest</artifactId>
+            <version>${teamcity.dsl.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Aggregator POM ~45 per-pluginowych jarów ("configs-dsl-kotlin-
+             pull-requests-latest", "configs-dsl-kotlin-swabra-latest",
+             "configs-dsl-kotlin-bundled-latest" (tu żyje AutoMerge/matrix/
+             VersionedSettings), itd.) - TYLKO z lokalnego repo serwera,
+             wersja ZAWSZE "1.0-SNAPSHOT" (regenerowana, nie opublikowana). -->
+        <dependency>
+            <groupId>org.jetbrains.teamcity</groupId>
+            <artifactId>configs-dsl-kotlin-plugins-latest</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>pom</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib-jdk8</artifactId>
+            <version>${kotlin.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jetbrains.teamcity</groupId>
+                <artifactId>teamcity-configs-maven-plugin</artifactId>
+                <version>${teamcity.dsl.version}</version>
+                <executions>
+                    <execution>
+                        <id>generate-teamcity-config</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <dstDir>${project.build.directory}/teamcity-generated</dstDir>
+                            <format>kotlin</format>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

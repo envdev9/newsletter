@@ -1,0 +1,37 @@
+# Compose topologia dla kroku "3. Integration Test" w settings.kts.
+# Uruchamiana PRZED zbudowaniem finalnego obrazu (krok 4) - testy integracyjne
+# lecą przeciwko prawdziwej, efemerycznej bazie, nie przeciwko mockowi.
+#
+# Zweryfikowane w tej sesji: składnia YAML (python3 + PyYAML, patrz code/README.md).
+# Rzeczywista topologia "dwa kontenery, jeden po nazwie usługi drugiego" (to, co
+# docker-compose robi automatycznie przez wbudowane DNS) sprawdzona ręcznie przez
+# `docker network create` + `docker run` (bez samego docker-compose, bo w tej sesji
+# nie ma zainstalowanej wtyczki `docker compose` ani binarki `docker-compose`) -
+# klient w jednym kontenerze połączył się z serwerem Postgres w drugim po samej
+# nazwie kontenera/usługi, dokładnie tak jak zrobiłby to docker-compose. Sam ten
+# plik (jako całość, przez runner "DockerCompose" w TeamCity) NIE został odpalony -
+# do tego potrzebny byłby żywy agent TeamCity z zainstalowaną wtyczką Docker Compose.
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: prasowka
+      POSTGRES_USER: prasowka
+      POSTGRES_PASSWORD: prasowka
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U prasowka"]
+      interval: 2s
+      timeout: 3s
+      retries: 10
+
+  integration-tests:
+    image: mcr.microsoft.com/dotnet/sdk:9.0
+    working_dir: /src
+    volumes:
+      - ./:/src
+    environment:
+      ConnectionStrings__Default: "Host=db;Port=5432;Database=prasowka;Username=prasowka;Password=prasowka"
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["dotnet", "test", "-c", "Release", "--filter", "Category=Integration", "--logger", "trx"]

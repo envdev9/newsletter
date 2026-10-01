@@ -211,13 +211,40 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   `<format>kotlin</format>` w konfiguracji pluginu (bez tego: `Cannot find generator for settings format 'null'`) —
   dodane dziś, potwierdzone przez zrzut bajtów `teamcity-configs-maven-plugin.jar`. Posprzątano `/tmp/tc-verify-
   2026-09-30/` (JDK21+Maven+~140 pobranych jarów+strony HTML dokumentacji, `rm -rf` zadziałało bez odmowy).
-- Następny poziom: Automatic Merge build feature (auto-merge PR-a po zielonym buildzie, wspomniany w dzisiejszej
-  dokumentacji jako naturalne rozszerzenie Pull Requests) — ostatni punkt z dzisiejszej listy "czego nie omówiłem".
-  Realna kompilacja PEŁNEGO configu (z buildFeatures/triggers/GitVcsRoot) wymaga innego podejścia niż dotychczasowe
-  siedem prób: albo żywy serwer TeamCity (kontener `jetbrains/teamcity-server` + Versioned Settings → Show DSL,
-  które generuje PEŁNY, kompletny jar z rozszerzeniami wszystkich zainstalowanych pluginów), albo znalezienie
-  osobnych, dodatkowych artefaktów Maven per-plugin (nie odnalezione dziś w publicznym repo JetBrains) - to jest
-  teraz jasno zdefiniowany, konkretny następny krok zamiast kolejnej rundy zgadywania środowiska Bash.
+- Wydanie #8, 2026-10-01: **PRZEŁOM — pierwszy w historii rubryki `BUILD SUCCESS` na CAŁYM pipeline** (nie tylko
+  minimalnym podzbiorze jak #7), zrealizowany dokładnie tak, jak #7 przewidziało: postawiono żywy serwer
+  `jetbrains/teamcity-server:2025.07` w Dockerze. Kreator pierwszego startu przejechany bez przeglądarki, przez
+  HTTP — wymagał reverse engineeringu niestandardowego szyfrowania hasła RSA TeamCity (`pkcs1pad2` w JS dokleja
+  DODATKOWY bajt-znacznik długości stringa na końcu bloku przed standardowym PKCS#1 paddingiem; potwierdzone
+  niezależnie `javap`-dekompilacją serwerowej klasy `RSACipher`). REST API złożyło projekt/VCS root/BuildType +
+  feature `AutoMergeFeature` z surowymi nazwami parametrów. Prawdziwy mechanizm *Show DSL*
+  (`/admin/versionedSettingsActions.html?...action=generate`) zwrócił wygenerowany przez SERWER Kotlin — odkrywając
+  że żywy serwer wystawia WŁASNE, efemeryczne repo Maven (`/app/dsl-plugins-repository`) z ~45 per-pluginowymi
+  jarami DSL (dokładnie ten "nieznaleziony w publicznym repo" element z `STATE.md` #7 — bo nigdy nie jest
+  publiczny, istnieje tylko w pamięci żywego serwera). Kompilacja PEŁNEGO pipeline'u (5 build type'ów, 9 build
+  feature'ów z #3-#8) względem publicznego `configs-dsl-kotlin-latest:2025.07` (wersja REALNIE opublikowana —
+  nie EAP `2026.3-dsl6` używana od #1 do #7!) + lokalnego repo serwera: wyłapała 4 realne błędy WE WŁASNYM kodzie
+  (zły pakiet importu `matrix`, brakujące importy `ScriptBuildStep`/`VersionedSettings`, zła sygnatura
+  `MatrixFeature.param` — wymaga `List<MatrixFeature.Value>`, nie `List<String>`), niewidoczne w #1-#7 bo kod
+  nigdy nie dotarł do etapu sprawdzenia. Po poprawkach: **`BUILD SUCCESS`** (jeden wyjątek: `versionedSettings{}`
+  kompiluje się, ale odrzucony przez walidator RUNTIME w trybie standalone — "cannot be used in relative project
+  hierarchy"; na żywym serwerze przez REST działa normalnie). Główny temat merytoryczny: **Automatic Merge**
+  (`merge{}`, `AutoMerge.MergePolicy`/`RunPolicy` to typowane enumy, ale `mergeCondition` to `String` — potwierdzone
+  TRZEMA niezależnymi źródłami: deskryptorem XML pluginu, żywą dokumentacją Dokka, i realnym Show DSL). Odkryte:
+  Automatic Merge/matrix/VersionedSettings/VcsTrigger żyją w `configs-dsl-kotlin-bundled-latest` (wbudowane w
+  server-core, NIE osobny plugin) — w odróżnieniu od Pull Requests/Commit Status Publisher (prawdziwe, nazwane
+  pluginy); Show DSL pomija jawne przypisania RÓWNE wartości domyślnej (brak linii w wygenerowanym kodzie ≠ brak
+  feature'u). Docker Engine, `maven:3.9-eclipse-temurin-21` (kontener, `--network host`), JDK 21 przez obraz
+  Mavena (żywy serwer+kontener Mavena ZASTĄPIŁY cały problem JDK17/uprawnień Bash z #1-#7). Posprzątano: kontener
+  `tc-demo`, obrazy `jetbrains/teamcity-server`/`maven:3.9-eclipse-temurin-21`, wszystkie katalogi `/tmp` (potwierdzone
+  `docker ps -a`/`docker images` po sesji — zero nowych zasobów). Niezweryfikowane: realny merge na żywym GitHubie
+  (repo w configu to placeholder), cascading merge (dwa `merge{}` na jednym build type — składniowo możliwe,
+  nie testowane na serwerze), `versionedSettings{}` w pełnej pętli serwer-commituje-i-czyta-VCS, pozostałe ~40
+  per-pluginowych artefaktów spoza użytego pipeline'u.
+- Następny poziom: cascading merge (dwa `merge{}` feature'y, łańcuch feature→integration→main) na żywym serwerze;
+  `versionedSettings{}` w pełnej pętli z realnym VCS; realny merge PR-a na żywym GitHubie (wymaga repo poza
+  sandboxem); eksploracja pozostałych per-pluginowych artefaktów z `configs-dsl-kotlin-plugins-latest` (np. agent
+  pools, cloud profiles) teraz, gdy mechanizm żywego serwera + jego repo Maven jest znany i powtarzalny.
 
 ### 🧪 TUnit
 - Aktualny poziom trudności: **podstawy (opanowane)**

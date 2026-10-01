@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<build-type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2025.3/project-config.xsd">
+  <name>1. Compile (w kontenerze SDK)</name>
+  <description />
+  <settings>
+    <options>
+      <option name="branchFilter" value="+:*&#xA;-:&lt;default&gt;" />
+    </options>
+    <build-runners>
+      <runner id="RUNNER_1" name="dotnet build w obrazie SDK" type="simpleRunner">
+        <parameters>
+          <param name="plugin.docker.imageId" value="mcr.microsoft.com/dotnet/sdk:9.0" />
+          <param name="plugin.docker.imagePlatform" value="linux" />
+          <param name="plugin.docker.pull.enabled" value="true" />
+          <param name="script.content" value="dotnet build -c Release" />
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+    </build-runners>
+    <vcs-settings>
+      <vcs-entry-ref root-id="RootProjectId_PrasowkaVcs" />
+    </vcs-settings>
+    <build-triggers>
+      <build-trigger id="TRIGGER_1" type="vcsTrigger">
+        <parameters>
+          <param name="branchFilter"><![CDATA[+:<default>
++:refs/pull/*/head]]></param>
+        </parameters>
+      </build-trigger>
+    </build-triggers>
+    <build-extensions>
+      <extension id="BUILD_EXT_1" type="swabra">
+        <parameters>
+          <param name="swabra.strict" value="true" />
+        </parameters>
+      </extension>
+      <extension id="BUILD_EXT_2" type="perfmon" />
+      <extension id="BUILD_EXT_3" type="pullRequests">
+        <parameters>
+          <param name="authenticationType" value="token" />
+          <param name="filterAuthorRole" value="MEMBER" />
+          <param name="filterTargetBranch" value="+:refs/heads/main" />
+          <param name="ignoreDrafts" value="true" />
+          <param name="providerType" value="github" />
+          <param name="secure:accessToken" value="credentialsJSON:22222222-2222-2222-2222-222222222222" />
+          <param name="vcsRootId" value="RootProjectId_PrasowkaVcs" />
+        </parameters>
+      </extension>
+      <extension id="BUILD_EXT_4" type="commit-status-publisher">
+        <parameters>
+          <param name="github_authentication_type" value="token" />
+          <param name="github_host" value="https://api.github.com" />
+          <param name="publisherId" value="githubStatusPublisher" />
+          <param name="secure:github_access_token" value="credentialsJSON:00000000-0000-0000-0000-000000000000" />
+          <param name="vcsRootId" value="RootProjectId_PrasowkaVcs" />
+        </parameters>
+      </extension>
+    </build-extensions>
+  </settings>
+</build-type>
+

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Projekt Maven do OFFLINE weryfikacji Kotlin DSL configu TeamCity (settings.kts)
+    bez żywego serwera (wtyczka teamcity-configs-maven-plugin, goal "generate").
+
+    UWAGA (wydanie #8, 2026-10-01): wzgledem tej SCIEZKI (publiczny artefakt
+    "configs-dsl-kotlin-latest" + download.jetbrains.com, bez zywego serwera) wynik
+    jest IDENTYCZNY jak w #7 - BUILD FAILURE, "Unresolved reference: buildFeatures"
+    i reszta importow pluginowych, z TEJ SAMEJ przyczyny (ten jar to tylko recznie
+    pisany szkielet rdzenia DSL, zero klas kontrybuowanych przez pluginy).
+
+    NOWOSC #8: dzis po raz pierwszy zdobyto PEŁNY obraz tego, gdzie klasy pluginowe
+    FAKTYCZNIE sa i jak je zdobyc - nie z domyslen, a z realnego, zywego serwera
+    TeamCity (jetbrains/teamcity-server:2025.07 w Dockerze). Okazuje sie, ze:
+      1. Baza "configs-dsl-kotlin-latest" ISTNIEJE publicznie dla stabilnej wersji
+         "2025.07" (wszystkie poprzednie wydania uzywaly EAP/snapshotowej "2026.3-dsl6",
+         ktora moze w ogole nie byc tym, czego oczekiwalby stabilny serwer).
+      2. Per-pluginowe klasy (GitVcsRoot, pullRequests, AutoMerge/merge, swabra,
+         docker-support, commit-status-publisher, itd.) sa publikowane jako
+         DZIESIATKI OSOBNYCH artefaktow Maven, PO JEDNYM NA PLUGIN
+         ("configs-dsl-kotlin-pull-requests-latest", "configs-dsl-kotlin-swabra-latest",
+         "configs-dsl-kotlin-bundled-latest" dla wbudowanych/niepluginowych jak
+         AutoMerge, itd.) - ale TYLKO z WLASNEGO, EFEMERYCZNEGO repozytorium Maven
+         zywego serwera ("http://<host>:8111/app/dsl-plugins-repository"), WERSJA
+         "1.0-SNAPSHOT" (wygenerowana PRZY STARCIE/na zadanie, nie opublikowana
+         nigdzie publicznie). Zagregowane jednym POM-em "configs-dsl-kotlin-plugins-latest".
+      3. To jest DOKLADNIE ten "nastepny krok" z STATE.md ("osobne artefakty Maven
+         per-plugin, nieznalezione dotad w publicznym repo JetBrains") - dzis
+         znaleziony i potwierdzony, bo faktycznie NIE jest publiczny, tylko serwowany
+         efemerycznie przez zywa instancje serwera.
+
+    Pelny log tego odkrycia (REST API, zawartosc POM-ow, próba pelnej kompilacji
+    kontenerem maven:3.9-eclipse-temurin-21 wpiętym w sieć hosta): code/README.md,
+    sekcja 2.
+
+    Dowod, że MECHANIZM kompilacji (JDK21 + Maven + ten plugin) faktycznie działa:
+    osobny, minimalny projekt w ../compile-proof/.teamcity/ (bez zmian wzgledem #7,
+    wciaz realnie kompiluje się do BUILD SUCCESS).
+
+    Uruchomienie (na maszynie z realnym dostępem, bez tych ograniczeń):
+        cd .teamcity
+        JAVA_HOME=/ścieżka/do/jdk-21 mvn compile
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>pl.prasowka.teamcity</groupId>
+    <artifactId>settings-dsl-automerge</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <teamcity-dsl.version>2026.3-dsl6</teamcity-dsl.version>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>jetbrains-teamcity-repository</id>
+            <url>https://download.jetbrains.com/teamcity-repository</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>jetbrains-teamcity-repository</id>
+            <url>https://download.jetbrains.com/teamcity-repository</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jetbrains.teamcity</groupId>
+            <artifactId>configs-dsl-kotlin-latest</artifactId>
+            <version>${teamcity-dsl.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jetbrains.teamcity</groupId>
+                <artifactId>teamcity-configs-maven-plugin</artifactId>
+                <version>${teamcity-dsl.version}</version>
+                <executions>
+                    <execution>
+                        <id>generate-teamcity-config</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <dstDir>${project.build.directory}/teamcity-generated</dstDir>
+                            <format>kotlin</format>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
