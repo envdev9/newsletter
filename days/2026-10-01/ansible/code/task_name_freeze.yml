@@ -1,0 +1,61 @@
+# BONUS (punkt 4 z listy "do zrobienia" po #6/#7): czy "zamrazanie" naglowka TASK [...] z
+# {{ inventory_hostname }} w name: (zaobserwowane w #6 przy serial: 1) wystepuje TYLKO przy
+# serial, czy tez bez niego? I co sie dzieje z loop + delegate_to, gdzie w name: jest {{ item }}
+# (zmienna petli, nie hosta)?
+#
+# Cztery playe na grupie freeze_hosts (h1, h2, h3):
+#   A/B/C - trzy OSOBNE playe (bez serial), kazdy celuje w jeden inny host, identyczny wzorzec
+#           name: "[{{ inventory_hostname }}] ...". Hipoteza do sprawdzenia: skoro to trzy
+#           ODREBNE obiekty Play/Task (parsowane z trzech osobnych sekcji YAML), czy kazdy
+#           dostanie wlasny, poprawny render, czy tez "zamrozi" sie na pierwszym?
+#   D       - jeden play, jeden task, loop po 3 "hostach" + delegate_to, name: "[{{ item }}] ...".
+#             Tu {{ item }} jest zmienna PETLI, nie hosta - inny mechanizm niz inventory_hostname.
+#   E       - KONTROLA: jeden play, serial: 1 na tej samej grupie 3 hostow, identyczny wzorzec
+#             name: - ma odtworzyc dokladnie efekt zaobserwowany w #6 (ten sam task/play
+#             powtarzany w kolejnych paczkach serial).
+
+- name: "Play A - host h1, BEZ serial"
+  hosts: h1
+  gather_facts: false
+  tasks:
+    - name: "[{{ inventory_hostname }}] test nazwy taska bez serial"
+      ansible.builtin.debug:
+        msg: "wykonuje {{ inventory_hostname }}"
+
+- name: "Play B - host h2, BEZ serial (osobny play, ten sam wzorzec name)"
+  hosts: h2
+  gather_facts: false
+  tasks:
+    - name: "[{{ inventory_hostname }}] test nazwy taska bez serial"
+      ansible.builtin.debug:
+        msg: "wykonuje {{ inventory_hostname }}"
+
+- name: "Play C - host h3, BEZ serial (osobny play, ten sam wzorzec name)"
+  hosts: h3
+  gather_facts: false
+  tasks:
+    - name: "[{{ inventory_hostname }}] test nazwy taska bez serial"
+      ansible.builtin.debug:
+        msg: "wykonuje {{ inventory_hostname }}"
+
+- name: "Play D - jeden host, jeden task, petla loop+delegate_to po 3 hostach"
+  hosts: h1
+  gather_facts: false
+  tasks:
+    - name: "[{{ item }}] test nazwy taska w loop+delegate_to"
+      ansible.builtin.debug:
+        msg: "delegacja do {{ item }}"
+      delegate_to: "{{ item }}"
+      loop:
+        - h1
+        - h2
+        - h3
+
+- name: "Play E - KONTROLA: jeden play, serial: 1 na 3 hostach (odtworzenie efektu z #6)"
+  hosts: freeze_hosts
+  gather_facts: false
+  serial: 1
+  tasks:
+    - name: "[{{ inventory_hostname }}] test nazwy taska z serial: 1"
+      ansible.builtin.debug:
+        msg: "wykonuje {{ inventory_hostname }}"

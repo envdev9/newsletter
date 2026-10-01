@@ -1,0 +1,82 @@
+# throttle: 2 na tasku w playu z serial: 3 - czyli serial, ktory NIE jest wielokrotnoscia
+# throttle (3 / 2 = 1.5). W #7 sprawdzono serial: 4 + throttle: 2 (4 / 2 = 2.0, dokladnie
+# 2 rowne fale na paczke) - dzis sprawdzamy, co sie dzieje, gdy w paczce zostaje
+# "nieparzysta reszta".
+#
+# 7 hostow (grupa uneven_hosts) + serial: 3 daje paczki [3, 3, 1] (3 + 3 = 6, siodmy host to
+# "resztka"). To daje DWA rozne przypadki w jednym uruchomieniu:
+#   - paczka 3-hostowa + throttle: 2 -> hipoteza z #6/#7: ceil(3/2) = 2 fale (2 hosty + 1 host)
+#   - paczka 1-hostowa (ostatnia, "obcieta") + throttle: 2 -> hipoteza: ceil(1/2) = 1 fala
+#     (throttle wiekszy niz sama paczka - czy to sie wywali, czy po prostu nic nie ogranicza?)
+#
+# Baseline (bez throttle) w tym samym pliku, dla kontrastu - krotszy niz w #7, bo sam
+# mechanizm serial-bez-throttle byl juz tam szczegolowo zmierzony.
+
+- name: Przygotowanie - wyczysc log przed testami (jedna paczka, bez serial)
+  hosts: uneven_hosts
+  gather_facts: false
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl8
+  tasks:
+    - name: Upewnij sie, ze katalog demo istnieje
+      run_once: true
+      ansible.builtin.file:
+        path: "{{ demo_dir }}"
+        state: directory
+
+    - name: Czysty log
+      run_once: true
+      ansible.builtin.copy:
+        dest: "{{ demo_dir }}/throttle_uneven_log.txt"
+        content: ""
+
+- name: "BASELINE - serial: 3 BEZ throttle (oczekiwane: cala paczka naraz, forks domyslnie 5 >= 3)"
+  hosts: uneven_hosts
+  gather_facts: false
+  serial: 3
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl8
+    log_file: "{{ demo_dir }}/throttle_uneven_log.txt"
+  tasks:
+    - name: "Task BEZ throttle"
+      ansible.builtin.shell: >
+        echo "BASELINE start $(date +%H:%M:%S.%3N) {{ inventory_hostname }}
+        paczka={{ ansible_play_batch }}" >> {{ log_file }};
+        sleep 1;
+        echo "BASELINE koniec $(date +%H:%M:%S.%3N) {{ inventory_hostname }}" >> {{ log_file }}
+      changed_when: false
+
+- name: "KOMBINACJA - serial: 3 + throttle: 2 (3 NIE jest wielokrotnoscia 2 - glowny temat)"
+  hosts: uneven_hosts
+  gather_facts: false
+  serial: 3
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl8
+    log_file: "{{ demo_dir }}/throttle_uneven_log.txt"
+  tasks:
+    - name: "Task z throttle: 2 WEWNATRZ paczki serial: 3 (oczekiwane: fale 2+1 w paczkach 3-hostowych, fala 1 w paczce 1-hostowej)"
+      throttle: 2
+      ansible.builtin.shell: >
+        echo "COMBO start $(date +%H:%M:%S.%3N) {{ inventory_hostname }}
+        paczka={{ ansible_play_batch }}" >> {{ log_file }};
+        sleep 1;
+        echo "COMBO koniec $(date +%H:%M:%S.%3N) {{ inventory_hostname }}" >> {{ log_file }}
+      changed_when: false
+
+- name: Podsumowanie - wypisz caly log (raz, na koncu)
+  hosts: uneven_hosts
+  gather_facts: false
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl8
+    log_file: "{{ demo_dir }}/throttle_uneven_log.txt"
+  tasks:
+    - name: Wczytaj log
+      run_once: true
+      ansible.builtin.command: "cat {{ log_file }}"
+      register: combo_log
+      changed_when: false
+
+    - name: Wypisz log
+      run_once: true
+      ansible.builtin.debug:
+        msg: "{{ combo_log.stdout_lines }}"

@@ -1,0 +1,97 @@
+# serial z wartoscia PROCENTOWA ("25%", "40%", "10%") na 8 hostach (grupa pct_hosts).
+#
+# 8 hostow wybrane tak, zeby jeden procent byl "ladny" (8 * 0.25 = 2.0 - kontrolny baseline),
+# a dwa kolejne NIE byly liczba calkowita (8 * 0.40 = 3.2, 8 * 0.10 = 0.8) - zeby empirycznie
+# zlapac, w ktora strone Ansible zaokragla rozmiar paczki (gora czy dol), i czy jest wymuszone
+# minimum 1 host na paczke, gdy procent * liczba hostow wychodzi mniej niz 1.
+#
+# Kazdy task loguje: ktory host, kiedy wystartowal/skonczyl, i jaki byl CALY sklad jego
+# paczki (ansible_play_batch) - to jedyny sposob, by pewnie odczytac realny rozmiar paczki,
+# a nie zgadywac go z samych znacznikow czasu.
+
+- name: Przygotowanie - wyczysc log przed testami (jedna paczka, bez serial)
+  hosts: pct_hosts
+  gather_facts: false
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl8
+  tasks:
+    - name: Upewnij sie, ze katalog demo istnieje
+      run_once: true
+      ansible.builtin.file:
+        path: "{{ demo_dir }}"
+        state: directory
+
+    - name: Czysty log
+      run_once: true
+      ansible.builtin.copy:
+        dest: "{{ demo_dir }}/percent_serial_log.txt"
+        content: ""
+
+- name: "PCT25 - serial: 25% na 8 hostach (8 * 0.25 = 2.0, dokladnie - baseline kontrolny)"
+  hosts: pct_hosts
+  gather_facts: false
+  serial: "25%"
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl8
+    log_file: "{{ demo_dir }}/percent_serial_log.txt"
+  tasks:
+    - name: "[PCT25] zapisz start/koniec + sklad paczki"
+      ansible.builtin.shell: >
+        echo "PCT25 start $(date +%H:%M:%S.%3N) {{ inventory_hostname }}
+        rozmiar_paczki={{ ansible_play_batch | length }}
+        paczka={{ ansible_play_batch }}" >> {{ log_file }};
+        sleep 1;
+        echo "PCT25 koniec $(date +%H:%M:%S.%3N) {{ inventory_hostname }}" >> {{ log_file }}
+      changed_when: false
+
+- name: "PCT40 - serial: 40% na 8 hostach (8 * 0.40 = 3.2, NIE jest calkowita)"
+  hosts: pct_hosts
+  gather_facts: false
+  serial: "40%"
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl8
+    log_file: "{{ demo_dir }}/percent_serial_log.txt"
+  tasks:
+    - name: "[PCT40] zapisz start/koniec + sklad paczki"
+      ansible.builtin.shell: >
+        echo "PCT40 start $(date +%H:%M:%S.%3N) {{ inventory_hostname }}
+        rozmiar_paczki={{ ansible_play_batch | length }}
+        paczka={{ ansible_play_batch }}" >> {{ log_file }};
+        sleep 1;
+        echo "PCT40 koniec $(date +%H:%M:%S.%3N) {{ inventory_hostname }}" >> {{ log_file }}
+      changed_when: false
+
+- name: "PCT10 - serial: 10% na 8 hostach (8 * 0.10 = 0.8, mniej niz 1 - test wymuszonego minimum)"
+  hosts: pct_hosts
+  gather_facts: false
+  serial: "10%"
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl8
+    log_file: "{{ demo_dir }}/percent_serial_log.txt"
+  tasks:
+    - name: "[PCT10] zapisz start/koniec + sklad paczki"
+      ansible.builtin.shell: >
+        echo "PCT10 start $(date +%H:%M:%S.%3N) {{ inventory_hostname }}
+        rozmiar_paczki={{ ansible_play_batch | length }}
+        paczka={{ ansible_play_batch }}" >> {{ log_file }};
+        sleep 1;
+        echo "PCT10 koniec $(date +%H:%M:%S.%3N) {{ inventory_hostname }}" >> {{ log_file }}
+      changed_when: false
+
+- name: Podsumowanie - wypisz caly log (raz, na koncu)
+  hosts: pct_hosts
+  gather_facts: false
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl8
+    log_file: "{{ demo_dir }}/percent_serial_log.txt"
+  tasks:
+    - name: Wczytaj log
+      run_once: true
+      ansible.builtin.command: "cat {{ log_file }}"
+      register: pct_log
+      changed_when: false
+
+    - name: Wypisz log
+      run_once: true
+      ansible.builtin.debug:
+        msg: "{{ pct_log.stdout_lines }}"
