@@ -39,6 +39,7 @@ Generator ciągów LINQ, który waliduje argumenty od razu (nie leniwie jak resz
 → [Artykuł](ai-prompts/ARTICLE.md) · [Kod](ai-prompts/code/)
 
 ### 🅰️ [Angular](angular/ARTICLE.md)
+Signal Forms: `transformedValue()` parsujące polski zapis ceny ("12,50") na `number` bez dotykania modelu, plus pełny kontrakt `FormUiControl` (`errors`/`touched`/`focus()`/`reset()`) na własnych kontrolkach.
 → [Artykuł](angular/ARTICLE.md) · [Kod](angular/code/)
 
 ### 🗄️ [SQL Server](sqlserver/ARTICLE.md)

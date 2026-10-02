@@ -569,9 +569,28 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   serve`/przeglądarka, pełny kontrakt `FormUiControl` na własnym kontrolce (`errors`/`touched`/`focus()`/
   `reset()` — tylko `value`/`disabled`/`min`/`max` użyte), `transformedValue()`, SSR/hydration, `tapResponse`,
   `validateHttp`.
-- Następny poziom: `validateHttp` (async walidacja wprost na `httpResource`), `transformedValue()` z realnym
-  parsowaniem błędnych wartości UI, pełna implementacja `errors`/`touch`/`focus()`/`reset()` na własnym
-  `FormValueControl`, SSR/hydration, `tapResponse` z `@ngrx/operators`, `ng serve` w przeglądarce.
+- Wydanie #9, 2026-10-02: **`transformedValue()`** — nowa kontrolka `PriceInput` parsuje tekst z przecinkiem
+  dziesiętnym ("12,50") na `number`; błędny tekst (`"abc"`, ujemna, pusty) zgłasza błąd parsowania przez
+  `ParseResult<TValue>` BEZ dotykania modelu, a ten błąd łączy się automatycznie z błędami walidatorów schemy
+  (`min(unitPrice, 0.01)`) na tym samym polu (zmierzone: oba działają jednocześnie). Pełny kontrakt
+  `FormUiControl` (`errors`/`touched`/`touch`/`focus()`/`reset()`) dociągnięty zarówno na nowym `PriceInput`,
+  jak i na `QuantityStepper` z #7 (wcześniej tylko `value`/`disabled`/`min`/`max`). Ustalenie z kompilowanego
+  `@angular/forms/fesm2022/signals.mjs` (nie tylko `.d.ts`): `focus()`/`reset()` są podpinane przez przekazanie
+  instancji komponentu jako `bindingOptions` do `registerAsBinding()`. Odkrycie: `reset()` na kontrolce opartej o
+  `transformedValue()` może zostać PUSTY — resynchronizacja surowego tekstu i czyszczenie błędu parsowania dzieje
+  się automatycznie przez wstrzyknięty token `ɵFORM_CONTROL_INTEGRATION` (potwierdzone przechodzącym testem:
+  wpisanie śmiecia → `resetRow()` → tekst wraca do `0,00` przy zerze kodu we własnym `reset()`). Angular/forms
+  22.2.0, TypeScript 6.0.3, Vitest 5.0.2. Zweryfikowane: `npm ci` (274 pakiety), `ng build` OK (7,95 s, bundle
+  `main` 218,75 kB/60,69 kB), `ng test` 32/32 za pierwszym razem. Ograniczenie środowiskowe: Node w tej sesji
+  było v22.14.0 (starsze niż v22.23.3 używane #3-#7), Angular CLI 22.2.1 blokuje poniżej v22.22.3, brak sieci do
+  pobrania nowszego Node — obejście: jednoliniowa edycja stałej bramki wersji w
+  `node_modules/@angular/cli/.../node-version.js` (NIE commitowana, `node_modules/` w `.gitignore`, czysto lokalny
+  hack sesji) żeby realny kompilator/builder/Vitest faktycznie się uruchomiły. Build i wszystkie testy przeszły
+  czysto, ale sam fakt że ten workaround nie koliduje z kodem używającym nowszych `node:`-API nie jest
+  potwierdzony — oznaczone jako założenie, nie fakt.
+- Następny poziom: `validateHttp` (async walidacja wprost na `httpResource`), SSR/hydration, `tapResponse` z
+  `@ngrx/operators`, `ng serve` w przeglądarce, pozostałe opcjonalne pola `FormUiControl` (`required`/`pattern`/
+  `readonly`/`hidden`/`disabledReasons`/`name`).
 
 ### 🗄️ SQL Server
 - Aktualny poziom trudności: **podstawy (opanowane, w pełni zweryfikowane)**
