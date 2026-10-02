@@ -45,6 +45,22 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
     na legalnie wersjonowanym API z nieznanymi polami.
   - Zostało: inne nowości .NET 10 runtime/BCL (np. `Enumerable.Sequence`/`InfiniteSequence`, source-generated
     regex, inne API `System.Text.Json`) → potem .NET 11.
+  - [x] `Enumerable.Sequence<T>`/`Enumerable.InfiniteSequence<T>` (`System.Linq`, generic math przez `INumber<T>`)
+    — wydanie #9, 2026-10-02. Potwierdzone `CS0117` na net9.0. Zweryfikowane `dotnet run`: ciąg rosnący/malejący/
+    ułamkowy (`double`), `InfiniteSequence`+`Take`/`TakeWhile`. Haczyk zmierzony: walidacja argumentów (krok 0,
+    zły kierunek) jest EAGER — rzuca `ArgumentOutOfRangeException` natychmiast przy wywołaniu, przed jakąkolwiek
+    enumeracją — w odróżnieniu od reszty LINQ (w tym `Shuffle` z #7), gdzie treść jest leniwa.
+  - [x] `MemoryExtensions.IndexOf`/`Contains`/`StartsWith`/`EndsWith`/`Count` z `IEqualityComparer<T>`
+    (`System.Private.CoreLib`) — wydanie #9, 2026-10-02. Potwierdzone `CS1503` na net9.0 (kompilator mylił
+    komparator ze starym parametrem `StringComparison`). Zweryfikowane `dotnet run`: case-insensitive search na
+    `ReadOnlySpan<char>` I na `ReadOnlySpan<byte>` (surowy nagłówek HTTP) bez kopiowania do `string`, własny
+    komparator (nie tylko ignorowanie wielkości liter). Pułapka: `Contains` z komparatorem istnieje TYLKO dla
+    pojedynczego elementu `T`, nie dla pod-ciągu (`CS1929`) — dla pod-ciągu trzeba `IndexOf(...) >= 0`.
+  - Empirycznie WYKLUCZONE jako nowość .NET 10: source-generated regex (`GeneratedRegexAttribute`) — diff
+    refleksją `System.Text.RegularExpressions.dll` 9.0.18 vs 10.0.11 pokazał ZERO nowych publicznych sygnatur;
+    istnieje od .NET 7, świadomie pominięte mimo że sugerowane w poprzedniej liście "zostało".
+  - Zostało: inne API `System.Text.Json` (jeśli jakieś nowe pozostały), reszta nowych przeciążeń `MemoryExtensions`
+    z `IComparer<T>` (znalezione w diffie, nieopisane) → potem .NET 11.
 - Gdy funkcje .NET 10 się wyczerpią → .NET 11 → (dalsze nowości) → schodzimy w dół:
   9 → 8 → 7 → 6, potem wracamy do najnowszej dostępnej wersji.
 
