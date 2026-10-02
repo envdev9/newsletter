@@ -308,7 +308,25 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   `[AfterEvery(Assembly)]` przy wielu projektach testowych w jednym `dotnet test` (tylko jeden projekt w
   repo, więc "raz na assembly" vs "raz na cały przebieg" teoretyczne, nie zmierzone), Aspire+TUnit
   (`DistributedApplicationTestingBuilder`), auth/JWT w `WebApplicationFactory`.
-- Następny poziom: `[AfterEvery(Class)]`, `[AfterEvery(Assembly)]` z wieloma projektami testowymi w jednym `dotnet test`, Aspire + TUnit (DistributedApplicationTestingBuilder), auth/JWT w testach integracyjnych.
+- Wydanie #9, 2026-10-02: **`[AfterEvery(Class)]`** (`static void Method(ClassHookContext context)`, ten sam wzorzec
+  co `[AfterEvery(Assembly)]` z #7) — zweryfikowane na DWÓCH niezależnych klasach testowych
+  (`AuthenticatedUserTests`, `AdminAuthorizationTests`, każda z własnym `[ClassDataSource<ApiFixture>(Shared =
+  SharedType.PerClass)]`): hook odpalił się DWA razy (raz na klasę), kontrast z `[AfterEvery(Assembly)]` z #7,
+  które na analogicznym kształcie dwóch klas odpaliło się raz. `context.Tests` + `TestContext.Execution.Result?.State`
+  poprawnie zliczają passed/failed bez własnego licznika (potwierdzone kontrolnym przebiegiem z celowymi porażkami:
+  `passed=2, failed=2`). **JWT w testach integracyjnych `WebApplicationFactory<Program>`** — minimalne API z
+  `/secure/profile` (`[Authorize]`) i `/secure/admin-report` (`[Authorize(Policy="AdminOnly")]`), `TokenFactory`
+  mintuje token DOKŁADNIE tymi samymi ustawieniami (`JwtDemoSettings`: Issuer/Audience/SigningKey) co aplikacja pod
+  testem (przez `ProjectReference`, nie zgadywane). Klucz podpisujący czysto demonstracyjny, jawnie oznaczony jako
+  nigdy-do-produkcji. Pułapka zmierzona TRZEMA kontrolowanymi przebiegami: baseline (`MapInboundClaims=false` +
+  `RoleClaimType="role"`) → 8/8; usunięcie `RoleClaimType` → 2 porażki (403 zamiast 200, rola admina niewidoczna
+  po cichu); usunięcie `MapInboundClaims=false` (domyślne) → 3 porażki (pusty `sub` ORAZ 403) — oba ustawienia
+  muszą się zgadzać, inaczej autoryzacja cicho pada bez wyjątku. .NET SDK 10.0.400, TUnit 1.72.10 (nowsza niż
+  1.72.4 z #7), `Microsoft.AspNetCore.Authentication.JwtBearer`/`Microsoft.AspNetCore.Mvc.Testing` 10.0.12.
+  Zweryfikowane `dotnet test` od czystego `bin`/`obj`: 8/8, ~3s, powtórzone dwukrotnie. Niezweryfikowane:
+  `[AfterEvery(Class)]` przy wielu projektach testowych w jednym `dotnet test`, odświeżanie tokenu, klucze
+  asymetryczne RS256.
+- Następny poziom: `[AfterEvery(Assembly)]`/`[AfterEvery(Class)]` z wieloma projektami testowymi w jednym `dotnet test`, Aspire + TUnit (DistributedApplicationTestingBuilder — patrz też rubryka Aspire), odświeżanie tokenu JWT, RS256/klucze asymetryczne.
 
 ### ✈️ Aspire
 - Aktualny poziom trudności: **podstawy (opanowane)**

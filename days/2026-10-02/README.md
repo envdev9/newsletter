@@ -18,6 +18,7 @@ Generator ciągów LINQ, który waliduje argumenty od razu (nie leniwie jak resz
 → [Artykuł](teamcity/ARTICLE.md) · [Kod](teamcity/code/)
 
 ### 🧪 [TUnit](tunit/ARTICLE.md)
+`[AfterEvery(Class)]` domyka rodzinę hooków, a JWT w `WebApplicationFactory` pokazuje zmierzoną pułapkę: źle dobrane `MapInboundClaims`/`RoleClaimType` cicho wyłączają autoryzację (403 zamiast wyjątku).
 → [Artykuł](tunit/ARTICLE.md) · [Kod](tunit/code/)
 
 ### ✈️ [Aspire](aspire/ARTICLE.md)
