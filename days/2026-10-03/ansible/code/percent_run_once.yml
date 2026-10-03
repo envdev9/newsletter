@@ -1,0 +1,111 @@
+# run_once + serial: "40%" (PROCENT, nie liczba) na 8 hostach -> paczki 3, 3, 2 (patrz #8).
+#
+# W #6/#7 ustalono (na serial PODANYM JAKO LICZBA): run_once wewnatrz playu z serial
+# wykonuje sie RAZ NA PACZKE, nie raz na caly play - zawsze przez PIERWSZEGO hosta danej
+# paczki (ansible_play_batch[0]). W #5 ustalono tez pulapke: run_once w pre_tasks playu
+# z serial cicho resetuje stan przy KAZDEJ paczce - poprawka to przeniesienie
+# inicjalizacji do OSOBNEGO playu BEZ serial.
+#
+# Dzisiejsze pytanie: czy te dwa ustalenia trzymaja sie, gdy rozmiary paczek NIE sa
+# rowne (bo pochodza z zaokraglenia procentu w dol - 3, 3, 2, nie 3, 3, 3)? Trzy playe
+# na tej samej flocie 8 hostow, trzy rozne miejsca na run_once:
+#
+#   Play PRE_TASKS_BUG - run_once w pre_tasks playu z serial: "40%"
+#     oczekiwane: 3 wykonania (raz na kazda z paczek 3/3/2), NIE 1 - odtwarza pulapke
+#     z #5, tym razem na procentowych, nierownych paczkach.
+#
+#   Play TASK_IN_SERIAL - run_once jako zwykly task (nie pre_tasks) w TYM SAMYM playu
+#     z serial: "40%"
+#     oczekiwane: tak samo 3 wykonania (raz na paczke) - to NIE jest "naprawiona"
+#     wersja, to to samo zachowanie w innym miejscu playu (pre_tasks vs tasks nie ma
+#     tu znaczenia - obie czesci playu podlegaja temu samemu batchowaniu serial).
+#
+#   Play SEPARATE_FIX - run_once w OSOBNYM playu BEZ serial
+#     oczekiwane: dokladnie 1 wykonanie, zawsze przez pierwszego hosta inventory (n1) -
+#     to jest poprawka z #5, dzis potwierdzona ponownie obok procentowego serial.
+
+- name: Przygotowanie - wyczysc log przed testami (jedna paczka, bez serial)
+  hosts: flota
+  gather_facts: false
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl9
+  tasks:
+    - name: Upewnij sie, ze katalog demo istnieje
+      run_once: true
+      ansible.builtin.file:
+        path: "{{ demo_dir }}"
+        state: directory
+
+    - name: Czysty log
+      run_once: true
+      ansible.builtin.copy:
+        dest: "{{ demo_dir }}/percent_run_once_log.txt"
+        content: ""
+
+- name: "PRE_TASKS_BUG - run_once w pre_tasks playu z serial: 40% (oczekiwane: 3x, nie 1x)"
+  hosts: flota
+  gather_facts: false
+  serial: "40%"
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl9
+    log_file: "{{ demo_dir }}/percent_run_once_log.txt"
+  pre_tasks:
+    - name: "[pre_tasks] run_once init (oczekiwane: odpala sie przy KAZDEJ paczce)"
+      run_once: true
+      ansible.builtin.shell: >
+        echo "PRE_TASKS_BUG run_once-init $(date +%H:%M:%S.%3N) wykonal={{ inventory_hostname }}
+        rozmiar_paczki={{ ansible_play_batch | length }}
+        paczka={{ ansible_play_batch }}" >> {{ log_file }}
+      changed_when: false
+  tasks:
+    - name: "[tasks] zwykly task per-host (dla kontrastu - powinien isc dla kazdego hosta)"
+      ansible.builtin.shell: >
+        echo "PRE_TASKS_BUG per-host $(date +%H:%M:%S.%3N) {{ inventory_hostname }}" >> {{ log_file }}
+      changed_when: false
+
+- name: "TASK_IN_SERIAL - run_once jako zwykly task (nie pre_tasks) w TYM SAMYM playu z serial: 40%"
+  hosts: flota
+  gather_facts: false
+  serial: "40%"
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl9
+    log_file: "{{ demo_dir }}/percent_run_once_log.txt"
+  tasks:
+    - name: "[tasks] run_once NIE w pre_tasks (oczekiwane: tak samo 3x - miejsce w playu nie ma znaczenia)"
+      run_once: true
+      ansible.builtin.shell: >
+        echo "TASK_IN_SERIAL run_once $(date +%H:%M:%S.%3N) wykonal={{ inventory_hostname }}
+        rozmiar_paczki={{ ansible_play_batch | length }}
+        paczka={{ ansible_play_batch }}" >> {{ log_file }}
+      changed_when: false
+
+- name: "SEPARATE_FIX - run_once w OSOBNYM playu BEZ serial (poprawka z #5, na calej flocie 8 hostow)"
+  hosts: flota
+  gather_facts: false
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl9
+    log_file: "{{ demo_dir }}/percent_run_once_log.txt"
+  tasks:
+    - name: "[osobny play, bez serial] run_once (oczekiwane: dokladnie 1x, zawsze pierwszy host inventory)"
+      run_once: true
+      ansible.builtin.shell: >
+        echo "SEPARATE_FIX run_once $(date +%H:%M:%S.%3N) wykonal={{ inventory_hostname }}" >> {{ log_file }}
+      changed_when: false
+
+- name: Podsumowanie - wypisz caly log (raz, na koncu)
+  hosts: flota
+  gather_facts: false
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl9
+    log_file: "{{ demo_dir }}/percent_run_once_log.txt"
+  tasks:
+    - name: Wczytaj log
+      run_once: true
+      ansible.builtin.command: "cat {{ log_file }}"
+      register: run_once_log
+      changed_when: false
+
+    - name: Wypisz log
+      run_once: true
+      ansible.builtin.debug:
+        msg: "{{ run_once_log.stdout_lines }}"

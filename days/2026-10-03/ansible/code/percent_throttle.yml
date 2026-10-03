@@ -1,0 +1,87 @@
+# throttle: 2 NA TYM SAMYM TASKU co serial: "40%" (nie liczba, PROCENT).
+#
+# W #8 ustalilismy, ze "40%" na 8 hostach (8 * 0.40 = 3.2, NIE calkowita) daje paczki
+# 3, 3, 2 (floor + reszta w ostatniej paczce) - ale bez zadnego throttle, cala paczka
+# startowala naraz. W #7/#8 (osobno) ustalilismy tez, ze throttle: N na paczce serial
+# tworzy ceil(rozmiar_paczki / N) fal - ale TYLKO na paczkach z serial PODANEGO JAKO
+# LICZBA (4, 3). Dzisiejsze pytanie: czy ta sama matematyka (ceil) trzyma sie, gdy
+# same rozmiary paczek pochodza z zaokraglenia procentu w dol (floor), a nie z wprost
+# podanej liczby? Zludne pytanie, bo to DWA niezalezne zaokraglenia w jednym
+# przebiegu: floor() przy liczeniu rozmiaru paczki z procentu, potem ceil() przy
+# liczeniu liczby fal throttle wewnatrz tej (juz zaokraglonej) paczki.
+#
+# Oczekiwane (hipoteza z #7/#8, dzis testowana na procentach):
+#   paczka 1 (n1,n2,n3 - 3 hosty): ceil(3/2) = 2 fale -> 2 hosty + 1 host
+#   paczka 2 (n4,n5,n6 - 3 hosty): ceil(3/2) = 2 fale -> 2 hosty + 1 host
+#   paczka 3 (n7,n8    - 2 hosty): ceil(2/2) = 1 fala -> 2 hosty naraz
+
+- name: Przygotowanie - wyczysc log przed testami (jedna paczka, bez serial)
+  hosts: flota
+  gather_facts: false
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl9
+  tasks:
+    - name: Upewnij sie, ze katalog demo istnieje
+      run_once: true
+      ansible.builtin.file:
+        path: "{{ demo_dir }}"
+        state: directory
+
+    - name: Czysty log
+      run_once: true
+      ansible.builtin.copy:
+        dest: "{{ demo_dir }}/percent_throttle_log.txt"
+        content: ""
+
+- name: "BASELINE - serial: 40% BEZ throttle (kontrola: powinno byc jak w #8, cala paczka naraz)"
+  hosts: flota
+  gather_facts: false
+  serial: "40%"
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl9
+    log_file: "{{ demo_dir }}/percent_throttle_log.txt"
+  tasks:
+    - name: "Task BEZ throttle"
+      ansible.builtin.shell: >
+        echo "BASELINE start $(date +%H:%M:%S.%3N) {{ inventory_hostname }}
+        rozmiar_paczki={{ ansible_play_batch | length }}
+        paczka={{ ansible_play_batch }}" >> {{ log_file }};
+        sleep 1;
+        echo "BASELINE koniec $(date +%H:%M:%S.%3N) {{ inventory_hostname }}" >> {{ log_file }}
+      changed_when: false
+
+- name: "COMBO - serial: 40% + throttle: 2 NA TYM SAMYM TASKU (glowny temat)"
+  hosts: flota
+  gather_facts: false
+  serial: "40%"
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl9
+    log_file: "{{ demo_dir }}/percent_throttle_log.txt"
+  tasks:
+    - name: "Task z throttle: 2 wewnatrz paczki serial: 40% (oczekiwane fale: 2+1, 2+1, 2)"
+      throttle: 2
+      ansible.builtin.shell: >
+        echo "COMBO start $(date +%H:%M:%S.%3N) {{ inventory_hostname }}
+        rozmiar_paczki={{ ansible_play_batch | length }}
+        paczka={{ ansible_play_batch }}" >> {{ log_file }};
+        sleep 1;
+        echo "COMBO koniec $(date +%H:%M:%S.%3N) {{ inventory_hostname }}" >> {{ log_file }}
+      changed_when: false
+
+- name: Podsumowanie - wypisz caly log (raz, na koncu)
+  hosts: flota
+  gather_facts: false
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl9
+    log_file: "{{ demo_dir }}/percent_throttle_log.txt"
+  tasks:
+    - name: Wczytaj log
+      run_once: true
+      ansible.builtin.command: "cat {{ log_file }}"
+      register: combo_log
+      changed_when: false
+
+    - name: Wypisz log
+      run_once: true
+      ansible.builtin.debug:
+        msg: "{{ combo_log.stdout_lines }}"

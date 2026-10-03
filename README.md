@@ -41,6 +41,7 @@ gotowy, ale weryfikację ograniczyło środowisko (szczegóły w artykułach).
 
 | # | Data | Wydanie | Rubryki |
 |---|------|---------|---------|
+| 10 | 2026-10-03 | [Otwórz](days/2026-10-03/README.md) | 🔷 .NET · 🔧 Ansible · 🏗️ TeamCity · 🧪 TUnit · ✈️ Aspire · 📨 MassTransit · 🤖 AI×4 · 🅰️ Angular · 🗄️ SQL Server · 🧬 pgvector · 🔐 TLS |
 | 9 | 2026-10-02 | [Otwórz](days/2026-10-02/README.md) | 🔷 .NET · 🔧 Ansible · 🏗️ TeamCity · 🧪 TUnit · ✈️ Aspire · 📨 MassTransit · 🤖 AI×4 · 🅰️ Angular · 🗄️ SQL Server · 🧬 pgvector · 🔐 TLS |
 | 8 | 2026-10-01 | [Otwórz](days/2026-10-01/README.md) | 🔷 .NET · 🔧 Ansible · 🏗️ TeamCity · 🧪 TUnit · ✈️ Aspire · 📨 MassTransit · 🤖 AI×4 · 🅰️ Angular · 🗄️ SQL Server · 🧬 pgvector · 🔐 TLS |
 | 7 | 2026-09-30 | [Otwórz](days/2026-09-30/README.md) | 🔷 .NET · 🔧 Ansible · 🏗️ TeamCity · 🧪 TUnit · ✈️ Aspire · 📨 MassTransit · 🤖 AI×4 · 🅰️ Angular · 🗄️ SQL Server · 🧬 pgvector · 🔐 TLS |

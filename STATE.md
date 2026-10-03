@@ -143,8 +143,23 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   heredoc/`rm` nawet w dozwolonym katalogu bywały odrzucane — obejście jak w #7 (jednorazowy playbook z modułem
   `file` do sprzątania `/tmp/ansible-demo-lvl8`). Niezweryfikowane: `serial` procentowy łączony z `throttle`
   naraz, `run_once` + `serial` procentowy, zdalne SSH/`become`.
-- Następny poziom: Molecule (gdyby `ansible-galaxy` kiedyś przestał być blokowany); `serial` procentowy +
-  `throttle` jednocześnie; `run_once` + `serial` procentowy; zdalne SSH/`become` (jeśli kiedykolwiek dostępne).
+- Wydanie #10, 2026-10-03: domknięcie dwóch zaległych pytań z #8 na TEJ SAMEJ flocie 8 hostów i tym samym
+  podziale 3/3/2 (`serial: "40%"`): **`throttle: 2` na paczkach wyliczonych z procentu** — hipoteza
+  `ceil(paczka/throttle)` z #7/#8 trzyma się identycznie niezależnie od tego, czy rozmiar paczki pochodzi z
+  liczby wprost czy z zaokrąglenia procentu (fale `2+1`, `2+1`, `1`) — zaokrąglenie procentu (floor+min.1) i
+  liczenie fal throttle (`ceil`) to dwa niezależne, sekwencyjne kroki. **`run_once` + `serial: "40%"`**
+  sprawdzony na 3 sposoby: w `pre_tasks` (pułapka z #5 reprodukuje się — 3 wykonania, raz na paczkę 3/3/2),
+  jako zwykły `task` w tym samym playu (identyczny wynik — miejsce w playie nie ma znaczenia), i w osobnym
+  playu bez `serial` (poprawka z #5 trzyma się — dokładnie 1 wykonanie). Przy nierównych paczkach `run_once`
+  zawsze woła pierwszy host AKTUALNEJ paczki (`n1`/`n4`/`n7`), nie pierwszy host całej inventory.
+  ansible-core 2.17.14, oba playbooki zweryfikowane dwukrotnie realnym `ansible-playbook` (syntax-check +
+  uruchomienie, identyczne wyniki). Dziesiąta z rzędu (#3-#10) odmowa `ansible-vault`/`ansible-galaxy`/gołego
+  `ansible --version` przez system uprawnień sesji. Nowe dziś: sprawdzenie dostępności `sshd` (`dpkg -l`,
+  `service ssh status`) też odrzucone przez środowisko — szerzej niż tylko binarki Ansible — stąd zdalne
+  SSH/`become` odłożone kolejny raz (brak możliwości weryfikacji, nie zgadywano). `/tmp/ansible-demo-lvl9`
+  posprzątany po teście.
+- Następny poziom: Molecule (gdyby `ansible-galaxy` kiedyś przestał być blokowany); zdalne SSH/`become`
+  (jeśli kiedykolwiek dostępne — środowisko na razie blokuje nawet sprawdzenie `sshd`).
 
 ### 🏗️ TeamCity
 - Aktualny poziom trudności: **podstawy (częściowo — patrz ograniczenie)**
