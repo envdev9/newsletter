@@ -484,7 +484,21 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   negatyw w sprawdzeniu `not in body` — wniosek: skaner tekstowy nie odróżnia kodu od komentarza *o* tym kodzie. Niezweryfikowane:
   brak Node/Angular CLI/`tsc` w środowisku (pliki `.ts` napisane ręcznie wg API, nie skompilowane), auto-aktywacja skilla w żywej
   sesji Claude Code, fałszywe alarmy regexu na destrukturyzacji/aliasach importów (`effect as fx`).
-- Następne: skill SQL na prawdziwym planie z `sqlcmd`, kolejny głębszy przypadek Angular/.NET do code-review.
+- Wydanie #10, 2026-10-03: domknięcie wątku z #4 — `scan_plan.py` (dotąd testowany tylko na ręcznych fixturach XML)
+  uruchomiony na PIĘCIU REALNYCH planach z SQL Server 2022 (Docker, kontener już działający w sesji, osobna baza
+  `PrasowkaAiPlanReview`, 50 000 wierszy, `SET STATISTICS XML ON`): `run_tests.py` 5/5, zero zmian w kodzie skanera
+  potrzebnych — nazwy atrybutów zapisane "z pamięci" w #4 (`MissingIndexGroup@Impact`, `PlanAffectingConvert@
+  ConvertIssue`, `IndexScan@Lookup`) okazały się trafne. Nowe ustalenie: zapytanie `TRIVIAL`-optimized (prosty
+  predykat bez `ORDER BY`) NIE generuje `MissingIndexGroup` nawet gdy indeks realnie pomógłby — optymalizator w
+  ogóle nie rozważa alternatyw przy jednej dostępnej ścieżce; dodanie `ORDER BY` wymusza `FULL` i sugestia się
+  pojawia (zmierzone kontrastowo, dwa plany). Praktyczny case dla .NET: `string`-parametr wysyłany jako
+  `NVARCHAR` (domyślne zachowanie ADO.NET/EF Core dla `string`) na kolumnie `VARCHAR` z istniejącym indeksem →
+  `PlanAffectingConvert`, Index Scan, **114 vs 2 logical reads (57×)** — zmierzone `STATISTICS IO` na parze
+  zapytań przez `sp_executesql`. SQL Server 2022 RTM-CU27 Developer, Python 3.10 (stdlib). Baza demo usunięta po
+  teście, żadna baza innej rubryki nie dotknięta. Niezweryfikowane: reguły `SPILL`/`NO-JOIN-PREDICATE`/
+  `NO-STATISTICS`/`MEMORY-GRANT` (nie wywołano tych warunków na małej próbce danych), `scan_sql.py` z #4 (nie
+  dotykany dzisiaj), inne wersje/edycje SQL Server, auto-aktywacja skilla w żywej sesji.
+- Następne: domknięcie `SPILL`/`NO-STATISTICS` na realnym planie (większa skala danych), kolejny głębszy przypadek Angular/.NET do code-review.
 
 ### ⚙️ AI — agentic loop / workflow kodowania
 - Omówione elementy: pętla tool-use, różnica komenda/skill/subagent/hook (kto naciska

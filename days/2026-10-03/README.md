@@ -27,6 +27,7 @@
 → [Artykuł](masstransit/ARTICLE.md) · [Kod](masstransit/code/)
 
 ### 🤖 [AI — Claude Code dla .NET/Angular/SQL](ai-claude-code/ARTICLE.md)
+Skill `sql-plan-review` z wydania #4 zderzony z PRAWDZIWYM planem SQL Servera — zero zmian w kodzie, ale nowa pułapka: `string`-parametr jako `NVARCHAR` ignoruje indeks (57× więcej odczytów).
 → [Artykuł](ai-claude-code/ARTICLE.md) · [Kod](ai-claude-code/code/)
 
 ### ⚙️ [AI — agentic loop](ai-agentic-loop/ARTICLE.md)
