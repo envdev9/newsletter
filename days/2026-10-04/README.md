@@ -45,6 +45,7 @@
 → [Artykuł](sqlserver/ARTICLE.md) · [Kod](sqlserver/code/)
 
 ### 🧬 [PostgreSQL jako baza wektorowa](postgres-vector/ARTICLE.md)
+`CREATE INDEX CONCURRENTLY` w migracji EF Core dla HNSW: istnieje (`.IsCreatedConcurrently()`), EF sam rozbija transakcję — i realnie znosi blokadę zapisów (zmierzone: 10,9 s blokady bez niego vs zero zablokowanych insertów z nim, na dwóch równoległych sesjach).
 → [Artykuł](postgres-vector/ARTICLE.md) · [Kod](postgres-vector/code/)
 
 ### 🔐 [Certyfikaty i TLS (X.509)](certificates/ARTICLE.md)

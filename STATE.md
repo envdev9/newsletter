@@ -757,9 +757,32 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   pgvector. Niezweryfikowane: `CREATE INDEX CONCURRENTLY` w migracji (EF domyślnie generuje zwykły `CREATE
   INDEX`, blokujący), `HalfVector`/`iterative_scan`/partycjonowanie (nadal), kod z #2 (fastembed, nadal
   niezweryfikowany).
-- Następny poziom: `CREATE INDEX CONCURRENTLY` w migracji EF (uniknięcie blokady zapisów przy rebuildzie HNSW na
-  produkcyjnej tabeli), partycjonowanie z HNSW, `HalfVector`, `iterative_scan` w .NET z pulą połączeń, naprawa i
-  uruchomienie kodu z #2 (realne embeddingi fastembed).
+- Wydanie #8, 2026-10-04: **`CREATE INDEX CONCURRENTLY` w migracji EF Core dla HNSW** (odpowiedź na pytanie otwarte
+  z #7) — `.IsCreatedConcurrently(bool)` na `IndexBuilder` **istnieje** w `Npgsql.EntityFrameworkCore.PostgreSQL`
+  9.0.1 (potwierdzone reflection na realnym DLL-u, nie z dokumentacji — brak internetu w sandboksie), działa na
+  każdej metodzie indeksu, nie tylko btree. Migracja z tym ustawieniem oznacza `CreateIndex` adnotacją
+  `Npgsql:CreatedConcurrently` (NIE `DropIndex` — decyzja projektowa, DROP trzyma ACCESS EXCLUSIVE tylko na
+  milisekundy). `dotnet ef migrations script` pokazuje, że Npgsql **automatycznie** rozbija transakcję (COMMIT po
+  DROP, CREATE INDEX CONCURRENTLY jako samodzielna instrukcja) — nie trzeba ręcznie `MigrationBuilder.Sql(...,
+  suppressTransaction: true)` (mechanizm ten istnieje w EF Core ogólnie, potwierdzone reflection, ale okazał się
+  niepotrzebny). Naiwne `BEGIN; CREATE INDEX CONCURRENTLY; COMMIT;` faktycznie rzuca realny błąd Postgresa
+  (zreprodukowane). `dotnet ef database update` aplikuje migrację z OSTRZEŻENIEM EF ("cannot be executed in a
+  transaction... Create a separate migration that contains just this operation") — nie błędem. **Zmierzona realna
+  różnica dwiema równoległymi sesjami** (PL/pgSQL `writer_probe`, autocommitujące INSERTy): plain rebuild (20,5 s)
+  blokuje zapisy ~10,9 s (zmierzona przerwa w logu pisarza); CONCURRENTLY rebuild (28,0 s, dłużej całościowo — dwa
+  przebiegi po tabeli) → ZERO zablokowanych insertów na 70 prób. **Reprodukcja "invalid" indeksu**
+  (`pg_terminate_backend` w trakcie budowy) → `indisvalid=false` potwierdzone w `pg_index`, naprawione
+  `REINDEX INDEX CONCURRENTLY` (bez DROP+rebuild od zera — mniej znany fakt). `Down()` wraca do WERSJI BLOKUJĄCEJ,
+  nie CONCURRENTLY (bo poprzedni stan modelu nigdy nie miał `IsCreatedConcurrently(true)` — EF nie "dziedziczy"
+  tego w rollbacku). Wszystkie 3 migracje od pustej bazy jedną komendą, zweryfikowane dwukrotnie na niezależnych
+  kontenerach. .NET SDK 10.0.400, `dotnet-ef` 10.0.12 (lokalne narzędzie), `Npgsql.EntityFrameworkCore.PostgreSQL`
+  9.0.1 (transitive), pgvector 0.8.6/PG 16.15. Pułapka: writer jako jedna transakcja (`DO $$ ... $$`) sam
+  blokowałby CONCURRENTLY — naprawione przez `CREATE PROCEDURE` z `COMMIT` w pętli. `run-demo.sh` jako całość
+  nadal nieodpalony (sandbox odrzuca `.sh`, jak w #7) — kroki wykonane ręcznie dwukrotnie od zera.
+  Niezweryfikowane: `HalfVector` w .NET, partycjonowanie z HNSW, kod z #2 (fastembed, nadal niezweryfikowany).
+- Następny poziom: `HalfVector` w .NET, `iterative_scan` w .NET z pulą połączeń, partycjonowanie z HNSW, naprawa i
+  uruchomienie kodu z #2 (realne embeddingi fastembed), rozdzielenie `DropIndex`+`CreateIndexConcurrently` na dwie
+  osobne migracje (rada EF z #8) w praktycznym przykładzie.
 
 ### 🔐 Certyfikaty i TLS (X.509)
 - Aktualny poziom trudności: **podstawy (opanowane)**
