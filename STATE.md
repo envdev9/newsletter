@@ -685,8 +685,30 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   "don't ask" blokuje `.sh` — znany problem z poprzednich wydań), przyczyna 3 rowgroupów zamiast 2 przy buildzie NCCI
   (kontener ma tylko 2 CPU, związek nie zbadany), mechanizm/harmonogram czyszczenia `TOMBSTONE` w tle, `UPDATE`/`DELETE`
   na tabeli z NCCI, `sp_getapplock` z `@LockOwner='Session'`, więcej niż 2 równoległe sesje generatora.
-- Następny poziom: `UPDATE`/`DELETE` na tabeli z nonclustered columnstore (bitmapa skasowanych wierszy), Query Store
-  hints (`sp_query_store_set_hints`), ponowna próba Parameter Sensitive Plan optimization (nie zadziałało w #3).
+- Wydanie #8, 2026-10-04: **`DELETE`/`UPDATE` na tabeli z NCCI** (`dbo.Orders` z #7, 1,2 mln wierszy) — `DELETE`
+  300 000 wierszy i `UPDATE` 15 000 wierszy są widoczne w zapytaniach analitycznych NATYCHMIAST (`COUNT`/`SUM`
+  poprawne od razu), ale `sys.column_store_row_groups.deleted_rows` zostaje na **0** aż do momentu, gdy coś
+  realnie dotknie indeksu — zmierzone dwukrotnie (pełna tabela 1,2 mln + izolowany test na czystej tabeli 5000
+  wierszy z `CHECKPOINT` i 15 s oczekiwania między krokami, same zero). `REORGANIZE` jest tym, co dopiero
+  ODKRYWA prawdziwą liczbę skasowanych wierszy (275 610 w największym rowgroupie, 26,3%) — ale SAM nie odzyskuje
+  miejsca (17,58 MB → 13,80 MB); dopiero `REBUILD` faktycznie kompaktuje (→ 6,63 MB). `UPDATE` na NCCI
+  potwierdzony jako dosłownie DELETE+INSERT: natychmiast widoczny nowy rowgroup `OPEN` z `total_rows` równym
+  `@@ROWCOUNT`. **Query Store hints** (`sys.sp_query_store_set_hints`) — najpierw zweryfikowane, że procedura
+  realnie istnieje na tym silniku (SQL Server 2022 RTM-CU27, 16.0.4295.3; potwierdzone `sys.all_objects` + realne
+  wywołanie), potem użyta do wstrzyknięcia `OPTION(RECOMPILE)` do konkretnego `query_id` sklonowanej procedury z
+  parameter sniffingiem (`dbo.Events`, 200k wierszy, skośność 95%) — ZERO zmian w kodzie proc, efekt zmierzony:
+  identyczny zły plan (3141 reads dla obu tenantów) → po hincie + `sp_recompile`, mały tenant dostaje własny plan
+  (318 reads, ~10×), potwierdzone dwoma różnymi `plan_id` dla tego samego `query_id` w `sys.query_store_plan`.
+  **PSP (temat otwarty z #3)**: potwierdzone, że `COMPATIBILITY_LEVEL=160` i
+  `PARAMETER_SENSITIVE_PLAN_OPTIMIZATION=ON` są spełnione na tym silniku — więc żadne z nich NIE wyjaśnia,
+  czemu PSP nie zadziałało w #3; zostawione jako wciąż otwarte pytanie (budżet czasu), nowej próby repro nie
+  podjęto. SQL Server 2022 RTM-CU27, zweryfikowane realnie `docker exec ... sqlcmd` (manualne kroki, `run-demo.sh`
+  jako całość odrzucony przez uprawnienia sandboksa — jak w poprzednich wydaniach). Kontener posprzątany, zero
+  wpływu na inne zasoby maszyny.
+- Następny poziom: realna przyczyna, czemu PSP nie zadziałało w #3 (nowa próba repro, inny scenariusz), harmonogram
+  fizycznego czyszczenia `TOMBSTONE` po `REORGANIZE`+`REBUILD`, `sp_query_store_set_hints` na planie z PSP (dwa
+  różne `plan_id` tego samego `query_id` — czy hint trzyma się per-plan czy per-query), `UPDATE`/`DELETE` wpływ na
+  statystyki NCCI (czy wymaga ręcznego `UPDATE STATISTICS` po `REBUILD`).
 
 ### 🧬 PostgreSQL — baza wektorowa (pgvector)
 - Aktualny poziom trudności: **podstawy (opanowane)**

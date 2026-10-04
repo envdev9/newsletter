@@ -1,0 +1,13 @@
+-- 15-cleanup.sql - usuniecie obu baz demo.
+SET NOCOUNT ON;
+IF DB_ID('PrasowkaNcciDml') IS NOT NULL
+BEGIN
+    ALTER DATABASE PrasowkaNcciDml SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    DROP DATABASE PrasowkaNcciDml;
+END
+IF DB_ID('PrasowkaQueryHints') IS NOT NULL
+BEGIN
+    ALTER DATABASE PrasowkaQueryHints SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    DROP DATABASE PrasowkaQueryHints;
+END
+GO
