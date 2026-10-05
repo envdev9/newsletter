@@ -423,7 +423,27 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   z EF Core/migracjami (użyto gołego Npgsql + `CREATE TABLE IF NOT EXISTS`), integracja user-secrets z
   prawdziwym menedżerem sekretów (Key Vault/Vault) w trybie `publish`, `WithReference` na wielu bazach z
   jednego serwera Postgres.
-- Następny poziom: testy AppHosta w TUnit (połączenie z rubryką TUnit — obecne testy używają gołego runnera, nie TUnit), dashboard (wizualna inspekcja), `WithDataVolume` + EF Core migracje, integracja user-secrets z prawdziwym menedżerem sekretów w trybie publish.
+- Wydanie #12, 2026-10-05: **testy AppHosta w TUnit** (zamiast gołego runnera z #3-#7) — `DistributedApplicationTestingBuilder`
+  owinięty w fixture `IAsyncInitializer`/`IAsyncDisposable` (wzorzec znany z TUnit #3), wstrzykiwany przez
+  `[ClassDataSource<RedisAppHostFixture>(Shared = SharedType.PerClass)]`: JEDEN realny kontener Redis (wzorzec
+  `AddRedis` z #5), start raz (`InitializeCount == 1`), cztery `[Test]`/`await Assert.That(...)` na nim. Haczyk
+  zmierzony #1: TUnit odpala te 4 testy RÓWNOLEGLE na tym samym kontenerze — zmierzone znacznikami czasu (6/6
+  możliwych par testów nakładało się czasowo), bezpieczne TYLKO dzięki unikalnemu kluczowi per test
+  (`Guid.NewGuid()`); globalna asercja (np. "Redis ma N kluczy") byłaby tą samą bombą zegarową co
+  `SharedType.PerClass` ze stanem globalnym z TUnit #5, tylko przeniesioną z pamięci do bazy. Haczyk zmierzony
+  #2: `[After(Class)]` jest statyczny, a fixture Aspire/`WebApplicationFactory`-podobny jest instancyjny — nie
+  widzą się wprost, trzeba przemycić dane przez pole statyczne ustawiane w instancyjnym `[Before(Test)]`.
+  Docker Engine 29.1.3, Aspire 13.5.2, TUnit 1.72.16, .NET SDK 10.0.400. Zweryfikowane `dotnet test` dwukrotnie:
+  4/4 PASS (27,9 s / 28,4 s), identyczny wzorzec. Zero nowych obrazów/kontenerów pozostawionych (Redis image
+  już w cache z #5, kontener posprzątany automatycznie przez `DisposeAsync`/Aspire). Niewyjaśniona, nieszkodliwa
+  obserwacja: `[TUnit] External span cap of 100 reached` na stderr w obu przebiegach (przyczyna nie badana).
+  Niezweryfikowane: dashboard (testy nie wystawiają dashboardu w ogóle), `SharedType.PerTestSession`/`Keyed` z
+  Aspire między wieloma klasami, `WithDataVolume`+EF Core migracje, zachowanie `DisposeAsync` fixture'a przy
+  porażce testu, user-secrets z prawdziwym menedżerem sekretów w trybie publish.
+- Następny poziom: dashboard (wizualna inspekcja — nadal nieobejrzany, testy go nie wystawiają),
+  `SharedType.PerTestSession`/`Keyed` z Aspire+TUnit między wieloma klasami testowymi, `WithDataVolume` + EF Core
+  migracje, zachowanie sprzątania fixture'a przy porażce testu, integracja user-secrets z prawdziwym menedżerem
+  sekretów w trybie publish.
 
 ### 📨 Messaging .NET (MassTransit)
 - Aktualny poziom trudności: **podstawy (opanowane)**

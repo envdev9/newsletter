@@ -253,6 +253,6 @@ Zobacz [`code/README.md`](code/README.md) — komendy + prawdziwy output `dotnet
 
 <div align="center">
 
-[← wróć do wydania #12 (wszystkie rubryki)](../README.md) · [spis wydań](../../README.md)
+[← wróć do wydania #12 (wszystkie rubryki)](../README.md) · [spis wydań](../../../README.md)
 
 </div>

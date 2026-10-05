@@ -22,6 +22,7 @@ Span, który porządkuje bajty własnymi zasadami (`SequenceCompareTo<T>` z `ICo
 → [Artykuł](tunit/ARTICLE.md) · [Kod](tunit/code/)
 
 ### ✈️ [Aspire](aspire/ARTICLE.md)
+AppHost pod testem TUnit: jeden realny kontener Redis uruchomiony raz na klasę, cztery testy walące w niego równolegle bez kolizji (dzięki unikalnym kluczom) — plus haczyk, że statyczny `[After(Class)]` i instancyjny fixture Aspire wzajemnie się nie widzą.
 → [Artykuł](aspire/ARTICLE.md) · [Kod](aspire/code/)
 
 ### 📨 [Messaging .NET z MassTransit](masstransit/ARTICLE.md)

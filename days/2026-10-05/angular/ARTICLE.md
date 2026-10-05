@@ -344,6 +344,6 @@ Zobacz [`code/README.md`](code/README.md).
 
 <div align="center">
 
-[← wróć do wydania (wszystkie rubryki)](../README.md) · [spis wydań](../../README.md)
+[← wróć do wydania (wszystkie rubryki)](../README.md) · [spis wydań](../../../README.md)
 
 </div>
