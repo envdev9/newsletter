@@ -12,6 +12,7 @@ Span, który porządkuje bajty własnymi zasadami (`SequenceCompareTo<T>` z `ICo
 → [Artykuł](dotnet/ARTICLE.md) · [Kod](dotnet/code/)
 
 ### 🔧 [Ansible](ansible/ARTICLE.md)
+Własny callback plugin mierzący czas trwania każdego taska, i fact caching, który obala własny mit: cache NIE pomija żywego `Gathering Facts` dla celowanego hosta, ale pozwala czytać `hostvars` hosta, którego dany play wcale nie dotyka.
 → [Artykuł](ansible/ARTICLE.md) · [Kod](ansible/code/)
 
 ### 🏗️ [TeamCity](teamcity/ARTICLE.md)

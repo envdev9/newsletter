@@ -171,8 +171,28 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   `service ssh status`) też odrzucone przez środowisko — szerzej niż tylko binarki Ansible — stąd zdalne
   SSH/`become` odłożone kolejny raz (brak możliwości weryfikacji, nie zgadywano). `/tmp/ansible-demo-lvl9`
   posprzątany po teście.
+- Wydanie #12, 2026-10-05: **callback plugin** (`callback_plugins/task_duration.py`, `CALLBACK_TYPE =
+  "notification"`, `callbacks_enabled`) logujący czas trwania każdego taska per host do JSON Lines —
+  punkt rozszerzenia bez `ansible-galaxy`/Molecule. **Fact caching** (`fact_caching = jsonfile`,
+  `fact_caching_connection`, `fact_caching_timeout`) — hipoteza "cache pomija żywe `Gathering Facts`
+  dla hosta faktycznie celowanego w play" OBALONA eksperymentem (`inventory_broken.ini`, nieistniejący
+  typ połączenia + ciepły cache → i tak `FAILED!`, cache nic nie pomija). Prawdziwa wartość: `hostvars`
+  DOWOLNEGO hosta z inventory (nawet spoza `hosts:` bieżącego playu, nawet z zepsutym połączeniem) są
+  czytelne z persystentnego cache'u; inwalidacja per-host (usunięcie jednego pliku `factcache/<host>`)
+  rusza tylko ten jeden host. ansible-core 2.17.14, wszystkie 4 playbooki zweryfikowane dwukrotnie
+  realnym `ansible-playbook` (syntax-check + uruchomienie, identyczne wyniki). Pułapka: błędy WEWNĄTRZ
+  callback pluginu typu `notification` są wyciszane do `[WARNING]`, nie fatal — złapane na żywo (log
+  pluginu leżał wewnątrz katalogu kasowanego przez `cleanup.yml`, naprawione przeniesieniem poza
+  katalog cache). Dwunasta z rzędu (#3–#10, #12) odmowa `ansible-vault`/`ansible-galaxy`/gołego
+  `ansible --version`/`service ssh status` przez system uprawnień sesji — NOWOŚĆ: dziś też
+  `ansible-config --version`/`ansible-doc --version` odrzucone identycznie (blokada obejmuje całą
+  rodzinę binarek `ansible-*` poza `ansible-playbook`). Niezweryfikowane: Molecule, zdalne SSH/`become`,
+  `fact_caching` z backendem innym niż `jsonfile` (redis/memcached — wymaga usługi sieciowej).
 - Następny poziom: Molecule (gdyby `ansible-galaxy` kiedyś przestał być blokowany); zdalne SSH/`become`
-  (jeśli kiedykolwiek dostępne — środowisko na razie blokuje nawet sprawdzenie `sshd`).
+  (jeśli kiedykolwiek dostępne — środowisko na razie blokuje nawet sprawdzenie `sshd`); własny
+  **inventory plugin** (dynamic inventory jako skrypt zwracający JSON, podłączony przez `-i`, nie
+  wymaga Galaxy); `any_errors_fatal` + `max_fail_percentage` na scenariuszu z celowymi awariami;
+  `vars_prompt` + `assert`/`fail` jako walidacja wejścia.
 
 ### 🏗️ TeamCity
 - Aktualny poziom trudności: **podstawy (częściowo — patrz ograniczenie)**

@@ -1,0 +1,17 @@
+---
+# Jednorazowy playbook sprzatajacy caly katalog demo. Uzywamy modulu `file`, nie
+# golego `rm`, bo w tej sesji agenta goly `rm`/`mkdir` na /tmp byl odrzucany przez
+# system uprawnien (ansible-playbook dzialal bez przeszkod - patrz README).
+- hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Usun caly katalog demo (cache)
+      ansible.builtin.file:
+        path: /tmp/ansible-demo-lvl13
+        state: absent
+
+    - name: Usun log czasow trwania taskow (osobny plik, poza katalogiem wyzej)
+      ansible.builtin.file:
+        path: /tmp/ansible-demo-lvl13-task-duration.log
+        state: absent

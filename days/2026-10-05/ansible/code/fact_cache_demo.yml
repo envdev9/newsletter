@@ -1,0 +1,41 @@
+---
+- name: Reset logu z callback pluginu task_duration (osobny play, zawsze lokalnie)
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Utworz katalog demo (jesli nie istnieje)
+      ansible.builtin.file:
+        path: /tmp/ansible-demo-lvl13
+        state: directory
+        mode: "0755"
+
+    - name: Wyczysc log z poprzedniego przebiegu
+      ansible.builtin.copy:
+        dest: /tmp/ansible-demo-lvl13-task-duration.log
+        content: ""
+        mode: "0644"
+
+- name: Zbierz/wczytaj facty floty i pokaz jeden z nich
+  hosts: flota
+  gather_facts: true
+  tasks:
+    - name: Pokaz fakt zalezny od realnego gather_facts (albo z cache)
+      ansible.builtin.debug:
+        msg: >-
+          {{ inventory_hostname }} ansible_distribution={{ ansible_distribution | default('BRAK') }}
+          ansible_pkg_mgr={{ ansible_pkg_mgr | default('BRAK') }}
+
+- name: Podsumowanie - wypisz log czasow trwania taskow
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Wczytaj log
+      ansible.builtin.slurp:
+        src: /tmp/ansible-demo-lvl13-task-duration.log
+      register: log_raw
+
+    - name: Wypisz log
+      ansible.builtin.debug:
+        msg: "{{ (log_raw.content | b64decode).splitlines() }}"

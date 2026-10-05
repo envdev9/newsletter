@@ -1,0 +1,19 @@
+---
+# Ten play CELOWO targetuje TYLKO localhost. n1 i n2 nie sa w `hosts:` w ogole -
+# Ansible nigdy nie spróbuje się z nimi połączyć w tym playu. Mimo to ich facty
+# (jeśli są w persystentnym cache jsonfile z poprzedniego przebiegu) są widoczne
+# przez hostvars - bo VariableManager wczytuje cache WSZYSTKICH hostow inventory
+# na starcie playbooka, niezaleznie od tego, kogo dany play faktycznie targetuje.
+- name: Odczytaj facty n1/n2 z cache, bez celowania w nie w tym playu
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Pokaz co widac w hostvars dla hostow spoza tego playu
+      ansible.builtin.debug:
+        msg: >-
+          {{ item }}: distribution={{ hostvars[item]['ansible_distribution'] | default('BRAK') }}
+          pkg_mgr={{ hostvars[item]['ansible_pkg_mgr'] | default('BRAK') }}
+      loop:
+        - n1
+        - n2

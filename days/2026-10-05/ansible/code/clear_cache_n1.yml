@@ -1,0 +1,11 @@
+---
+# Usuwa TYLKO wpis cache hosta n1 (symulacja wygasniecia/inwalidacji jednego hosta),
+# n2 pozostaje nietkniety - pokazuje, ze cache jest per-host, nie "wszystko albo nic".
+- hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Usun plik cache dla n1
+      ansible.builtin.file:
+        path: /tmp/ansible-demo-lvl13/factcache/n1
+        state: absent
