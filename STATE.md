@@ -59,8 +59,21 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   - Empirycznie WYKLUCZONE jako nowość .NET 10: source-generated regex (`GeneratedRegexAttribute`) — diff
     refleksją `System.Text.RegularExpressions.dll` 9.0.18 vs 10.0.11 pokazał ZERO nowych publicznych sygnatur;
     istnieje od .NET 7, świadomie pominięte mimo że sugerowane w poprzedniej liście "zostało".
-  - Zostało: inne API `System.Text.Json` (jeśli jakieś nowe pozostały), reszta nowych przeciążeń `MemoryExtensions`
-    z `IComparer<T>` (znalezione w diffie, nieopisane) → potem .NET 11.
+  - [x] `MemoryExtensions.SequenceCompareTo<T>` z `IComparer<T>` (`System`, jedyna nowa metoda `IComparer<T>` w
+    tej klasie między .NET 9 i 10 — reszta 42 nowości to `IEqualityComparer<T>` z #9, lub `SearchValues<T>`
+    bez komparatora) i `JsonArray.RemoveAll`/`RemoveRange` (`System.Text.Json.Nodes`) — wydanie #12, 2026-10-05.
+    Diff refleksyjny powtórzony (`MetadataLoadContext`, runtime 9.0.18 vs 10.0.11), tym razem objął też metody
+    INSTANCYJNE (poprawka względem #9, inaczej metody instancyjne jak `JsonArray.RemoveAll` nie trafiają na
+    listę). Potwierdzone `CS1501`/`CS1061`×2 na net9.0. Zweryfikowane `dotnet run`: porządkowanie surowych
+    bajtów (nagłówki HTTP) case-insensitive bez kopiowania do `string`; `RemoveAll`/`RemoveRange` na `JsonArray`
+    z ergonomią `List<T>`. Haczyki zmierzone: `SequenceCompareTo` zwraca znak, nie -1/0/1 (dało -32), krótszy
+    prefiks < dłuższy ciąg; `RemoveAll` NIE jest null-safe (goły `NullReferenceException` na elemencie JSON
+    `null` bez `x is null` w predykacie); `RemoveRange` poza granicami → `ArgumentException`, nie
+    `ArgumentOutOfRangeException` (konsekwentne z `List<T>`).
+  - Zostało (znalezione w tym samym diffie, nieopisane): `JsonObject.TryAdd`/`TryGetPropertyValue` z `out int`
+    (indeks właściwości), `Utf8JsonWriter.WriteStringValueSegment`/`WriteBase64StringSegment` (zapis w kawałkach),
+    `MemoryExtensions.CountAny`/`ReplaceAny`/`ReplaceAnyExcept` z `SearchValues<T>` → potem .NET 11 (SDK .NET 11
+    niedostępne na maszynie na 2026-10-05, sprawdzone `dotnet --list-sdks`).
 - Gdy funkcje .NET 10 się wyczerpią → .NET 11 → (dalsze nowości) → schodzimy w dół:
   9 → 8 → 7 → 6, potem wracamy do najnowszej dostępnej wersji.
 
