@@ -648,9 +648,26 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   hack sesji) żeby realny kompilator/builder/Vitest faktycznie się uruchomiły. Build i wszystkie testy przeszły
   czysto, ale sam fakt że ten workaround nie koliduje z kodem używającym nowszych `node:`-API nie jest
   potwierdzony — oznaczone jako założenie, nie fakt.
-- Następny poziom: `validateHttp` (async walidacja wprost na `httpResource`), SSR/hydration, `tapResponse` z
-  `@ngrx/operators`, `ng serve` w przeglądarce, pozostałe opcjonalne pola `FormUiControl` (`required`/`pattern`/
-  `readonly`/`hidden`/`disabledReasons`/`name`).
+- Wydanie #12, 2026-10-05: **`tapResponse()` z `@ngrx/operators` 22.0.1** (nowy pakiet w tej rubryce) w `rxMethod`
+  signal store'a. Obalony mit, że `tapResponse()` jest "bezpieczny niezależnie od miejsca w `pipe()`": źle
+  umieszczony (PO `switchMap`, nie w środku) zabija `rxMethod` na zawsze identycznie jak źle umieszczony ręczny
+  `catchError` z wydania #4 — potwierdzone czytaniem skompilowanego źródła (`ngrx-operators.mjs`: `tapResponse`
+  to dosłownie `tap`+`catchError`+opcjonalny `finalize`, zero specjalnej obsługi pozycji) ORAZ testem (ten sam bug
+  odtworzony z `tapResponse()` na złym miejscu). Realna wartość `tapResponse()` względem ręcznego `tap`+`catchError`:
+  (1) `error` jest WYMAGANY przez typy w `TapResponseObserver<T,E>` (brak `?` — nie da się o nim zapomnieć, w
+  przeciwieństwie do osobnego `catchError`), (2) `finalize` odpala się TAKŻE przy anulowaniu żądania przez
+  `switchMap` (unsubscribe, nie next/error) — czego ręczny `tap(next)`/`catchError(error)` nie zrobi strukturalnie;
+  zmierzone testem z licznikiem `pendingCount` na dwóch szybkich wyszukiwaniach (pierwsze anulowane przez drugie,
+  licznik poprawnie spada do 0 mimo braku next/error dla anulowanego). Angular/NgRx 22.2.0/22.0.1, TypeScript 6.0.3,
+  Vitest 5.0.3. Zweryfikowane: `npm ci` (283 pakiety), `ng build` OK (5,76 s, 148,75 kB), `ng test` 9/9 (4 pliki),
+  w tym kontrolny test negatywny (`expectNone`→`expectOne` na chwilę, realny fail potwierdzający że dowód nie jest
+  przypadkowy). Ograniczenie środowiskowe: Node v22.14.0 (jak w #9) ponownie wymagało tego samego niecommitowanego
+  workaroundu w `node_modules/@angular/cli` (próg wersji). Niezweryfikowane: `mapResponse()` (siostrzany operator,
+  do użycia w `@ngrx/effects`/Actions — ta rubryka nie dotykała jeszcze efektów na akcjach), `ng serve`/przeglądarka,
+  `validateHttp`, SSR/hydration, reszta opcjonalnego `FormUiControl`.
+- Następny poziom: `validateHttp` (async walidacja wprost na `httpResource`), SSR/hydration, `mapResponse()` w
+  kontekście `@ngrx/effects`/Actions, `ng serve` w przeglądarce, pozostałe opcjonalne pola `FormUiControl`
+  (`required`/`pattern`/`readonly`/`hidden`/`disabledReasons`/`name`).
 
 ### 🗄️ SQL Server
 - Aktualny poziom trudności: **podstawy (opanowane, w pełni zweryfikowane)**

@@ -1,0 +1,30 @@
+<div class="search">
+  <label>
+    Szukaj produktu
+    <input
+      type="text"
+      placeholder="np. klawiatura (albo 'boom' - symulacja błędu 500)"
+      (input)="onInput($any($event.target).value)"
+    />
+  </label>
+
+  @if (store.loading()) {
+    <p class="status">Szukam...</p>
+  }
+
+  @if (store.error()) {
+    <p class="error">{{ store.error() }}</p>
+  }
+
+  @if (store.isEmpty()) {
+    <p class="status">Brak wyników.</p>
+  }
+
+  <ul>
+    @for (product of store.products(); track product.id) {
+      <li>{{ product.name }} - {{ product.price }} zł</li>
+    }
+  </ul>
+
+  <p class="debug">pendingCount: {{ store.pendingCount() }}</p>
+</div>

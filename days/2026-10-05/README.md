@@ -39,6 +39,7 @@ Span, który porządkuje bajty własnymi zasadami (`SequenceCompareTo<T>` z `ICo
 → [Artykuł](ai-prompts/ARTICLE.md) · [Kod](ai-prompts/code/)
 
 ### 🅰️ [Angular](angular/ARTICLE.md)
+`tapResponse()` z `@ngrx/operators` obalone jako "bezpieczne niezależnie od miejsca w pipe" — źle umieszczony zabija `rxMethod` identycznie jak goły `catchError`; realna wartość to wymuszony `error` w typach i `finalize` na anulowanym żądaniu.
 → [Artykuł](angular/ARTICLE.md) · [Kod](angular/code/)
 
 ### 🗄️ [SQL Server](sqlserver/ARTICLE.md)
