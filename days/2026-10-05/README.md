@@ -18,6 +18,7 @@ Span, który porządkuje bajty własnymi zasadami (`SequenceCompareTo<T>` z `ICo
 → [Artykuł](teamcity/ARTICLE.md) · [Kod](teamcity/code/)
 
 ### 🧪 [TUnit](tunit/ARTICLE.md)
+`[AfterEvery(Assembly)]`/`[AfterEvery(Class)]` z DWOMA projektami testowymi w jednym `dotnet test`: hook liczy tylko swój projekt, każdy projekt to osobny proces OS, oba biegną WSPÓŁBIEŻNIE — a identycznie nazwana klasa stanu statycznego w obu wcale się nie myli.
 → [Artykuł](tunit/ARTICLE.md) · [Kod](tunit/code/)
 
 ### ✈️ [Aspire](aspire/ARTICLE.md)

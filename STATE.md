@@ -354,7 +354,23 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   Zweryfikowane `dotnet test` od czystego `bin`/`obj`: 8/8, ~3s, powtórzone dwukrotnie. Niezweryfikowane:
   `[AfterEvery(Class)]` przy wielu projektach testowych w jednym `dotnet test`, odświeżanie tokenu, klucze
   asymetryczne RS256.
-- Następny poziom: `[AfterEvery(Assembly)]`/`[AfterEvery(Class)]` z wieloma projektami testowymi w jednym `dotnet test`, Aspire + TUnit (DistributedApplicationTestingBuilder — patrz też rubryka Aspire), odświeżanie tokenu JWT, RS256/klucze asymetryczne.
+- Wydanie #12, 2026-10-05: **`[AfterEvery(Assembly)]`/`[AfterEvery(Class)]` z DWOMA projektami testowymi w
+  jednym `dotnet test`** (solution `TunitMultiProject.slnx`: `Catalog.Tests` 5 testów/2 klasy, `Shipping.Tests`
+  4 testy/1 klasa) — domyka niejednoznaczność teoretyczną od #7/#9 (tam był tylko jeden projekt). Zmierzone:
+  `[AfterEvery(Assembly)]` odpala się RAZ NA PROJEKT, `context.TestCount` ograniczony do testów TEGO projektu
+  (5 i 4, nigdy suma 9); `Environment.ProcessId` różny w każdym projekcie w tym samym przebiegu —
+  `Microsoft.Testing.Platform` uruchamia każdy projekt testowy jako OSOBNY PROCES, nie wątek/AppDomain;
+  nieplanowana obserwacja: `dotnet test` na solution odpala projekty WSPÓŁBIEŻNIE (przeplatający się output,
+  pokrywające się czasy trwania, suma czasu ≈ najdłuższy projekt, nie suma obu); `[AfterEvery(Class)]` liczy
+  się niezależnie per projekt (2 vs 1), kolejność Class→Assembly zachowana w obrębie każdej assembly z osobna;
+  izolacja stanu statycznego potwierdzona eksperymentem kontrolnym — dwie identycznie nazwane klasy
+  `SharedState` w dwóch projektach, zero wzajemnego wpływu (bo to dwie różne assembly w dwóch różnych
+  procesach). TUnit 1.72.16 (nowsza niż 1.72.10 z #9), .NET SDK 10.0.400. Zweryfikowane `dotnet test` 9/9,
+  powtórzone dwukrotnie, identyczny wzorzec. Niezweryfikowane: 3+ projekty testowe, projekty z `ProjectReference`
+  między sobą, Aspire+TUnit (`DistributedApplicationTestingBuilder`), odświeżanie tokenu JWT, RS256/klucze
+  asymetryczne (nadal tylko HS256).
+- Następny poziom: Aspire + TUnit (`DistributedApplicationTestingBuilder` — patrz też rubryka Aspire), odświeżanie
+  tokenu JWT, RS256/klucze asymetryczne, 3+ projekty testowe lub projekty z `ProjectReference` między sobą.
 
 ### ✈️ Aspire
 - Aktualny poziom trudności: **podstawy (opanowane)**
