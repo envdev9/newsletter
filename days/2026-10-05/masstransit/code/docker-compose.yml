@@ -1,0 +1,20 @@
+# RabbitMQ z pluginem management (REST API + UI na porcie 15672) na potrzeby TEGO wydania.
+#
+# UWAGA (repo publiczne): login/hasło poniżej to jednorazowe, DEWELOPERSKIE dane tworzone
+# lokalnie na czas demo - nie domyślny "guest/guest" i nie sekret produkcyjny (patrz wydanie #5).
+# Po zakończeniu pracy z tym wydaniem: `docker compose down -v` (usuwa też wolumin).
+#
+# UWAGA 2: w środowisku, w którym to demo było weryfikowane, `docker compose`/`docker-compose`
+# nie było dostępne ("docker: unknown command: docker compose") - plik poniżej NIE został
+# faktycznie odpalony przez compose, tylko przez równoważny `docker run` (patrz code/README.md).
+# Zostawiamy go, bo w normalnym środowisku z Docker Compose powinien działać bez zmian.
+services:
+  rabbitmq:
+    image: rabbitmq:4.3-management
+    container_name: mt-retry-error-demo
+    ports:
+      - "5672:5672"    # AMQP - tu łączy się MassTransit
+      - "15672:15672"  # REST API / UI managementu - tu łączą się tryby `inspect`/`peek`
+    environment:
+      RABBITMQ_DEFAULT_USER: newsletter_dev
+      RABBITMQ_DEFAULT_PASS: newsletter_dev_local_only

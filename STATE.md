@@ -500,7 +500,28 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   aktywnościami, `ReviseItinerary`, trwałe repozytorium sag na Courierze (z natury bezstanowy, więc osobny
   temat), interakcja z `UseMessageRetry` z #2, `ConcurrentMessageLimit` na aktywności, topic/direct exchange,
   klaster/TLS.
-- Następny poziom: trwałe repozytorium sag (EF/Mongo/Redis) na RabbitMQ, retry/error queue na prawdziwym brokerze, topic/direct exchange, itinerary z 3+ aktywnościami i częściową kompensacją.
+- Wydanie #12, 2026-10-05: **`_error`/`_skipped` na PRAWDZIWYM RabbitMQ** (dotąd pokazane tylko in-memory w #2) —
+  trzy konsumenty z różną polityką `UseMessageRetry` per-endpoint (`ConsumerDefinition<T>.ConfigureConsumer`),
+  dowód trwałości: proces, który odłożył wiadomość do `_error`, zabity (`host.StopAsync()`), a sprawdzenie w
+  ZUPEŁNIE NOWYM, niezależnym procesie (`messages_ready=1`, `consumers=0`, potwierdzone też `rabbitmqctl
+  list_queues`) — broker pamięta, proces nie musi. **Sprostowanie własnego błędnego przypuszczenia** (uczciwie
+  opisane w artykule): `r.Ignore<TException>()` NIE idzie do `_skipped`, idzie PROSTO do `_error` (bez retry,
+  ale ta sama kolejka docelowa) — rozstrzygnięte nagłówkiem `MT-Fault-RetryCount` (obecny dla wyczerpanego
+  retry, nieobecny dla `Ignore<T>`, bo retry nigdy nie wystartował). Prawdziwy `_skipped` (brak `IConsumer<T>`
+  na typie) potwierdzony z `MT-Reason=dead-letter` i zerem nagłówków `MT-Fault-*`. Nowa technika: podgląd treści
+  wiadomości BEZ konsumowania przez `POST /api/queues/%2f/<kolejka>/get` z `ackmode=ack_requeue_true` (REST API
+  management, zweryfikowane że `messages_ready` nie zmienia się przed/po). Pułapka zmierzona: kolejki
+  `_error`/`_skipped` są tworzone LENIWO (dopiero gdy faktycznie trzeba coś odłożyć), nie z góry jak kolejki
+  execute/compensate Couriera z #7 — `inspect` zaraz po starcie hosta widzi tylko kolejki główne. Drobny bonus:
+  sygnatura `ConfigureConsumer` z dwoma parametrami (bez `IRegistrationContext`) kompiluje się, ale rzuca
+  `[Obsolete]`/CS0672 na MassTransit 8.5.10. MassTransit 8.5.10, RabbitMQ `4.3-management`, .NET SDK 10.0.400.
+  Zweryfikowane realnie: `dotnet build` 0 warningów, pełny scenariusz (`topology`→`run`→nowy proces
+  `inspect`→`peek` trzech kolejek), liczby potwierdzone krzyżowo `rabbitmqctl`. Kontener posprzątany
+  (`docker ps -a` identyczne przed/po). Niezweryfikowane: `UseDelayedRedelivery` na RabbitMQ (wymaga pluginu
+  delayed-exchange), interakcja `Ignore<T>`/retry z `ConcurrentMessageLimit`/Courierem, trwałe repozytorium sag,
+  topic/direct exchange, klaster/TLS, zachowanie `_error`/`_skipped` przy tysiącach wiadomości.
+- Następny poziom: trwałe repozytorium sag (EF/Mongo/Redis) na RabbitMQ, `UseDelayedRedelivery` na prawdziwym
+  brokerze, topic/direct exchange, itinerary z 3+ aktywnościami i częściową kompensacją.
 
 ### 🤖 AI — Claude Code dla .NET/Angular/SQL
 - Omówione przypadki użycia: slash command generujący testy xUnit dla klasy C#, hook

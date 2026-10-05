@@ -26,6 +26,7 @@ AppHost pod testem TUnit: jeden realny kontener Redis uruchomiony raz na klasę,
 → [Artykuł](aspire/ARTICLE.md) · [Kod](aspire/code/)
 
 ### 📨 [Messaging .NET z MassTransit](masstransit/ARTICLE.md)
+`_error`/`_skipped` na prawdziwym RabbitMQ: proces, który odłożył wiadomość do kolejki błędów, zostaje zabity — a zupełnie nowy proces widzi ją tam nadal. Plus sprostowanie: `Ignore<T>` wcale nie trafia do `_skipped`, tylko prosto do `_error`.
 → [Artykuł](masstransit/ARTICLE.md) · [Kod](masstransit/code/)
 
 ### 🤖 [AI — Claude Code dla .NET/Angular/SQL](ai-claude-code/ARTICLE.md)
