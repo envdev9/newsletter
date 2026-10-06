@@ -752,9 +752,21 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   workaroundu w `node_modules/@angular/cli` (próg wersji). Niezweryfikowane: `mapResponse()` (siostrzany operator,
   do użycia w `@ngrx/effects`/Actions — ta rubryka nie dotykała jeszcze efektów na akcjach), `ng serve`/przeglądarka,
   `validateHttp`, SSR/hydration, reszta opcjonalnego `FormUiControl`.
-- Następny poziom: `validateHttp` (async walidacja wprost na `httpResource`), SSR/hydration, `mapResponse()` w
-  kontekście `@ngrx/effects`/Actions, `ng serve` w przeglądarce, pozostałe opcjonalne pola `FormUiControl`
-  (`required`/`pattern`/`readonly`/`hidden`/`disabledReasons`/`name`).
+- Wydanie #13, 2026-10-06: `validateHttp` z `@angular/forms/signals` 22.2.1 (`@publicApi 22.0`; wg skompilowanego
+  źródła to `validateAsync` + `httpResource`; `debounce` używa `debounced()` z rdzenia, `@experimental 22.0`).
+  Opcje `request`/`debounce`/`when`/`onSuccess`/`onError` (dwie ostatnie wymagane typem). Zweryfikowane: `npm ci`,
+  `ng build` OK, `ng test` 13/13 (10 testów schematu bez DOM na `HttpTestingController`, 2 w DOM), test mutacyjny
+  (bez `debounce: 300` padają 3 testy). Haczyki zmierzone: 4 szybkie zmiany → 1 request z debounce vs 4 (3
+  anulowane) bez; walidacja sync blokuje request; `pending()` true już w oknie debounce; `{url, params}` koduje
+  `%20%26`, ręcznie sklejony string nie; `when` (offline) → 0 requestów; błąd 500 → `check-failed`, wraca po
+  zmianie wartości; PUŁAPKA: pierwsza wartość nie jest debounce'owana, jeśli pole nie było wcześniej czytane (w
+  testach najpierw odczyt pola, potem `set()`); po `flush()` trzeba `advanceTimersByTimeAsync(0)` przed
+  `TestBed.tick()`. Node 22.14.0 — to samo obejście progu wersji CLI co w #9/#12 (poza repo). Niezweryfikowane:
+  `ng serve`/przeglądarka, `debounce` jako funkcja/`'blur'`, `request` zwracające `undefined`, `options`
+  (`HttpResourceOptions`), SSR/hydration, `mapResponse()` w `@ngrx/effects`.
+- Następny poziom: `debounce` jako funkcja i `'blur'`, `request` → `undefined`, pozostałe opcjonalne pola
+  `FormUiControl` (`required`/`pattern`/`readonly`/`hidden`/`disabledReasons`/`name`), SSR/hydration,
+  `mapResponse()` w kontekście `@ngrx/effects`/Actions.
 
 ### 🗄️ SQL Server
 - Aktualny poziom trudności: **podstawy (opanowane, w pełni zweryfikowane)**

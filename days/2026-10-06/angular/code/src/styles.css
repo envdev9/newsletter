@@ -1,0 +1,4 @@
+body { font-family: system-ui, sans-serif; margin: 2rem; }
+.error { color: #b00020; }
+.pending { color: #886600; }
+.ok { color: #1b7f3b; }

@@ -39,6 +39,7 @@
 → [Artykuł](ai-prompts/ARTICLE.md) · [Kod](ai-prompts/code/)
 
 ### 🅰️ [Angular](angular/ARTICLE.md)
+`validateHttp` z Signal Forms: asynchroniczna walidacja prosto na `httpResource` — z debounce (4 szybkie zmiany = 1 request zamiast 4), obowiązkową obsługą błędu sieci w typach i pułapką: pierwsza wartość nie jest debounce'owana, jeśli pole nie było wcześniej czytane.
 → [Artykuł](angular/ARTICLE.md) · [Kod](angular/code/)
 
 ### 🗄️ [SQL Server](sqlserver/ARTICLE.md)
