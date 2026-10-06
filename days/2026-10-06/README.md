@@ -18,6 +18,7 @@
 → [Artykuł](teamcity/ARTICLE.md) · [Kod](teamcity/code/)
 
 ### 🧪 [TUnit](tunit/ARTICLE.md)
+JWT RS256 pod testem: walidator zna tylko klucz publiczny, tokeny wygasają na `FakeTimeProvider` bez `Thread.Sleep`, refresh token jest jednorazowy — a mutacja `RequireSignedTokens=false` oblewa dokładnie jeden z ośmiu testów fałszerstw (`alg=none`). Plus trzy projekty z `ProjectReference` i `--treenode-filter`.
 → [Artykuł](tunit/ARTICLE.md) · [Kod](tunit/code/)
 
 ### ✈️ [Aspire](aspire/ARTICLE.md)

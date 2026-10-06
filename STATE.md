@@ -399,8 +399,22 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   powtórzone dwukrotnie, identyczny wzorzec. Niezweryfikowane: 3+ projekty testowe, projekty z `ProjectReference`
   między sobą, Aspire+TUnit (`DistributedApplicationTestingBuilder`), odświeżanie tokenu JWT, RS256/klucze
   asymetryczne (nadal tylko HS256).
-- Następny poziom: Aspire + TUnit (`DistributedApplicationTestingBuilder` — patrz też rubryka Aspire), odświeżanie
-  tokenu JWT, RS256/klucze asymetryczne, 3+ projekty testowe lub projekty z `ProjectReference` między sobą.
+- Wydanie #13, 2026-10-06: **JWT RS256 + odświeżanie tokenu + 3 projekty z `ProjectReference`** (`TunitRs256.slnx`:
+  `AuthApi` ← `AuthTestKit` (biblioteka) ← `AuthApi.Tests` i `AuthApi.Security.Tests`). Walidator dostaje tylko klucz
+  publiczny, JWKS testowany pod kątem braku składowych prywatnych; czas przez `FakeTimeProvider` (access 60 s, refresh
+  7 dni, bez `Thread.Sleep`); refresh token jednorazowy (rotacja), reuse unieważnia rodzinę; 8 wariantów fałszerstwa w
+  jednym teście parametryzowanym + kontrola. Nowe w TUnit: `[Category]`, `--treenode-filter`, `[DisplayName]` z
+  `$arg`, `Assert.Multiple()`, `[AfterEvery(Assembly)]` zdefiniowany w bibliotece (odpalił się w obu projektach
+  testowych; zmierzony fakt, nie mechanizm). TUnit 1.72.16, SDK 10.0.400, `dotnet test` 15/15 (6+9), 3 przebiegi.
+  Haczyki zmierzone: mutacja `RequireSignedTokens=false` oblała dokładnie 1 test (alg=none → 200); usunięcie
+  `ValidAlgorithms` nie oblało nic (obrona w głąb); `--treenode-filter` na solution → projekt bez dopasowań daje
+  `Zero tests ran`, exit code 8 (pomaga `--ignore-exit-code 8`); dwa różne PID-y procesów testowych; `dotnet test
+  --solution` z korzenia repo bez `global.json` → MSB1001 (SDK w trybie VSTest), użyto tymczasowego `global.json`
+  poza repo. `bin/`/`obj/` nie dało się usunąć (rm odrzucone), wykluczone przez `.gitignore`. Niezweryfikowane:
+  rotacja kluczy z wieloma `kid` + `ConfigurationManager`, wyścig przy współbieżnym refreshu, RS256 z certyfikatem
+  X.509, inne SDK.
+- Następny poziom: rotacja kluczy (wiele `kid` w JWKS, `ConfigurationManager` po HTTP), wyścig przy współbieżnym
+  refreshu, RS256 z certyfikatem X.509 (spójne z rubryką Certyfikaty); Aspire + TUnit zajmuje rubryka Aspire.
 
 ### ✈️ Aspire
 - Aktualny poziom trudności: **podstawy (opanowane)**

@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="AuthApi/AuthApi.csproj" />
+  <Project Path="AuthTestKit/AuthTestKit.csproj" />
+  <Project Path="AuthApi.Tests/AuthApi.Tests.csproj" />
+  <Project Path="AuthApi.Security.Tests/AuthApi.Security.Tests.csproj" />
+</Solution>
