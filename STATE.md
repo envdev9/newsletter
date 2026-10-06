@@ -574,8 +574,19 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   (`docker ps -a` identyczne przed/po). Niezweryfikowane: `UseDelayedRedelivery` na RabbitMQ (wymaga pluginu
   delayed-exchange), interakcja `Ignore<T>`/retry z `ConcurrentMessageLimit`/Courierem, trwałe repozytorium sag,
   topic/direct exchange, klaster/TLS, zachowanie `_error`/`_skipped` przy tysiącach wiadomości.
+- Wydanie #13, 2026-10-06: **topic/direct exchange na RabbitMQ** — strona publikująca `cfg.Publish<T>(ExchangeType.Topic)`
+  + `UseRoutingKeyFormatter`; strona konsumująca `ConfigureConsumeTopology=false` + ręczny `Bind<T>` (wzorce `eu.#`,
+  `*.temp`, `#`; exchange `direct` z kluczem `critical`). MassTransit 8.5.10, RabbitMQ 4.3-management, .NET 10;
+  `dotnet build` 0 warn/0 err. Wyniki: eu-all 2, temp-anywhere 2, audit 4, naive-default 0, alerts-critical 1;
+  statystyki REST: `SensorReading` publish_in=4/out=8, `Alert` in=2/out=1; exchange'e kolejek nadal `fanout`
+  (routing tylko na pierwszym skoku). Haczyki zmierzone: konsument na domyślnej topologii dostaje 0 z exchange'a topic
+  (wiązanie z pustym kluczem, bez błędu); niedopasowany alert znika po cichu (widać tylko w różnicy publish_in/out);
+  publikacja bez `Publish<T>(Topic)` na istniejącym topic wisi z `TaskCanceledException`, prawdziwe
+  `precondition_failed: inequivalent arg 'type'` tylko w `docker logs`. Niezweryfikowane: `mandatory`/publisher
+  returns, odczyt klucza w konsumencie, exchange `headers`, klaster/TLS. Posprzątano własny kontener
+  `mt-topic-routing-demo`, cudzych nie ruszano.
 - Następny poziom: trwałe repozytorium sag (EF/Mongo/Redis) na RabbitMQ, `UseDelayedRedelivery` na prawdziwym
-  brokerze, topic/direct exchange, itinerary z 3+ aktywnościami i częściową kompensacją.
+  brokerze, itinerary z 3+ aktywnościami i częściową kompensacją, `mandatory`/returns dla niezroutowanych wiadomości.
 
 ### 🤖 AI — Claude Code dla .NET/Angular/SQL
 - Omówione przypadki użycia: slash command generujący testy xUnit dla klasy C#, hook

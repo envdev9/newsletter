@@ -26,6 +26,7 @@ Ile żyje AppHost pod testami TUnit: `PerTestSession` daje jeden Redis dla dwóc
 → [Artykuł](aspire/ARTICLE.md) · [Kod](aspire/code/)
 
 ### 📨 [Messaging .NET z MassTransit](masstransit/ARTICLE.md)
+Routing po kluczu na RabbitMQ (topic i direct exchange): domyślna topologia daje konsumentowi 0 wiadomości bez żadnego błędu, a niedopasowany alert znika po cichu — widać go tylko w statystykach exchange'a.
 → [Artykuł](masstransit/ARTICLE.md) · [Kod](masstransit/code/)
 
 ### 🤖 [AI — Claude Code dla .NET/Angular/SQL](ai-claude-code/ARTICLE.md)
