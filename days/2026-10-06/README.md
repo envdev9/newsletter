@@ -54,6 +54,7 @@ Routing po kluczu na RabbitMQ (topic i direct exchange): domyślna topologia daj
 → [Artykuł](postgres-vector/ARTICLE.md) · [Kod](postgres-vector/code/)
 
 ### 🔐 [Certyfikaty i TLS (X.509)](certificates/ARTICLE.md)
+ACME (RFC 8555) od zera: własny serwer i klient .NET z challenge http-01 — podpis ECDSA w DER (71 B) zamiast `r‖s` (64 B) i serwer odpowiada `malformed`, a pierwszy `badNonce` to normalna część protokołu.
 → [Artykuł](certificates/ARTICLE.md) · [Kod](certificates/code/)
 
 ---

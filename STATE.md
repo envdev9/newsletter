@@ -1014,6 +1014,15 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   s_client`/`curl` do google.com odrzucone): realny log CT (Google/Cloudflare/DigiCert), SCT przez rozszerzenie TLS
   lub OCSP stapling, `consistency proof` między dwoma STH, wiele SCT/wiele logów jednocześnie, przyczyna braku
   pretty-printera w OpenSSL 3.0.2, Windows/macOS.
+- Wydanie #13, 2026-10-06: **ACME (RFC 8555) od zera, challenge http-01** — własny serwer `mini_acme.py` (Python) i klient w
+  .NET (`AcmeLab`), loopback, bez Dockera/sieci zewnętrznej (pebble/certbot/lego niedostępne). Mapa protokołu (directory,
+  nonce, konto, order, authz, challenge, finalize), JWS ES256, `jwk` vs `kid`, POST-as-GET, `keyAuthorization` + thumbprint
+  RFC 7638. Cert sprawdzony `openssl verify` i handshakiem TLS 1.3. 7 celowo zepsutych scenariuszy → właściwe
+  `urn:ietf:params:acme:error:*`. Haczyki: podpis ECDSA DER (71 B) vs JWS `r‖s` 64 B (`IeeeP1363FixedFieldConcatenation`);
+  `badNonce` → retry z nowym nonce; walidacja http-01 asynchroniczna (błąd w kolejnym POST-as-GET); `badCSR`, `orderNotReady`.
+  Niezweryfikowane: prawdziwy Let's Encrypt/cudzy klient, DNS-01, TLS-ALPN-01, CAA, `keyChange`, `revokeCert`, EAB,
+  Windows/macOS; `TcpListener` zamiast `HttpListener` (powód — Host — to założenie). Śmieci w `code/` (`work/`, `bin`, `obj`,
+  `__pycache__`) w `.gitignore`.
 - Następny poziom: `consistency proof` (RFC 6962 §2.1.2) między dwoma STH + gossip protocol, Must-Staple + SCT razem,
   weryfikacja SCT "na żywo" w `SslStream`/Kestrelu (callback odrzucający połączenie bez ważnego SCT), ACME/`pebble`
   lokalnie (jeśli da się postawić bez sieci zewnętrznej — nigdy nie próbowane), Windows/macOS store, DANE/CAA.
