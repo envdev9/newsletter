@@ -36,6 +36,7 @@ Skaner planów SQL Server z czterema regułami (spill do tempdb, przerośnięty 
 → [Artykuł](ai-claude-code/ARTICLE.md) · [Kod](ai-claude-code/code/)
 
 ### ⚙️ [AI — agentic loop](ai-agentic-loop/ARTICLE.md)
+Dwóch agentów w jednym katalogu to ciche nadpisanie cudzej zmiany bez błędu — `git worktree` daje każdemu własny katalog, `HEAD` i indeks, a konflikt wychodzi jawnie dopiero przy merge.
 → [Artykuł](ai-agentic-loop/ARTICLE.md) · [Kod](ai-agentic-loop/code/)
 
 ### 🧠 [AI — zarządzanie kontekstem](ai-context/ARTICLE.md)

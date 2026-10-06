@@ -697,7 +697,13 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   bez stemmingu — ograniczenie SYMULACJI, nie mechanizmu Claude Code; (3) domyślny stan przy braku trafienia to "nic się
   nie ładuje", nie "zgadnij najbliższe". Niezweryfikowane: czy Claude Code faktycznie ładuje na starcie tylko `name`+
   `description` (z pamięci, bez dokumentacji w sesji), zachowanie przy kilku pasujących skillach naraz w żywej sesji.
-- Następne: `permissionMode` w frontmatterze agenta (po weryfikacji CLI), hooki w trybie headless, worktree dla równoległych agentów.
+- Wydanie #13, 2026-10-06: `git worktree` jako izolacja systemu plików równoległych agentów (izolacja kontekstu z #3/#4 nie chroni
+  plików na dysku). `worktree_fanout.py` 25/25 asercji na realnym gicie 2.34.1 (tymczasowe repo w /tmp, samo sprząta): lost update w
+  jednym katalogu; 4 worktree równolegle (0,44 s ściany vs 1,75 s sumy pracy); `.git` w worktree to plik `gitdir:`; drugi checkout tego samego
+  brancha → kod 128; konflikt przesuwa się na merge (`merge --abort`, `rebase` + `--ff-only`); git odmawia usunięcia brudnego worktree
+  i `branch -d` niezmergowanego brancha. Rolę agentów grają funkcje Pythona. Niezweryfikowane: żywa sesja `claude` (nie próbowano),
+  `isolation: "worktree"` narzędzia Agent (tylko z opisu narzędzia), `dotnet build/test` w worktree, pliki spoza gita, Windows.
+- Następne: `permissionMode` w frontmatterze agenta (po weryfikacji CLI), hooki w trybie headless.
 
 ### 🧠 AI — zarządzanie kontekstem
 - Omówione elementy: kolejność warstw kontekstu (system→narzędzia/MCP→pamięć→historia→
