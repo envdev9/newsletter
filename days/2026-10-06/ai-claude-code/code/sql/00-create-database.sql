@@ -1,0 +1,11 @@
+-- Wydanie #13: wlasna, jednorazowa baza. Auto-create statistics WYLACZONE celowo (regula NO-STATISTICS).
+IF DB_ID(N'PrasowkaAiSpill1006') IS NOT NULL
+BEGIN
+    ALTER DATABASE PrasowkaAiSpill1006 SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    DROP DATABASE PrasowkaAiSpill1006;
+END
+GO
+CREATE DATABASE PrasowkaAiSpill1006;
+GO
+ALTER DATABASE PrasowkaAiSpill1006 SET AUTO_CREATE_STATISTICS OFF;
+GO

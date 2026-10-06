@@ -654,7 +654,15 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   teście, żadna baza innej rubryki nie dotknięta. Niezweryfikowane: reguły `SPILL`/`NO-JOIN-PREDICATE`/
   `NO-STATISTICS`/`MEMORY-GRANT` (nie wywołano tych warunków na małej próbce danych), `scan_sql.py` z #4 (nie
   dotykany dzisiaj), inne wersje/edycje SQL Server, auto-aktywacja skilla w żywej sesji.
-- Następne: domknięcie `SPILL`/`NO-STATISTICS` na realnym planie (większa skala danych), kolejny głębszy przypadek Angular/.NET do code-review.
+- Wydanie #13, 2026-10-06: domknięcie reguł `scan_plan.py` `SPILL`, `MEMORY-GRANT`, `NO-STATISTICS`, `NO-JOIN-PREDICATE` na REALNYCH planach
+  SQL Server 2022 (własny kontener, baza `PrasowkaAiSpill1006`, oba usunięte po teście): spill 7841 stron do tempdb, grant 268 152 KB
+  vs użyte 5 400 KB, `NoJoinPredicate` na Nested Loops, `ColumnsWithNoStatistics`. Dwa błędy skanera znalezione i naprawione: podwójne
+  raportowanie spilla (`SpillToTempDb` + `SortSpillDetails`) oraz fałszywy `ESTIMATE-SKEW` (estymata na wykonanie vs suma po wykonaniach;
+  oczekiwanie dla `keylookup.xml` z #10 zmienione na samo `KEY-LOOKUP`). Ślepe plamki silnika: plan `TRIVIAL` nie niesie
+  `ColumnsWithNoStatistics`; `COUNT(*)` z cross joina bez `NoJoinPredicate`. `run_tests.py` 15/15 (14 realnych planów; oczekiwania ustalone po
+  obejrzeniu wyników = test regresji). Niezweryfikowane: spill typu Hash, progi reguł, inne wersje SQL Server, żywa sesja `claude`.
+  W repo został `code/samples/no_statistics_trivial.xml` (nie dało się zmienić nazwy); `out0*.txt` w /tmp.
+- Następne: kolejny głębszy przypadek Angular/.NET do code-review; spill typu Hash; hook/skill łączący skaner planu z `dotnet ef`/EF Core.
 
 ### ⚙️ AI — agentic loop / workflow kodowania
 - Omówione elementy: pętla tool-use, różnica komenda/skill/subagent/hook (kto naciska

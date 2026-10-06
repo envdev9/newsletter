@@ -32,6 +32,7 @@ Routing po kluczu na RabbitMQ (topic i direct exchange): domyślna topologia daj
 → [Artykuł](masstransit/ARTICLE.md) · [Kod](masstransit/code/)
 
 ### 🤖 [AI — Claude Code dla .NET/Angular/SQL](ai-claude-code/ARTICLE.md)
+Skaner planów SQL Server z czterema regułami (spill do tempdb, przerośnięty memory grant, brak predykatu joina, brak statystyk) sprawdzony na prawdziwych planach — a realne plany ujawniły dwa błędy samego skanera, w tym fałszywy alarm przepuszczony przez zielony test.
 → [Artykuł](ai-claude-code/ARTICLE.md) · [Kod](ai-claude-code/code/)
 
 ### ⚙️ [AI — agentic loop](ai-agentic-loop/ARTICLE.md)
