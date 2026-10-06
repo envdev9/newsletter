@@ -74,6 +74,16 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
     (indeks właściwości), `Utf8JsonWriter.WriteStringValueSegment`/`WriteBase64StringSegment` (zapis w kawałkach),
     `MemoryExtensions.CountAny`/`ReplaceAny`/`ReplaceAnyExcept` z `SearchValues<T>` → potem .NET 11 (SDK .NET 11
     niedostępne na maszynie na 2026-10-05, sprawdzone `dotnet --list-sdks`).
+  - [x] `Utf8JsonWriter.WriteStringValueSegment` (char/byte) i `WriteBase64StringSegment` + `JsonObject.TryAdd`/
+    `TryGetPropertyValue` z `out int index` — wydanie #13, 2026-10-06. Potwierdzone na net9.0: `CS1501`×2 i
+    `CS1061`×3. Zweryfikowane `dotnet run` (SDK 10.0.400; SDK 11 nadal niedostępne). Haczyki zmierzone: segmenty
+    bez `Flush()` nie streamują (64 MB: ~256 MB bufora vs 24 KB z `Flush` po kawałku); mieszanie char/byte →
+    `InvalidOperationException`; niedomknięty string (`isFinalSegment:false` + Dispose) cicho zostawia ucięty
+    JSON, samotny wysoki surrogat → `�`; indeks z `TryAdd` to migawka (po `RemoveAt` nieaktualny); nieudany
+    `TryAdd` zwraca indeks istniejącej właściwości, brak → `-1`; `TryAdd` z węzłem mającym rodzica rzuca, ale klucz
+    i tak zostaje dodany. Niezweryfikowane: wydajność vs surowe bajty, ASP.NET, .NET 11.
+  - Zostało: `MemoryExtensions.CountAny`/`ReplaceAny`/`ReplaceAnyExcept` z `SearchValues<T>` → potem .NET 11 (gdy
+    pojawi się SDK) lub zejście do .NET 9.
 - Gdy funkcje .NET 10 się wyczerpią → .NET 11 → (dalsze nowości) → schodzimy w dół:
   9 → 8 → 7 → 6, potem wracamy do najnowszej dostępnej wersji.
 
