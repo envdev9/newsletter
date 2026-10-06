@@ -720,7 +720,15 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   z podkatalogów) i koszt definicji narzędzi MCP (per serwer, what-if „wyłącz serwer"). `ctxaudit.py` (`memory`/`mcp`), test 13/13
   (Python 3.10). Fixture: 1242→304 tok. (4,1×); MCP 2076 tok., serwer `tracker` 86%. Dane SYNTETYCZNE (odczyt `~/.claude/projects` i
   WebFetch odrzucone); tokeny = bajty/4. Reguły ładowania pamięci z pamięci autora — niezweryfikowane (tabela w artykule).
-- Następne: analiza prawdziwego transkryptu (gdy odczyt dozwolony), filtrowanie/leniwe ładowanie narzędzi MCP, weryfikacja reguł CLAUDE.md w docs.
+- Wydanie #4 rubryki (#13), 2026-10-06: kompresja wyników narzędzi i budżet kontekstu jako kod — `toolcompress.py` + `test_toolcompress.py`
+  (21 asercji, Python 3.10.4 stdlib). Kompresja stratna → oceniać dwiema liczbami (tokeny + przeżywalność faktów). Syntetyczny log
+  (~53 tys. tok., 4 fakty): `head` 0/4 (88× oszczędności), `head+tail` 1/4, „tylko błędy" 3/4, `dedup`/`smart` 4/4; przy budżecie 250 tok.
+  `smart` gubi fakt unikalny (funkcja oceny = polityka kontekstu). JSON (300 zamówień): `head` psuje składnię, projekcja pól 11,8×,
+  filtr+projekcja+licznik 551× przy 3/3. Plecak zachłanny (budżet 4000 tok., wartości subiektywne) 387 vs FIFO 192; nie zna wykluczeń
+  (bierze surowy log i jego kompresję). Niezweryfikowane: zachowanie modelu (żaden nie uruchamiany), „lost in the middle"/`order_edges`
+  (WebFetch odrzucone, sekcja z pamięci = hipoteza), realne logi, tryb `spill` z agentem, hooki, prawdziwy transkrypt (odczyt
+  `~/.claude/projects` nadal odrzucony). Zostało `/tmp/toolcompress_spill_demo.log` (rm odrzucone).
+- Następne: analiza prawdziwego transkryptu (gdy odczyt dozwolony), filtrowanie/leniwe ładowanie narzędzi MCP, weryfikacja reguł CLAUDE.md w docs, weryfikacja „lost in the middle" w źródle.
 
 ### ✍️ AI — prompty dla developera
 - Omówione elementy: 5 par zły/dobry prompt (konkretność+pliki/linie, "dlaczego" vs

@@ -40,6 +40,7 @@ Dwóch agentów w jednym katalogu to ciche nadpisanie cudzej zmiany bez błędu 
 → [Artykuł](ai-agentic-loop/ARTICLE.md) · [Kod](ai-agentic-loop/code/)
 
 ### 🧠 [AI — zarządzanie kontekstem](ai-context/ARTICLE.md)
+Każda kompresja wyniku narzędzia jest stratna — oceniaj ją tokenami i przeżywalnością faktów naraz: w teście `head` dawał 88× oszczędności i gubił wszystkie 4 kluczowe fakty, a filtr na JSON-ie zmniejszał 44 tys. tokenów do 80.
 → [Artykuł](ai-context/ARTICLE.md) · [Kod](ai-context/code/)
 
 ### ✍️ [AI — prompty dla developera](ai-prompts/ARTICLE.md)
