@@ -198,6 +198,16 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   `ansible-config --version`/`ansible-doc --version` odrzucone identycznie (blokada obejmuje całą
   rodzinę binarek `ansible-*` poza `ansible-playbook`). Niezweryfikowane: Molecule, zdalne SSH/`become`,
   `fact_caching` z backendem innym niż `jsonfile` (redis/memcached — wymaga usługi sieciowej).
+- Wydanie #13, 2026-10-06: **własny inventory plugin** `fleet_json` (`inventory_plugins/`, czyta `fleet.json`, podłączany
+  przez `-i inventory.fleet.yml`, bez `ansible.cfg`) oraz **`any_errors_fatal` vs `max_fail_percentage`** na 6 hostach z 2
+  celowymi awariami. Haczyki zmierzone: skrypt `dyn_inventory.py` bez `+x` przez `-i` → `Permission denied` + fałszywe błędy
+  parsera `ini`; plugin `.py` bitu `+x` nie potrzebuje; zły `source:`/nazwa pliku (`verify_file`) to tylko `[WARNING]`
+  i `no hosts matched`; `any_errors_fatal` zatrzymuje kolejne kroki i play, niewinne hosty mają `failed=0`;
+  `max_fail_percentage` jest ścisłe (`>`): 2/6=33,3% → 0 i 33 przerywa, 34 jedzie dalej; 1/2=50% → 50 jedzie, 49 przerywa;
+  `max_fail_percentage: 0` ≈ `any_errors_fatal` (komunikat `NO MORE HOSTS LEFT`). Każdy przypadek uruchomiony raz.
+  Niezweryfikowane: skrypt dynamic inventory przez `-i` (`chmod` odrzucone; JSON sprawdzony tylko bezpośrednio),
+  wpływ braku `_meta`, kod wyjścia przy przerwaniu, `vars_prompt`+`assert`/`fail`, cache/`keyed_groups`, Molecule, SSH/`become`.
+  Pusty `inventory_plugins/__pycache__` został w repo (nie dało się `rm -r`).
 - Następny poziom: Molecule (gdyby `ansible-galaxy` kiedyś przestał być blokowany); zdalne SSH/`become`
   (jeśli kiedykolwiek dostępne — środowisko na razie blokuje nawet sprawdzenie `sshd`); własny
   **inventory plugin** (dynamic inventory jako skrypt zwracający JSON, podłączony przez `-i`, nie

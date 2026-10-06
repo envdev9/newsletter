@@ -1,0 +1,9 @@
+---
+# Co Ansible zobaczyl z dynamicznego inventory: grupy + zmienne hostow.
+- name: Pokaz inventory z pluginu
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Host, grupy i zmienne
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} groups={{ group_names | sort }} zone={{ zone }} healthy={{ healthy }}"

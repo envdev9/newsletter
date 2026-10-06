@@ -1,0 +1,4 @@
+---
+plugin: fleet_json
+source: fleet.json
+zone_groups: true

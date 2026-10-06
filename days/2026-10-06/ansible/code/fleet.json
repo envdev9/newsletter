@@ -1,0 +1,10 @@
+{
+  "hosts": [
+    {"name": "w1", "group": "web",    "healthy": true,  "zone": "a"},
+    {"name": "w2", "group": "web",    "healthy": false, "zone": "a"},
+    {"name": "w3", "group": "web",    "healthy": true,  "zone": "b"},
+    {"name": "w4", "group": "web",    "healthy": true,  "zone": "b"},
+    {"name": "k1", "group": "worker", "healthy": false, "zone": "a"},
+    {"name": "k2", "group": "worker", "healthy": true,  "zone": "b"}
+  ]
+}

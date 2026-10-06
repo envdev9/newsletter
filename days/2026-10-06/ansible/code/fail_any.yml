@@ -1,0 +1,24 @@
+---
+# any_errors_fatal: jedna awaria = stop dla WSZYSTKICH hostow.
+# Drugi play sprawdza, czy po awarii ktokolwiek dociera do kolejnego playa.
+- name: any_errors_fatal
+  hosts: all
+  gather_facts: false
+  any_errors_fatal: true
+  tasks:
+    - name: Krok 1 - health check (pada na hostach healthy=false)
+      ansible.builtin.fail:
+        msg: "{{ inventory_hostname }} niezdrowy"
+      when: not healthy
+
+    - name: Krok 2 - wdrozenie
+      ansible.builtin.debug:
+        msg: "wdrazam na {{ inventory_hostname }}"
+
+- name: Kolejny play (czy ktos tu dotrze?)
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Play 2
+      ansible.builtin.debug:
+        msg: "play 2 na {{ inventory_hostname }}"

@@ -12,6 +12,7 @@
 → [Artykuł](dotnet/ARTICLE.md) · [Kod](dotnet/code/)
 
 ### 🔧 [Ansible](ansible/ARTICLE.md)
+Własny inventory plugin w Pythonie (`-i` bez `ansible.cfg`) oraz `any_errors_fatal` kontra `max_fail_percentage` na flocie z celowymi awariami — próg jest ścisły (`>`): przy 33,3% awarii wartość 33 przerywa play, a 34 jedzie dalej.
 → [Artykuł](ansible/ARTICLE.md) · [Kod](ansible/code/)
 
 ### 🏗️ [TeamCity](teamcity/ARTICLE.md)

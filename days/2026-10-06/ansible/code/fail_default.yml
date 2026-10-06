@@ -1,0 +1,14 @@
+---
+# Zachowanie domyslne: host, ktory padl, wypada z playa, reszta jedzie dalej.
+- name: Domyslnie - awaria jednego hosta nie zatrzymuje reszty
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Krok 1 - health check (pada na hostach healthy=false)
+      ansible.builtin.fail:
+        msg: "{{ inventory_hostname }} niezdrowy"
+      when: not healthy
+
+    - name: Krok 2 - wdrozenie
+      ansible.builtin.debug:
+        msg: "wdrazam na {{ inventory_hostname }}"

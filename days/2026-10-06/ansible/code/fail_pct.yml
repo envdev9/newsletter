@@ -1,0 +1,23 @@
+---
+# max_fail_percentage z parametru (-e pct=NN). Bez `serial` cala flota to JEDNA paczka.
+- name: max_fail_percentage={{ pct }}
+  hosts: all
+  gather_facts: false
+  max_fail_percentage: "{{ pct }}"
+  tasks:
+    - name: Krok 1 - health check (pada na hostach healthy=false)
+      ansible.builtin.fail:
+        msg: "{{ inventory_hostname }} niezdrowy"
+      when: not healthy
+
+    - name: Krok 2 - wdrozenie
+      ansible.builtin.debug:
+        msg: "wdrazam na {{ inventory_hostname }}"
+
+- name: Kolejny play (kto tu dotrze?)
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Play 2
+      ansible.builtin.debug:
+        msg: "play 2 na {{ inventory_hostname }}"
