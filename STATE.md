@@ -484,10 +484,20 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   Niezweryfikowane: dashboard (testy nie wystawiają dashboardu w ogóle), `SharedType.PerTestSession`/`Keyed` z
   Aspire między wieloma klasami, `WithDataVolume`+EF Core migracje, zachowanie `DisposeAsync` fixture'a przy
   porażce testu, user-secrets z prawdziwym menedżerem sekretów w trybie publish.
-- Następny poziom: dashboard (wizualna inspekcja — nadal nieobejrzany, testy go nie wystawiają),
-  `SharedType.PerTestSession`/`Keyed` z Aspire+TUnit między wieloma klasami testowymi, `WithDataVolume` + EF Core
-  migracje, zachowanie sprzątania fixture'a przy porażce testu, integracja user-secrets z prawdziwym menedżerem
-  sekretów w trybie publish.
+- Wydanie #13, 2026-10-06: **zakres życia fixture'a AppHosta pod TUnit** — `SharedType.PerTestSession` między dwiema
+  klasami (to samo `Id` → jeden AppHost i jeden Redis) vs `PerClass` (osobna instancja, `Starts==2`, dwa kontenery
+  `cache-*` naraz w `docker ps`); celowo failujący test `[Explicit]` (filtr `Category=Sabotage`, exit 2) — porażka
+  testu nie omija `DisposeAsync`, kontener znika. Docker 29.1.3, Aspire 13.5.2, TUnit 1.72.16, SDK 10.0.400; 3/3
+  PASS ×2 (32,9 s i 29,5 s) — uruchomione przez `dotnet run` projektu testowego, NIE `dotnet test` (patrz
+  `global.json`/MSB1001, opisane w README). Haczyki zmierzone: ta sama nazwa zasobu `cache` w dwóch AppHostach nie
+  koliduje (losowy sufiks); `StopAsync`+`DisposeAsync` ~13,8 s na AppHosta; szum stderr (`Unobserved task
+  exception` z klienta k8s, `External span cap of 100 reached`) — testy przechodzą, filtr po "exception" da
+  fałszywy alarm; fixture sesyjny zdisposowany PRZED `[After(TestSession)]`. Niezweryfikowane: `SharedType.Keyed`/
+  `None`, dashboard, osierocone kontenery po zabiciu procesu testowego, anonimowe woluminy Redisa. Sprzątanie
+  wyłącznie przez Aspire; cudzych zasobów Dockera nie ruszano.
+- Następny poziom: dashboard (wizualna inspekcja — nadal nieobejrzany), `SharedType.Keyed` (kilka AppHostów o
+  różnych konfiguracjach w jednej sesji), `WithDataVolume` + EF Core migracje, osierocone kontenery po zabiciu
+  procesu, integracja user-secrets z prawdziwym menedżerem sekretów w trybie publish.
 
 ### 📨 Messaging .NET (MassTransit)
 - Aktualny poziom trudności: **podstawy (opanowane)**

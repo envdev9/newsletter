@@ -22,6 +22,7 @@ JWT RS256 pod testem: walidator zna tylko klucz publiczny, tokeny wygasają na `
 → [Artykuł](tunit/ARTICLE.md) · [Kod](tunit/code/)
 
 ### ✈️ [Aspire](aspire/ARTICLE.md)
+Ile żyje AppHost pod testami TUnit: `PerTestSession` daje jeden Redis dla dwóch klas, `PerClass` dwa kontenery naraz — a celowo oblany test i tak nie zostawia po sobie kontenera. Cena: ~14 s samego sprzątania na AppHosta.
 → [Artykuł](aspire/ARTICLE.md) · [Kod](aspire/code/)
 
 ### 📨 [Messaging .NET z MassTransit](masstransit/ARTICLE.md)
