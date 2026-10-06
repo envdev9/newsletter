@@ -211,6 +211,15 @@ czy będzie potrafił sam rozwiązać konflikt — to pytania o model, na które
 
 ---
 
+## 🎁 Bonus: prawdziwa specyfikacja całego procesu
+
+Powyżej — mechanika jednego elementu (izolacja plików). Osobno, z rzeczywistej sesji
+brainstormingowej, powstała pełna specyfikacja **całego szkieletu pętli agentowej** (bramki,
+role agentów, budżety, powrót do specyfikacji przy luce) — bez symulacji, zero fikcji:
+[`BONUS-spec-projektowy.md`](BONUS-spec-projektowy.md).
+
+---
+
 <div align="center">
 
 [← wróć do wydania #13 (wszystkie rubryki)](../README.md) · [spis wydań](../../README.md)
