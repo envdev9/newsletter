@@ -1,0 +1,12 @@
+<projectFeature id="k8s-demo-image" type="CloudImage">
+  <properties>
+    <property name="agentNamePrefix" value="k8s-agent"/>
+    <property name="agent_pool_id" value="-2"/>
+    <property name="dockerImage" value="jetbrains/teamcity-agent:2025.07"/>
+    <property name="imageDescription" value="Run container: jetbrains/teamcity-agent:2025.07"/>
+    <property name="imageInstanceLimit" value="3"/>
+    <property name="podTemplateMode" value="simple"/>
+    <property name="profileId" value="k8s-demo"/>
+    <property name="source-id" value="k8s-agent"/>
+  </properties>
+</projectFeature>

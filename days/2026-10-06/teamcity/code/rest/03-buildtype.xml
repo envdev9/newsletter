@@ -1,0 +1,5 @@
+<buildType name="Verify" id="CascadeDemo_Verify" projectId="CascadeDemo">
+  <vcs-root-entries>
+    <vcs-root-entry><vcs-root id="CascadeRoot"/></vcs-root-entry>
+  </vcs-root-entries>
+</buildType>

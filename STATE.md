@@ -325,6 +325,17 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   (repo w configu to placeholder), cascading merge (dwa `merge{}` na jednym build type — składniowo możliwe,
   nie testowane na serwerze), `versionedSettings{}` w pełnej pętli serwer-commituje-i-czyta-VCS, pozostałe ~40
   per-pluginowych artefaktów spoza użytego pipeline'u.
+- Wydanie #13, 2026-10-06: **cascading merge `feature → integration → main`** na ŻYWYM serwerze 2025.07 z prawdziwym agentem
+  (dwa `merge{}` na jednym build type + VCS trigger `+:*`; repo lokalne `file://`, nie GitHub). Zielony łańcuch: `feature/y` →
+  merge na `integration` → build triggerem → `main` fast-forward. Cloud profile (Kubernetes) w DSL zweryfikowany przez
+  Show DSL po dodaniu przez REST; agent pools DSL nie opisuje (tylko `agentPoolId`). Haczyki zmierzone:
+  `destinationBranch` to nazwa logiczna (`integration`, nie `refs/heads/...`); brak `commitMessage` → merge cicho wyłączony
+  (wyjątek tylko w logu serwera, build zielony); pusty `commitMessage` też nie scala (jedna para prób); klucz REST
+  `teamcity:branchSpec` (z kropką ignorowany); `checkoutMode = ON_SERVER` nie daje `.git`; `noNewTests` toleruje padnięte
+  testy, ale nie inne problemy builda; serwer przepisał `id` profilu chmurowego na `kube-1`. Niezweryfikowane: merge na
+  GitHubie, konflikty, Kubernetes z prawdziwym klastrem, przebieg od zera na finalnych plikach `rest/`, `AFTER_BUILD_FINISH` vs
+  `BEFORE_BUILD_FINISH`. Sprzątanie: własne kontenery/obraz agenta/katalogi /tmp + 14 anonimowych wolumenów dobranych po
+  czasie utworzenia (nie po nazwie — drobne ryzyko pomyłki); obrazy server i maven były wcześniej, zostały.
 - Następny poziom: cascading merge (dwa `merge{}` feature'y, łańcuch feature→integration→main) na żywym serwerze;
   `versionedSettings{}` w pełnej pętli z realnym VCS; realny merge PR-a na żywym GitHubie (wymaga repo poza
   sandboxem); eksploracja pozostałych per-pluginowych artefaktów z `configs-dsl-kotlin-plugins-latest` (np. agent

@@ -1,0 +1,8 @@
+<vcs-root name="Cascade Root" vcsName="jetbrains.git" id="CascadeRoot">
+  <project id="CascadeDemo"/>
+  <properties>
+    <property name="url" value="file:///srv/demo.git"/>
+    <property name="branch" value="refs/heads/main"/>
+    <property name="teamcity:branchSpec" value="+:refs/heads/(feature/*)&#10;+:refs/heads/(integration)&#10;+:refs/heads/(main)"/>
+  </properties>
+</vcs-root>

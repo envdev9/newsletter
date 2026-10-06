@@ -1,0 +1,3 @@
++:refs/heads/(feature/*)
++:refs/heads/(integration)
++:refs/heads/(main)

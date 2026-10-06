@@ -1,0 +1,14 @@
+<projectFeature id="k8s-demo" type="CloudProfile">
+  <properties>
+    <property name="apiServerUrl" value="https://k8s.example.invalid:6443"/>
+    <property name="authStrategy" value="unauthorized"/>
+    <property name="cloud-code" value="kube"/>
+    <property name="enabled" value="true"/>
+    <property name="name" value="K8s demo"/>
+    <property name="namespace" value="ci"/>
+    <property name="profileId" value="k8s-demo"/>
+    <property name="profileServerUrl" value="http://teamcity.example.invalid:8111"/>
+    <property name="system.cloud.profile_id" value="k8s-demo"/>
+    <property name="terminate-idle-time" value="15"/>
+  </properties>
+</projectFeature>

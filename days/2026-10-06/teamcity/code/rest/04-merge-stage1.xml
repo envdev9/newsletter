@@ -1,0 +1,10 @@
+<feature type="AutoMergeFeature">
+  <properties>
+    <property name="teamcity.automerge.srcBranchFilter" value="+:feature/*"/>
+    <property name="teamcity.automerge.dstBranch" value="integration"/>
+    <property name="teamcity.automerge.message" value="Auto-merge: %teamcity.build.branch% (build #%build.number%)"/>
+    <property name="teamcity.merge.policy" value="alwaysCreateMergeCommit"/>
+    <property name="teamcity.automerge.buildStatusCondition" value="successful"/>
+    <property name="teamcity.automerge.run.policy" value="runAfterBuildFinish"/>
+  </properties>
+</feature>

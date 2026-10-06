@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<build-type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2025.3/project-config.xsd">
+  <name>Verify</name>
+  <description />
+  <settings>
+    <build-runners>
+      <runner id="RUNNER_1" name="Test" type="simpleRunner">
+        <parameters>
+          <param name="script.content" value="echo ok" />
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+    </build-runners>
+    <vcs-settings>
+      <vcs-entry-ref root-id="RootProjectId_CascadeRoot" />
+    </vcs-settings>
+    <build-extensions>
+      <extension id="BUILD_EXT_1" type="AutoMergeFeature">
+        <parameters>
+          <param name="teamcity.automerge.buildStatusCondition" value="successful" />
+          <param name="teamcity.automerge.dstBranch" value="integration" />
+          <param name="teamcity.automerge.message" value="Auto-merge: %teamcity.build.branch% (build #%build.number%)" />
+          <param name="teamcity.automerge.run.policy" value="runAfterBuildFinish" />
+          <param name="teamcity.automerge.srcBranchFilter" value="+:feature/*" />
+          <param name="teamcity.merge.policy" value="alwaysCreateMergeCommit" />
+        </parameters>
+      </extension>
+      <extension id="BUILD_EXT_2" type="AutoMergeFeature">
+        <parameters>
+          <param name="teamcity.automerge.buildStatusCondition" value="noNewTests" />
+          <param name="teamcity.automerge.dstBranch" value="main" />
+          <param name="teamcity.automerge.message" value="Auto-merge: %teamcity.build.branch% (build #%build.number%)" />
+          <param name="teamcity.automerge.run.policy" value="runBeforeBuildFinish" />
+          <param name="teamcity.automerge.srcBranchFilter" value="+:integration" />
+          <param name="teamcity.merge.policy" value="fastForward" />
+        </parameters>
+      </extension>
+    </build-extensions>
+  </settings>
+</build-type>
+

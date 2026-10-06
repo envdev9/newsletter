@@ -16,6 +16,7 @@ Własny inventory plugin w Pythonie (`-i` bez `ansible.cfg`) oraz `any_errors_fa
 → [Artykuł](ansible/ARTICLE.md) · [Kod](ansible/code/)
 
 ### 🏗️ [TeamCity](teamcity/ARTICLE.md)
+Cascading merge `feature → integration → main` na żywym serwerze z prawdziwym agentem — a pominięty `commitMessage` po cichu wyłącza merge, zostawiając zielony build.
 → [Artykuł](teamcity/ARTICLE.md) · [Kod](teamcity/code/)
 
 ### 🧪 [TUnit](tunit/ARTICLE.md)

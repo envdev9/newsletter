@@ -1,0 +1,7 @@
+<step name="Test" type="simpleRunner">
+  <properties>
+    <property name="script.content" value="echo build-on-%teamcity.build.branch%"/>
+    <property name="use.custom.script" value="true"/>
+    <property name="teamcity.step.mode" value="default"/>
+  </properties>
+</step>

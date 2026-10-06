@@ -1,0 +1,6 @@
+<trigger type="vcsTrigger">
+  <properties>
+    <property name="branchFilter" value="+:*"/>
+    <property name="quietPeriodMode" value="DO_NOT_USE"/>
+  </properties>
+</trigger>

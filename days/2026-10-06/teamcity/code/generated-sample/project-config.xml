@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" parent-id="RootParentProjectId" uuid="" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2025.3/project-config.xsd">
+  <name>RootProjectName</name>
+  <project-extensions>
+    <extension id="PROJECT_EXT_1" type="versionedSettings">
+      <parameters>
+        <param name="enabled" value="true" />
+        <param name="format" value="kotlin" />
+      </parameters>
+    </extension>
+    <extension id="k8s-demo" type="CloudProfile">
+      <parameters>
+        <param name="apiServerUrl" value="https://k8s.example.invalid:6443" />
+        <param name="authStrategy" value="token" />
+        <param name="cloud-code" value="kube" />
+        <param name="description" value="" />
+        <param name="enabled" value="true" />
+        <param name="name" value="K8s demo" />
+        <param name="namespace" value="ci" />
+        <param name="next-hour" value="" />
+        <param name="profileId" value="k8s-demo" />
+        <param name="profileInstanceLimit" value="" />
+        <param name="profileServerUrl" value="http://teamcity.example.invalid:8111" />
+        <param name="secure:authToken" value="credentialsJSON:00000000-0000-0000-0000-000000000000" />
+        <param name="secure:caCertData" value="" />
+        <param name="system.cloud.profile_id" value="k8s-demo" />
+        <param name="terminate-idle-time" value="15" />
+        <param name="total-work-time" value="" />
+      </parameters>
+    </extension>
+    <extension id="k8s-demo-image" type="CloudImage">
+      <parameters>
+        <param name="agentNamePrefix" value="k8s-agent" />
+        <param name="agent_pool_id" value="-2" />
+        <param name="dockerImage" value="jetbrains/teamcity-agent:2025.07" />
+        <param name="imageDescription" value="Run container: jetbrains/teamcity-agent:2025.07" />
+        <param name="imageInstanceLimit" value="3" />
+        <param name="podTemplateMode" value="simple" />
+        <param name="profileId" value="k8s-demo" />
+        <param name="source-id" value="k8s-agent" />
+      </parameters>
+    </extension>
+  </project-extensions>
+</project>
+
