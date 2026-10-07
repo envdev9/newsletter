@@ -18,6 +18,7 @@ Sanityzacja nazwy pliku bez ani jednej alokacji (`MemoryExtensions.ReplaceAny`/`
 → [Artykuł](teamcity/ARTICLE.md) · [Kod](teamcity/code/)
 
 ### 🧪 [TUnit](tunit/ARTICLE.md)
+Dwa prawdziwe serwery, rotacja kluczy JWKS i wyścig refresh tokenu — pierwszy użytkownik z nowym `kid` dostaje 401, wycofany klucz nadal działa, a test wyścigu przez HTTP przepuścił usunięty `lock`.
 → [Artykuł](tunit/ARTICLE.md) · [Kod](tunit/code/)
 
 ### ✈️ [Aspire](aspire/ARTICLE.md)

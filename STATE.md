@@ -444,7 +444,16 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   poza repo. `bin/`/`obj/` nie dało się usunąć (rm odrzucone), wykluczone przez `.gitignore`. Niezweryfikowane:
   rotacja kluczy z wieloma `kid` + `ConfigurationManager`, wyścig przy współbieżnym refreshu, RS256 z certyfikatem
   X.509, inne SDK.
-- Następny poziom: rotacja kluczy (wiele `kid` w JWKS, `ConfigurationManager` po HTTP), wyścig przy współbieżnym
+- Wydanie #14, 2026-10-07: rotacja kluczy JWKS (wiele `kid`) i `ConfigurationManager` po prawdziwym HTTP, wyścig `/auth/refresh`.
+  `KeyRotation.slnx` (`IssuerApi`, `ResourceApi`, `RotationTests`), dwa serwery Kestrel w procesie testu, licznik pobrań JWKS.
+  Nowe w TUnit: `[Repeat]` (n+1 wyników), `[Arguments]` + `$arg` w `[DisplayName]`, `using (Assert.Multiple())`.
+  TUnit 1.72.16, SDK 10.0.400, `dotnet test` 34/34. Haczyki zmierzone: pierwszy token z nowym `kid` → 401; 20 fałszywych `kid` →
+  2 pobrania JWKS; wycofany klucz działa do skrócenia `LastKnownGoodLifetime`; `AutomaticRefreshInterval` < 5 min → 500 (IDX10108);
+  wyścig refresh: 1×200 i 31×401; mutacja usuniętego `lock` przeżyła test HTTP, padła na teście z wątkami (1 z 21).
+  Niewyjaśnione: `RefreshOnIssuerKeyNotFound=false` nie wyłącza odświeżania. Niezweryfikowane: domyślne `LastKnownGoodLifetime`,
+  rotacja z wyprzedzeniem, X.509. Środowisko: `dotnet test` bez `--project` na .NET 10 daje błąd VSTest; `rm` odrzucone — w
+  `RotationTests/` został pusty `ScratchTests.cs` (do ręcznego skasowania), poza repo tymczasowy `global.json`.
+- Następny poziom (po #14): rotacja z wyprzedzeniem, RS256 z certyfikatem X.509, wiele instancji wystawcy. (Starsze: rotacja kluczy (wiele `kid` w JWKS, `ConfigurationManager` po HTTP), wyścig przy współbieżnym
   refreshu, RS256 z certyfikatem X.509 (spójne z rubryką Certyfikaty); Aspire + TUnit zajmuje rubryka Aspire.
 
 ### ✈️ Aspire
