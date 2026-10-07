@@ -1,0 +1,56 @@
+---
+# Walidacja wejscia: vars_prompt (pytanie, gdy zmienna nie przyszla z -e)
+# + assert (zbiorcza walidacja) + fail (jawny komunikat dla regul zlozonych).
+- name: Walidacja wejscia deployu
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars_prompt:
+    - name: app_env
+      prompt: "Srodowisko (dev/stage/prod)"
+      default: "dev"
+      private: false
+    - name: app_port
+      prompt: "Port aplikacji"
+      default: "8080"
+      private: false
+    - name: deploy_token
+      prompt: "Token wdrozeniowy (nie bedzie widoczny)"
+      default: "demo-token-nie-prawdziwy"
+      private: true
+
+  tasks:
+    - name: Pokaz, jakiego typu sa wartosci (vars_prompt zawsze daje string)
+      ansible.builtin.debug:
+        msg: >-
+          app_env={{ app_env }} ({{ app_env | type_debug }}),
+          app_port={{ app_port }} ({{ app_port | type_debug }})
+
+    - name: Waliduj wejscie (assert - raportuje pierwsza nieprawdziwa regule)
+      ansible.builtin.assert:
+        that:
+          - app_env in ['dev', 'stage', 'prod']
+          - app_port is match('^[0-9]+$')
+          - (app_port | int) >= 1
+          - (app_port | int) <= 65535
+          - deploy_token | length >= 8
+        fail_msg: >-
+          Niepoprawne wejscie: app_env={{ app_env }}, app_port={{ app_port }},
+          dlugosc tokenu={{ deploy_token | length }}
+        success_msg: "Wejscie poprawne"
+      no_log: false
+
+    - name: Regula zlozona - prod wymaga portu 443 (jawny fail)
+      ansible.builtin.fail:
+        msg: "prod musi dzialac na 443, a podano {{ app_port }}"
+      when: app_env == 'prod' and (app_port | int) != 443
+
+    - name: Regula zlozona - dev/stage nie uzywaja portow uprzywilejowanych
+      ansible.builtin.fail:
+        msg: "{{ app_env }} wymaga portu >= 1024, a podano {{ app_port }}"
+      when: app_env != 'prod' and (app_port | int) < 1024
+
+    - name: Wejscie przeszlo - tu byloby wdrozenie
+      ansible.builtin.debug:
+        msg: "Wdrazam {{ app_env }} na porcie {{ app_port }}"

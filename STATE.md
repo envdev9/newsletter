@@ -218,6 +218,13 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   Niezweryfikowane: skrypt dynamic inventory przez `-i` (`chmod` odrzucone; JSON sprawdzony tylko bezpośrednio),
   wpływ braku `_meta`, kod wyjścia przy przerwaniu, `vars_prompt`+`assert`/`fail`, cache/`keyed_groups`, Molecule, SSH/`become`.
   Pusty `inventory_plugins/__pycache__` został w repo (nie dało się `rm -r`).
+- Wydanie #14, 2026-10-07: walidacja wejścia — `vars_prompt` (`default`, `private`; bez TTY bierze `default` z `[WARNING]`,
+  `-e` przesłania pytanie), `assert` z `fail_msg` (raportuje tylko pierwszą fałszywą regułę), `fail` + `when` dla reguł
+  złożonych (prod → port 443; dev/stage → ≥1024), rzutowanie `| int` (wejście to stringi), kod wyjścia `ansible-playbook`
+  (0 ok, 2 awaria) odczytany runnerem `exit_code.yml`. ansible-core 2.17.14; syntax-check + uruchomienia 6 scenariuszy
+  (część po 2×, część raz). Haczyk: pierwsza wersja miała sprzeczne reguły — syntax-check tego nie łapie. Niezweryfikowane:
+  interaktywny TTY/`private`, kody ≠0/2, kod wyjścia przy `any_errors_fatal`, dynamic inventory przez `-i` (brak `+x`),
+  vault/galaxy/Molecule, SSH/`become`.
 - Następny poziom: Molecule (gdyby `ansible-galaxy` kiedyś przestał być blokowany); zdalne SSH/`become`
   (jeśli kiedykolwiek dostępne — środowisko na razie blokuje nawet sprawdzenie `sshd`); własny
   **inventory plugin** (dynamic inventory jako skrypt zwracający JSON, podłączony przez `-i`, nie

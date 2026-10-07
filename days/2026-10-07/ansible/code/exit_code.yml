@@ -1,0 +1,23 @@
+---
+# Runner: odpala ansible-playbook jako podproces i pokazuje KOD WYJSCIA (rc).
+# Dzieki temu rc mozna zobaczyc bez $? w powloce. Uzycie: -e "child_args='...'"
+- name: Odczyt kodu wyjscia ansible-playbook
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Uruchom playbook potomny
+      ansible.builtin.command: "ansible-playbook {{ child_args }}"
+      register: child
+      failed_when: false
+      changed_when: false
+      environment:
+        ANSIBLE_NOCOLOR: "1"
+
+    - name: Wynik
+      ansible.builtin.debug:
+        msg:
+          - "args: {{ child_args }}"
+          - "rc: {{ child.rc }}"
+          - "ostatnie linie: {{ (child.stdout_lines | default([]))[-6:] }}"
+          - "stderr: {{ (child.stderr_lines | default([]))[-3:] }}"

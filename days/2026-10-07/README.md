@@ -12,6 +12,7 @@ Sanityzacja nazwy pliku bez ani jednej alokacji (`MemoryExtensions.ReplaceAny`/`
 → [Artykuł](dotnet/ARTICLE.md) · [Kod](dotnet/code/)
 
 ### 🔧 [Ansible](ansible/ARTICLE.md)
+`-e app_port=abc` przechodzi w playbooku bez mrugnięcia — dziś dorabiamy walidację: `vars_prompt`, `assert`, `fail` i kod wyjścia 2 zmierzony na żywo.
 → [Artykuł](ansible/ARTICLE.md) · [Kod](ansible/code/)
 
 ### 🏗️ [TeamCity](teamcity/ARTICLE.md)
