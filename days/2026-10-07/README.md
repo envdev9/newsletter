@@ -52,6 +52,7 @@ SignalStore Events: komponent mówi „co się stało", a store'y same reagują 
 → [Artykuł](angular/ARTICLE.md) · [Kod](angular/code/)
 
 ### 🗄️ [SQL Server](sqlserver/ARTICLE.md)
+Silnik sam mówi, czemu PSP odpuścił: nasze dane miały skośność 1 900×, a próg leży gdzieś przy 100 000× — po jego przekroczeniu mały tenant czyta 5 stron zamiast 5 166, a `OPTIMIZE FOR UNKNOWN` na złym wariancie podnosi koszt dużego do 582 215 reads.
 → [Artykuł](sqlserver/ARTICLE.md) · [Kod](sqlserver/code/)
 
 ### 🧬 [PostgreSQL jako baza wektorowa](postgres-vector/ARTICLE.md)

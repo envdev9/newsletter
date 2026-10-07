@@ -997,10 +997,21 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   podjęto. SQL Server 2022 RTM-CU27, zweryfikowane realnie `docker exec ... sqlcmd` (manualne kroki, `run-demo.sh`
   jako całość odrzucony przez uprawnienia sandboksa — jak w poprzednich wydaniach). Kontener posprzątany, zero
   wpływu na inne zasoby maszyny.
-- Następny poziom: realna przyczyna, czemu PSP nie zadziałało w #3 (nowa próba repro, inny scenariusz), harmonogram
-  fizycznego czyszczenia `TOMBSTONE` po `REORGANIZE`+`REBUILD`, `sp_query_store_set_hints` na planie z PSP (dwa
-  różne `plan_id` tego samego `query_id` — czy hint trzyma się per-plan czy per-query), `UPDATE`/`DELETE` wpływ na
-  statystyki NCCI (czy wymaga ręcznego `UPDATE STATISTICS` po `REBUILD`).
+- Wydanie #14, 2026-10-07: **dlaczego PSP nie ruszał w #3/#8** — Extended Event
+  `parameter_sensitive_plan_optimization_skipped_reason` = `SkewnessThresholdNotMet` (compat 160 i opcja PSP były OK);
+  PSP ruszał przy ilorazie max/min `EQ_ROWS` 100 000 i 190 000, nie ruszał przy ≤95 000 (nasze dane: 1 900) — próg to
+  hipoteza z kilku punktów. Efekt PSP: mały tenant 5 vs 5 166 reads. **Query Store hint na wariancie PSP**:
+  `OPTIMIZE FOR UNKNOWN` tylko na wariancie dużego tenanta → 5 161 → 582 215 reads (113×), mały bez zmian; hint na rodzicu
+  dziedziczą warianty; `RECOMPILE` na rodzicu wyłącza PSP (`WithRecompileFlag`); `TABLE HINT`/`OPTIMIZE FOR (@p=…)`
+  → błąd 12455. **TOMBSTONE** po `REORGANIZE` znikają same po ~3,5–4 min (2 przebiegi), `REBUILD` od razu. **Statystyki**:
+  auto-update po `DELETE` działa; `REORGANIZE`/`REBUILD` ich NIE odświeżają (potrzebne `UPDATE STATISTICS`). Pułapka:
+  `INSERT … EXEC` → fałszywy brak PSP (`UnsupportedStatementType`). SQL Server 2022 RTM-CU27, skrypty zweryfikowane 2× od
+  zera ręcznym `docker exec sqlcmd`; `run-demo.sh` jako plik nieodpalony (Bash blokuje `.sh`). Niezweryfikowane: dokładny
+  próg skośności (95 000–100 000), pierwszeństwo hintu wariantu vs rodzica, mechanizm czyszczenia TOMBSTONE, wpływ
+  nieaktualnych statystyk na plan, plan zapytania z 582 215 reads. Kontenery posprzątane.
+- Następny poziom: PSP z wieloma predykatami, hint wariantu z `USE HINT` i jego pierwszeństwo nad hintem rodzica,
+  mechanizm czyszczenia `TOMBSTONE`, `AUTO_UPDATE_STATISTICS OFF` i koszt nieaktualnych statystyk NCCI, dokładny próg
+  skośności PSP.
 
 ### 🧬 PostgreSQL — baza wektorowa (pgvector)
 - Aktualny poziom trudności: **podstawy (opanowane)**

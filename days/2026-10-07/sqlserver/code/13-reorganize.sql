@@ -1,0 +1,6 @@
+-- 13-reorganize.sql
+SET NOCOUNT ON;
+USE NcciClean;
+GO
+ALTER INDEX NCCI_Orders ON dbo.Orders REORGANIZE WITH (COMPRESS_ALL_ROW_GROUPS = ON);
+GO
