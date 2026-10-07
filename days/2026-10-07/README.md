@@ -16,6 +16,7 @@ Sanityzacja nazwy pliku bez ani jednej alokacji (`MemoryExtensions.ReplaceAny`/`
 → [Artykuł](ansible/ARTICLE.md) · [Kod](ansible/code/)
 
 ### 🏗️ [TeamCity](teamcity/ARTICLE.md)
+Twój config w Gicie to nie archiwum, tylko pętla w obie strony: serwer kładzie obok `settings.kts` łatki z UI, a gdy ten sam krok zmienisz w kodzie, odrzuca Twój push i zostaje przy starej wersji.
 → [Artykuł](teamcity/ARTICLE.md) · [Kod](teamcity/code/)
 
 ### 🧪 [TUnit](tunit/ARTICLE.md)

@@ -353,6 +353,15 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   GitHubie, konflikty, Kubernetes z prawdziwym klastrem, przebieg od zera na finalnych plikach `rest/`, `AFTER_BUILD_FINISH` vs
   `BEFORE_BUILD_FINISH`. Sprzątanie: własne kontenery/obraz agenta/katalogi /tmp + 14 anonimowych wolumenów dobranych po
   czasie utworzenia (nie po nazwie — drobne ryzyko pomyłki); obrazy server i maven były wcześniej, zostały.
+- Wydanie #14, 2026-10-07: **Versioned Settings w pełnej pętli z realnym repo `file://`** na żywym serwerze 2025.07 (bez agenta).
+  Włączenie `kotlin` przez REST → serwer commituje `settings.kts`+`pom.xml` (~1 min); push dewelopera z nowym build type
+  widoczny w REST po ~66–82 s (generowanie DSL 30–65 s); zmiana przez REST/UI NIE edytuje `settings.kts`, tylko dokłada
+  łatkę `.teamcity/patches/buildTypes/<Id>.kts` (`expectSteps`); konflikt (ten sam krok zmieniony w kodzie) → serwer odrzuca
+  rewizję (`UI changes error`), zostaje przy ostatniej dobrej; naprawa = ręczne wniesienie do `settings.kts` + `git rm` łatki;
+  literówka → `Compilation error` z linią/kolumną. Haczyki: zmiana REST w stanie błędu dokłada się do łatki na zepsutej
+  rewizji; przełączenie na Kotlin na pustym repo = chwilowo read-only; VCS root repo ustawień nie trafia do `settings.kts`.
+  Niezweryfikowane: `buildSettingsMode` (brak agenta), blok `versionedSettings{}` w DSL, GitHub/GitLab/webhooki, równoczesny
+  push, UI web, czemu `showSettingsChanges:true` wróciło jako `false`. Sprzątanie: kontener `tc-p14` (`rm -fv`), katalog roboczy.
 - Następny poziom: cascading merge (dwa `merge{}` feature'y, łańcuch feature→integration→main) na żywym serwerze;
   `versionedSettings{}` w pełnej pętli z realnym VCS; realny merge PR-a na żywym GitHubie (wymaga repo poza
   sandboxem); eksploracja pozostałych per-pluginowych artefaktów z `configs-dsl-kotlin-plugins-latest` (np. agent

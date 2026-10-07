@@ -1,0 +1,9 @@
+<vcs-root name="Settings Repo" vcsName="jetbrains.git" id="LoopDemo_SettingsRepo">
+  <project id="LoopDemo"/>
+  <properties>
+    <property name="url" value="file:///srv/settings.git"/>
+    <property name="branch" value="refs/heads/main"/>
+    <property name="authMethod" value="ANONYMOUS"/>
+    <property name="username" value="tc-demo"/>
+  </properties>
+</vcs-root>
