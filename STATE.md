@@ -633,6 +633,14 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   `precondition_failed: inequivalent arg 'type'` tylko w `docker logs`. Niezweryfikowane: `mandatory`/publisher
   returns, odczyt klucza w konsumencie, exchange `headers`, klaster/TLS. Posprzątano własny kontener
   `mt-topic-routing-demo`, cudzych nie ruszano.
+- Wydanie #14, 2026-10-07: **wiadomość bez trasy** — flaga `mandatory` (`Publish` rzuca `MessageReturnedException`/
+  `PublishReturnException` 312 NO_ROUTE; bez flagi cisza) oraz alternate-exchange (`SetExchangeArgument("alternate-exchange", ...)`,
+  kosz = fanout + kolejka z konsumentem). Konsument kosza czyta klucz routingu z `RabbitMqBasicConsumeContext.RoutingKey` (zamyka
+  pytanie z #13). MassTransit 8.5.10, RabbitMQ 4.3-management, .NET 10, build 0 warn/0 err. Haczyki zmierzone: z alternate-exchange
+  `publish_in`/`publish_out` nie wykrywa zgubionych (Notice 2/2, exchange kosza 0/0 mimo dostarczenia); `mandatory`+alternate-exchange
+  = zero zwrotów; dodanie alternate-exchange do istniejącego exchange'a = `precondition_failed` tylko w `docker logs` (klient:
+  `TaskCanceledException`). Niezweryfikowane: narzut `mandatory`, `Send`+`mandatory`, alternate-exchange przez policy, łańcuch,
+  `headers`, klaster/TLS. Kontener `mt-unrouted-demo` usunięty.
 - Następny poziom: trwałe repozytorium sag (EF/Mongo/Redis) na RabbitMQ, `UseDelayedRedelivery` na prawdziwym
   brokerze, itinerary z 3+ aktywnościami i częściową kompensacją, `mandatory`/returns dla niezroutowanych wiadomości.
 

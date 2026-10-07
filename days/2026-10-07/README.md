@@ -26,6 +26,7 @@ Dwa prawdziwe serwery, rotacja kluczy JWKS i wyścig refresh tokenu — pierwszy
 → [Artykuł](aspire/ARTICLE.md) · [Kod](aspire/code/)
 
 ### 📨 [Messaging .NET z MassTransit](masstransit/ARTICLE.md)
+Wiadomość bez trasy już nie znika po cichu: `mandatory` rzuca `312 NO_ROUTE`, alternate-exchange odkłada ją do kosza — a trzy zmierzone pułapki pokazują, czego te mechanizmy nie robią.
 → [Artykuł](masstransit/ARTICLE.md) · [Kod](masstransit/code/)
 
 ### 🤖 [AI — Claude Code dla .NET/Angular/SQL](ai-claude-code/ARTICLE.md)
