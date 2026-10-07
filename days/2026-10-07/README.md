@@ -32,6 +32,7 @@ Wiadomość bez trasy już nie znika po cichu: `mandatory` rzuca `312 NO_ROUTE`,
 → [Artykuł](masstransit/ARTICLE.md) · [Kod](masstransit/code/)
 
 ### 🤖 [AI — Claude Code dla .NET/Angular/SQL](ai-claude-code/ARTICLE.md)
+Skill `ef-core-review` + hook `PostToolUse` łapią 7 antywzorców EF Core już przy zapisie pliku — a plan z prawdziwego SQL Server potwierdza skutek: ten sam `Where` po e-mailu to 222 vs 5 odczytów logicznych zależnie od jednej linii `IsUnicode(false)`.
 → [Artykuł](ai-claude-code/ARTICLE.md) · [Kod](ai-claude-code/code/)
 
 ### ⚙️ [AI — agentic loop](ai-agentic-loop/ARTICLE.md)

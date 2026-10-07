@@ -713,7 +713,14 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   `ColumnsWithNoStatistics`; `COUNT(*)` z cross joina bez `NoJoinPredicate`. `run_tests.py` 15/15 (14 realnych planów; oczekiwania ustalone po
   obejrzeniu wyników = test regresji). Niezweryfikowane: spill typu Hash, progi reguł, inne wersje SQL Server, żywa sesja `claude`.
   W repo został `code/samples/no_statistics_trivial.xml` (nie dało się zmienić nazwy); `out0*.txt` w /tmp.
-- Następne: kolejny głębszy przypadek Angular/.NET do code-review; spill typu Hash; hook/skill łączący skaner planu z `dotnet ef`/EF Core.
+- Wydanie #14, 2026-10-07: skill `ef-core-review` (`scan_ef.py`, 7 reguł: N-PLUS-1, SAVECHANGES-IN-LOOP, TOLIST-BEFORE-FILTER, INCLUDE-NO-SPLIT,
+  FUNC-ON-COLUMN, NO-ASNOTRACKING, STRING-UNICODE) + hook `PostToolUse` (WARN → exit 2, INFO → additionalContext) + `ef-demo` (EF Core 10.0.12,
+  SDK 10.0.400). `run_tests.py` 36/36. Zmierzone na SQL Server 2022 (własny kontener, usunięty): string→nvarchar na varchar z indeksem 222 vs 5
+  odczytów logicznych (plany przez `scan_plan.py`); SaveChanges w pętli 20 vs 1 polecenie; SQLite: N+1 21 vs 1, split query 3 polecenia, bez
+  AsNoTracking 200 śledzonych encji. 4 realne błędy skanera znalezione testami i naprawione. Niezweryfikowane: żywa sesja `claude`, auto-aktywacja,
+  plany inne niż z cache dla jednego zapytania, FUNC-ON-COLUMN/TOLIST/INCLUDE/ASNOTRACKING tylko liczbą poleceń/tekstem SQL; skaner tekstowy
+  rozpoznaje kontekst po nazwie zmiennej.
+- Następne: hook w żywej sesji `claude`; krok „wygeneruj plan z aplikacji" (interceptor); reguły `Contains` na dużych listach / `LIKE '%x%'`; dopasowanie po typie encji; spill typu Hash.
 
 ### ⚙️ AI — agentic loop / workflow kodowania
 - Omówione elementy: pętla tool-use, różnica komenda/skill/subagent/hook (kto naciska
