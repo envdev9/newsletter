@@ -792,7 +792,13 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   (bierze surowy log i jego kompresję). Niezweryfikowane: zachowanie modelu (żaden nie uruchamiany), „lost in the middle"/`order_edges`
   (WebFetch odrzucone, sekcja z pamięci = hipoteza), realne logi, tryb `spill` z agentem, hooki, prawdziwy transkrypt (odczyt
   `~/.claude/projects` nadal odrzucony). Zostało `/tmp/toolcompress_spill_demo.log` (rm odrzucone).
-- Następne: analiza prawdziwego transkryptu (gdy odczyt dozwolony), filtrowanie/leniwe ładowanie narzędzi MCP, weryfikacja reguł CLAUDE.md w docs, weryfikacja „lost in the middle" w źródle.
+- Wydanie #5 rubryki (#14), 2026-10-07: eager vs leniwe ładowanie definicji narzędzi MCP (tool search) — `ctxlazy.py` + `test_ctxlazy.py` (15 asercji, Python 3.10.4 stdlib).
+  Syntetyczny katalog 264 narzędzi/8 serwerów (bajty/4): pełne definicje 26 380 tok., same nazwy 1835, `tool_search` 91. Sesja 12 zadań×5 tur, k=5 (token-tury):
+  eager 1 582 800, deferred_names 283 385 (5,6×), deferred_blind 173 285 (9,1×), oracle 41 400 (38×); koszt rośnie ~liniowo z k; +90 narzędzi = +8943 tok./turę eager vs +620 leniwie;
+  próg opłacalności ~245/264 załadowanych. Recall BM25 na 18 zapytaniach (głównie parafrazy) 10/18 (k=1), 11/18 (k=10) — wyższe k prawie nie pomaga. Zastrzeżenia: 12/12 w sesji zawyżone
+  (zapytania słownictwem narzędzi, 2 ponowienia ręcznie), remisy BM25 po alfabecie. Niezweryfikowane: zachowanie modelu, reguły Claude Code (próg tool search, trwałość załadowanych definicji),
+  wpływ na prompt cache, wyszukiwanie semantyczne, realne opisy serwerów MCP (brak dostępu do dokumentacji/CLI).
+- Następne: weryfikacja tool search/cache w dokumentacji; wyszukiwarka z synonimami/embeddingami na tym samym zestawie; analiza prawdziwego transkryptu (gdy odczyt dozwolony); dzielenie zadania na okna kontekstu (plik handoff, kryteria cięcia); weryfikacja reguł CLAUDE.md i „lost in the middle".
 
 ### ✍️ AI — prompty dla developera
 - Omówione elementy: 5 par zły/dobry prompt (konkretność+pliki/linie, "dlaczego" vs

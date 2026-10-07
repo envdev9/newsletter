@@ -40,6 +40,7 @@ Pętla agentowa musi mieć warunki wyjścia poza modelem: budżet, wykrywanie za
 → [Artykuł](ai-agentic-loop/ARTICLE.md) · [Kod](ai-agentic-loop/code/)
 
 ### 🧠 [AI — zarządzanie kontekstem](ai-context/ARTICLE.md)
+264 narzędzia MCP kosztują 26 tys. tokenów w każdej turze, a leniwe ładowanie tnie to 5–9×, ale prosta wyszukiwarka gubi ~45% narzędzi przy parafrazach.
 → [Artykuł](ai-context/ARTICLE.md) · [Kod](ai-context/code/)
 
 ### ✍️ [AI — prompty dla developera](ai-prompts/ARTICLE.md)
