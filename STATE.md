@@ -84,6 +84,16 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
     i tak zostaje dodany. Niezweryfikowane: wydajność vs surowe bajty, ASP.NET, .NET 11.
   - Zostało: `MemoryExtensions.CountAny`/`ReplaceAny`/`ReplaceAnyExcept` z `SearchValues<T>` → potem .NET 11 (gdy
     pojawi się SDK) lub zejście do .NET 9.
+  - [x] `MemoryExtensions.CountAny`/`ReplaceAny` (w miejscu i źródło→cel)/`ReplaceAnyExcept` z `SearchValues<T>` oraz
+    LINQ na `IAsyncEnumerable<T>` w BCL (`Where`/`Select`/`Take`/`Order`/`ToListAsync`/`CountAsync`/`SumAsync`/`MaxAsync`/
+    `FirstAsync`/`FirstOrDefaultAsync`/`ToAsyncEnumerable`, bez `System.Linq.Async`) — wydanie #14, 2026-10-07.
+    Potwierdzone na net9.0: `CS1061`×5 + `CS0411`×1 (`Where` koliduje z `ImmutableArrayExtensions`). Zweryfikowane
+    `dotnet run` (SDK 10.0.400; SDK 11 nadal niedostępne). Haczyki: 16 M znaków `ReplaceAny` 0 B vs 288 MB 9×`string.Replace`
+    (czasy wahały się ~2×, opisane jakościowo); `destination` krótszy → `ArgumentException`; emoji = 2 jednostki UTF-16;
+    `ReplaceAnyExcept` z pustym zbiorem zamienia wszystko; brak `CountAnyExcept`; async LINQ: każda enumeracja startuje
+    źródło od nowa, `Take` robi `finally` generatora. Niezweryfikowane: `GroupBy`/`Join`/`Chunk` async, EF Core, `T` ≠ char/byte,
+    nakładające się spany. Zostały puste bin/obj w code/ (ignorowane przez .gitignore).
+  - Zostało: kolejne nowości .NET 10 do znalezienia (diff refleksyjny nie powtarzany w #14) → .NET 11 (gdy SDK) lub zejście do .NET 9.
 - Gdy funkcje .NET 10 się wyczerpią → .NET 11 → (dalsze nowości) → schodzimy w dół:
   9 → 8 → 7 → 6, potem wracamy do najnowszej dostępnej wersji.
 
