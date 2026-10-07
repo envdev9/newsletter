@@ -22,6 +22,7 @@ Dwa prawdziwe serwery, rotacja kluczy JWKS i wyścig refresh tokenu — pierwszy
 → [Artykuł](tunit/ARTICLE.md) · [Kod](tunit/code/)
 
 ### ✈️ [Aspire](aspire/ARTICLE.md)
+`kill -9` na procesie z AppHostem: Redis w Dockerze znika po ~12 s (sprząta DCP, nie Twój kod) — ale gdy zabijemy też DCP, zostaje sierota, a następny AppHost posprząta tylko kontener i sieć, nie procesy.
 → [Artykuł](aspire/ARTICLE.md) · [Kod](aspire/code/)
 
 ### 📨 [Messaging .NET z MassTransit](masstransit/ARTICLE.md)

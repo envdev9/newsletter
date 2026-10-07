@@ -535,6 +535,14 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   fałszywy alarm; fixture sesyjny zdisposowany PRZED `[After(TestSession)]`. Niezweryfikowane: `SharedType.Keyed`/
   `None`, dashboard, osierocone kontenery po zabiciu procesu testowego, anonimowe woluminy Redisa. Sprzątanie
   wyłącznie przez Aspire; cudzych zasobów Dockera nie ruszano.
+- Wydanie #14, 2026-10-07: osierocone zasoby po twardym zabiciu hosta. `Orphan.Probe` (rodzic+potomek) mierzy 7 trybów śmierci
+  (`clean`, `exit`, `crash`, `sigterm`, `sigint`, `sigkill`, `sigkill-all`). Docker 29.1.3, Aspire 13.5.2, SDK 10.0.400, `dotnet run`.
+  Zmierzone: po `kill -9` hosta kontener znika po 11,6–14,0 s, `dcp`/`CacheApi` po ~15 s, jak przy czystym `DisposeAsync` —
+  sprząta DCP, nie kod użytkownika. `sigterm`/`sigint`: sprzątanie po ~12 s, ale proces nie wychodzi sam (90 s, `Main` na
+  `Task.Delay`). `sigkill-all` (host + `dcp*`): kontener, sieć i `CacheApi` zostają jako sieroty; następny AppHost sprząta kontener i
+  sieć, nie procesy. Wolumin: 0 nowych w 7 trybach (zamyka wątek z #13). Niezweryfikowane: mechanizm DCP (etykiety
+  `creatorProcessId` — wniosek z nazw), `ConsoleLifetime` jako hipoteza, dashboard, `ContainerLifetime.Persistent`, stałe porty,
+  Windows/Podman. Posprzątano (docker ps -a bez nowych zasobów).
 - Następny poziom: dashboard (wizualna inspekcja — nadal nieobejrzany), `SharedType.Keyed` (kilka AppHostów o
   różnych konfiguracjach w jednej sesji), `WithDataVolume` + EF Core migracje, osierocone kontenery po zabiciu
   procesu, integracja user-secrets z prawdziwym menedżerem sekretów w trybie publish.
