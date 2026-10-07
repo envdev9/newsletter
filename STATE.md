@@ -761,7 +761,13 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   brancha → kod 128; konflikt przesuwa się na merge (`merge --abort`, `rebase` + `--ff-only`); git odmawia usunięcia brudnego worktree
   i `branch -d` niezmergowanego brancha. Rolę agentów grają funkcje Pythona. Niezweryfikowane: żywa sesja `claude` (nie próbowano),
   `isolation: "worktree"` narzędzia Agent (tylko z opisu narzędzia), `dotnet build/test` w worktree, pliki spoza gita, Windows.
-- Następne: `permissionMode` w frontmatterze agenta (po weryfikacji CLI), hooki w trybie headless.
+- Wydanie #14, 2026-10-07: nadzorca pętli agentowej (`agentloop.py`, `world.py`, `demo.py`): budżet na 3 osiach (kroki, koszt `len/4`, czas wirtualny),
+  3 detektory zapętlenia (`LOOP_EXACT` po 3 krokach, `LOOP_CYCLE` po 6, `NO_PROGRESS` po 8), retry z exponential backoff + full jitter tylko dla błędów
+  przejściowych, dziennik write-ahead JSONL (`fsync`) z kluczem idempotencji i wznawianiem po crashu (narzędzie bez klucza → `NEEDS_HUMAN`). `run_tests.py`
+  25/25, `demo.py` 7 scenariuszy (Python 3.10.4): crash po efekcie → 3 wywołania, 2 efekty; bez dziennika 4 efekty (duplikaty). Rolę modelu gra funkcja Pythona.
+  Niezweryfikowane: żywa sesja `claude`/`claude -p` (`--version` odrzucone), realny LLM po wznowieniu, progi detektorów (heurystyki), awarie dysku/współbieżność,
+  Windows; sprzątania `/tmp/prasowka-loop-*` nie dało się potwierdzić (`find` odrzucone).
+- Następne: `permissionMode` w frontmatterze agenta (po weryfikacji CLI), hooki w trybie headless; czas i zamknięcie biegu w dzienniku; snapshoty zamiast pełnej historii; zwracanie oryginalnego wyniku przy dedupie; detektor oparty na hashu drzewa repo.
 
 ### 🧠 AI — zarządzanie kontekstem
 - Omówione elementy: kolejność warstw kontekstu (system→narzędzia/MCP→pamięć→historia→

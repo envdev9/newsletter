@@ -36,6 +36,7 @@ Skill `ef-core-review` + hook `PostToolUse` łapią 7 antywzorców EF Core już 
 → [Artykuł](ai-claude-code/ARTICLE.md) · [Kod](ai-claude-code/code/)
 
 ### ⚙️ [AI — agentic loop](ai-agentic-loop/ARTICLE.md)
+Pętla agentowa musi mieć warunki wyjścia poza modelem: budżet, wykrywanie zapętlenia, retry z jitterem i dziennik z kluczem idempotencji — dzięki nim crash w połowie kroku nie wysyła maila dwa razy.
 → [Artykuł](ai-agentic-loop/ARTICLE.md) · [Kod](ai-agentic-loop/code/)
 
 ### 🧠 [AI — zarządzanie kontekstem](ai-context/ARTICLE.md)
