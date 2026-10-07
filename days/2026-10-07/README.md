@@ -44,6 +44,7 @@ Pętla agentowa musi mieć warunki wyjścia poza modelem: budżet, wykrywanie za
 → [Artykuł](ai-context/ARTICLE.md) · [Kod](ai-context/code/)
 
 ### ✍️ [AI — prompty dla developera](ai-prompts/ARTICLE.md)
+Zielone testy wygenerowane przez model niczego nie dowodzą — 5 „naiwnych" testów zabiło 14% mutantów, a 24 napisane wg dobrego promptu 86%; dziś prompt z kontraktem, brzegami i zakazem słabych asercji oraz pętla zwrotna z przeżytych mutantów.
 → [Artykuł](ai-prompts/ARTICLE.md) · [Kod](ai-prompts/code/)
 
 ### 🅰️ [Angular](angular/ARTICLE.md)

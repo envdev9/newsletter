@@ -1,0 +1,1 @@
+Napisz testy jednostkowe dla klasy Prorator.

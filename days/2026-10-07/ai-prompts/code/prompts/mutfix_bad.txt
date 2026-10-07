@@ -1,0 +1,1 @@
+Testy mają za niskie pokrycie, popraw je i dodaj brakujące, żeby wszystko było przetestowane.

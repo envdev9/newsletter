@@ -1,0 +1,31 @@
+Napisz testy dla klasy statycznej `Prorator` z pliku `Billing/Prorator.cs` (metody `Charge` i `Split`).
+Framework: TUnit, projekt `Billing.GoodTests`. Uruchamianie: `dotnet run --project Billing.GoodTests`.
+
+KONTRAKT (to jest specyfikacja - testuj ja, nie obecna implementacje):
+- Charge: aktywacja w 1. dniu miesiaca lub wczesniej = pelna cena; po ostatnim dniu = 0; w pozostalych
+  przypadkach cena * dni od aktywacji WLACZNIE do konca miesiaca / dni w miesiacu, zaokraglone do groszy
+  MidpointRounding.AwayFromZero. Cena ujemna -> ArgumentOutOfRangeException.
+- Split: suma pozycji == kwota co do grosza; reszta groszy po 1 gr do PIERWSZYCH pozycji; parts <= 0 lub
+  kwota ujemna -> ArgumentOutOfRangeException; wiecej niz 2 miejsca po przecinku -> ArgumentException.
+
+PRZYPADKI BRZEGOWE, ktore musisz pokryc (kazdy jako osobny wiersz tabeli lub osobny test):
+- granice miesiaca: 1. dzien, OSTATNI dzien, dzien po ostatnim, data sprzed miesiaca;
+- luty w roku przestepnym i nieprzestepnym, miesiac 31-dniowy;
+- zaokraglanie: przypadek z polowka grosza (np. 0.15 za 1 dzien z 30), przypadek z ulamkiem okresowym;
+- cena zero (dozwolona), cena ujemna (wyjatek);
+- Split: parts = 1, parts wieksze niz liczba groszy, kwota 0, parts = 0 i ujemne, kwota ujemna, 3 miejsca po przecinku.
+
+WLASCIWOSCI (property) na staly ziarnie `new Random(2026)`, min. 1000 iteracji, bez nowych pakietow:
+- Split: liczba pozycji == parts, suma == kwota, rozrzut max-min <= 0.01, brak ujemnych, pozycje nierosnace;
+- Charge: wynik w przedziale [0, cena] i nierosnacy wraz z dniem aktywacji.
+
+ZAKAZY:
+- Nie uzywaj slabych asercji (`IsNotNull`, sama liczba elementow, `>= 0` jako jedyna asercja) - kazdy test
+  sprawdza konkretna wartosc albo niezmiennik.
+- Nie zmieniaj kodu produkcyjnego. Jesli znajdziesz niezgodnosc z kontraktem, zglos ja zamiast "naprawiac" test.
+- Nie kopiuj wzoru z implementacji do oczekiwanej wartosci - policz oczekiwanie recznie i wpisz je jako liczbe.
+
+WERYFIKACJA: uruchom testy na oryginale (maja byc zielone). Potem zmien w pamieci jeden operator w kodzie
+(np. `<=` na `<`, usun `+ 1`) i sprawdz, ze co najmniej jeden test sie czerwieni; przywroc kod.
+
+FORMAT ODPOWIEDZI: jeden plik `.cs`; nad kazdym wierszem tabeli przypadkow komentarz "dlaczego ten przypadek".

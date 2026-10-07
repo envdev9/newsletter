@@ -815,7 +815,13 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   wyjścia, CLAUDE.md jako trwały prompt. `prompt_lint2.py`: 8/8, test negatywny 6/7 (exit 1), `--strict`; golden-master (.NET 10)
   672 przypadki/0 różnic, mutant 37 różnic. Niezweryfikowane: jakość odpowiedzi modelu (żaden model nie uruchamiany), reguły
   lintu to regexy dobrane pod własne przykłady, próg 60 linii umowny.
-- Następne: ewaluacja promptów na prawdziwym modelu (gdy dostępny), prompty do generowania testów i dokumentacji, łańcuchy promptów.
+- Wydanie #14, 2026-10-07: prompty do generowania testów (zły „napisz testy" vs dobry: kontrakt, przypadki brzegowe, typy wyjątków, testy właściwości ze stałym ziarnem,
+  zakaz słabych asercji i zmiany kodu produkcyjnego) + prompt z raportem przeżytych mutantów (jeden po kolei, mutant równoważny → uzasadnij i czekaj). Kod: `Prorator`,
+  `mutate.py` (14 ręcznych mutantów na kopii w /tmp), `testprompt_lint.py`. TUnit 1.72.16, .NET 10.0.400: naiwny zestaw 5/5 zielony, dobry 24/24; mutanty zabite 2/14 (14%) vs 12/14 (86%);
+  M10 (reszta groszy na końcu) przechodzi property testy, łapie go tylko test przykładowy. Lint 4/4 zgodny z oczekiwaniem, test negatywny 2/13 reguł (exit 1). Niezweryfikowane: jakość
+  odpowiedzi modelu (żaden nie uruchamiany), naiwny zestaw pisany ze znajomością mutantów (zawyża różnicę), reprezentatywność 14 mutantów, Stryker.NET, M08 równoważny z domysłu,
+  `dotnet test --project` spoza global.json → MSB1001 (użyto `dotnet run --project`). Mogą zostać `bin/obj` (w .gitignore). Dokumentacja (XML-doc/README/ADR) nieomówiona.
+- Następne: prompty do dokumentacji (XML-doc, README, ADR) z walidatorem zgodności z kodem; łańcuch promptów z kontraktem między krokami; porównanie ze Stryker.NET i ślepym zestawem; ewaluacja na prawdziwym modelu.
 
 ### 🅰️ Angular
 - Aktualny poziom trudności: **podstawy (opanowane)**

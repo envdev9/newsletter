@@ -1,0 +1,19 @@
+Masz testy w `Billing.NaiveTests/ProratorNaiveTests.cs` dla `Billing/Prorator.cs` (TUnit; uruchamianie:
+`dotnet run --project Billing.NaiveTests`). Test mutacyjny pokazal, ze ponizsze zmiany w kodzie
+produkcyjnym NIE sa wykrywane przez zaden test (raport w <mutants>).
+
+<mutants>
+{{wklej tutaj raport z `python3 -B mutate.py --survivors-out ...`}}
+</mutants>
+
+Zadanie, jeden mutant po kolei:
+1. Dla mutanta opisz jednym zdaniem, jakie zachowanie zmienil (np. "ostatni dzien miesiaca daje 0 zamiast 1/30 ceny").
+2. Dopisz JEDEN test, ktory na oryginale jest zielony, a na zmutowanym kodzie czerwony. Oczekiwana wartosc
+   policz recznie z kontraktu w komentarzu XML-doc metody, nie z implementacji.
+3. Jesli uwazasz, ze mutant jest rownowazny (zachowanie identyczne dla wszystkich wejsc), NIE pisz testu -
+   podaj uzasadnienie w jednym zdaniu i czekaj na moja decyzje.
+
+Zakazy: nie zmieniaj kodu produkcyjnego, nie usuwaj ani nie oslabiaj istniejacych testow, nie dodawaj pakietow.
+Gotowe, gdy: `dotnet run --project Billing.NaiveTests` jest zielony na oryginale, a `mutate.py` nie pokazuje
+przezylych mutantow innych niz te, ktore uznalem za rownowazne.
+Format: dla kazdego mutanta - zdanie, test (kod), jedna linia "zabija: Mxx".

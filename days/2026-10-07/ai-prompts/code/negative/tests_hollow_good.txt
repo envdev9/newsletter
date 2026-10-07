@@ -1,0 +1,4 @@
+Napisz dobre testy jednostkowe dla klasy Prorator w TUnit. Pokryj edge cases, wlasciwosci (property)
+i przypadki brzegowe, uzyj ziarna (seed), przetestuj granice, zaokraglanie, zero, ujemne wartosci i
+przypadek przestepny. Kontrakt ma byc sprawdzony. Nie uzywaj slabych asercji. Format: jeden plik.
+Uruchom `dotnet run` i `dotnet build`.
