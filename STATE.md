@@ -852,6 +852,15 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   `TestBed.tick()`. Node 22.14.0 — to samo obejście progu wersji CLI co w #9/#12 (poza repo). Niezweryfikowane:
   `ng serve`/przeglądarka, `debounce` jako funkcja/`'blur'`, `request` zwracające `undefined`, `options`
   (`HttpResourceOptions`), SSR/hydration, `mapResponse()` w `@ngrx/effects`.
+- Wydanie #14, 2026-10-07: plugin `@ngrx/signals/events` 22.0.1 — eventGroup/injectDispatch, withReducer(on), withEventHandlers
+  (switchMap + catchError wewnątrz), dwa store'y (TasksStore, ActivityLogStore) na jednym strumieniu bez wzajemnych importów.
+  Zmierzone: reduktor sync przed efektami; zdarzenie zwrócone z efektu czeka na resztę handlerów (queueScheduler: h1,h2,h3);
+  strażnik pętli; efekt bez catchError wewnątrz switchMap umiera po 1. błędzie; wyjątek w reduktorze zabija reduktory, nie efekty;
+  store leniwy + brak replay; Dispatcher/Events providedIn 'platform', lokalnie provideDispatcher() + scope parent/global;
+  JSDoc pokazuje nieistniejące `withEffects` (eksport: withEventHandlers).
+  Zweryfikowane: npm ci, ng build OK, ng test 15/15 + test mutacyjny. Angular 22.2.1, @ngrx/signals 22.0.1. Node 22.14.0 — to samo
+  obejście progu CLI (npm ci je kasuje). Niezweryfikowane: ng serve/przeglądarka, mapResponse() z @ngrx/operators,
+  toScope/mapToScope, SSR/hydration, DevTools.
 - Następny poziom: `debounce` jako funkcja i `'blur'`, `request` → `undefined`, pozostałe opcjonalne pola
   `FormUiControl` (`required`/`pattern`/`readonly`/`hidden`/`disabledReasons`/`name`), SSR/hydration,
   `mapResponse()` w kontekście `@ngrx/effects`/Actions.

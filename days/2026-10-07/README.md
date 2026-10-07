@@ -39,6 +39,7 @@ Sanityzacja nazwy pliku bez ani jednej alokacji (`MemoryExtensions.ReplaceAny`/`
 → [Artykuł](ai-prompts/ARTICLE.md) · [Kod](ai-prompts/code/)
 
 ### 🅰️ [Angular](angular/ARTICLE.md)
+SignalStore Events: komponent mówi „co się stało", a store'y same reagują przez reduktory i efekty — plus pięć zmierzonych haczyków (martwy efekt bez `catchError`, brak replay, globalny dispatcher, nieaktualny JSDoc).
 → [Artykuł](angular/ARTICLE.md) · [Kod](angular/code/)
 
 ### 🗄️ [SQL Server](sqlserver/ARTICLE.md)
