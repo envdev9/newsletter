@@ -1105,6 +1105,15 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   Niezweryfikowane: prawdziwy Let's Encrypt/cudzy klient, DNS-01, TLS-ALPN-01, CAA, `keyChange`, `revokeCert`, EAB,
   Windows/macOS; `TcpListener` zamiast `HttpListener` (powód — Host — to założenie). Śmieci w `code/` (`work/`, `bin`, `obj`,
   `__pycache__`) w `.gitignore`.
+- Wydanie #14, 2026-10-07: **Name Constraints (RFC 5280 §4.2.1.10)** — ograniczanie nazw, dla których podległy CA może wystawiać
+  certyfikaty. Rozszerzenie kodowane ręcznie w DER (`System.Formats.Asn1`), 2 rooty + 7 intermediate + 26 liści (ECDSA P-256),
+  każdy liść walidowany przez `X509Chain` i `openssl verify` → 0 rozbieżności (głównie spójność mapowania statusów — .NET na
+  Linuksie opiera się na OpenSSL). Odczyt rozszerzenia zgodny w 3 parserach (openssl x509, asn1parse, Python `cryptography`).
+  Haczyki: `.domena` (z kropką) nie obejmuje samej domeny, bez kropki obejmuje domenę+poddomeny; jedna nazwa poza zakresem w
+  SAN odrzuca cały cert; bez SAN sprawdzany CN, z SAN CN ignorowany; constraint działa tylko na wymienione typy nazw (URI/IP
+  przechodzą); niekrytyczne też egzekwowane; constraints na roocie też; każdy intermediate osobno. Żadne klucze prywatne nie
+  trafiają na dysk. Niezweryfikowane: Windows/macOS/Go/Java/NSS/Chrome, `directoryName`/`otherName`/IPv6/IDN, `minimum`/`maximum`,
+  łańcuchy ≥3 CA, `SslStream`/Kestrel z takim łańcuchem. `work/`, `bin/`, `obj/` zostały na dysku (w `.gitignore`).
 - Następny poziom: `consistency proof` (RFC 6962 §2.1.2) między dwoma STH + gossip protocol, Must-Staple + SCT razem,
   weryfikacja SCT "na żywo" w `SslStream`/Kestrelu (callback odrzucający połączenie bez ważnego SCT), ACME/`pebble`
   lokalnie (jeśli da się postawić bez sieci zewnętrznej — nigdy nie próbowane), Windows/macOS store, DANE/CAA.

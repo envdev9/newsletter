@@ -54,6 +54,7 @@ SignalStore Events: komponent mówi „co się stało", a store'y same reagują 
 → [Artykuł](postgres-vector/ARTICLE.md) · [Kod](postgres-vector/code/)
 
 ### 🔐 [Certyfikaty i TLS (X.509)](certificates/ARTICLE.md)
+CA z kagańcem: Name Constraints od zera — 26 certyfikatów, dwa weryfikatory (.NET i openssl) i siedem haczyków, o których dokumentacja milczy.
 → [Artykuł](certificates/ARTICLE.md) · [Kod](certificates/code/)
 
 ---
