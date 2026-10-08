@@ -936,7 +936,16 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   Zweryfikowane: npm ci, ng build OK, ng test 15/15 + test mutacyjny. Angular 22.2.1, @ngrx/signals 22.0.1. Node 22.14.0 — to samo
   obejście progu CLI (npm ci je kasuje). Niezweryfikowane: ng serve/przeglądarka, mapResponse() z @ngrx/operators,
   toScope/mapToScope, SSR/hydration, DevTools.
-- Następny poziom: `debounce` jako funkcja i `'blur'`, `request` → `undefined`, pozostałe opcjonalne pola
+- Wydanie #15, 2026-10-08: dwa różne "debounce" w Signal Forms — reguła `debounce(pole, ms | 'blur' | Debouncer)` (opóźnia zapis
+  UI→model) vs opcja `debounce` w `validateHttp` (opóźnia tylko request; jako funkcja dostaje `(request, snapshot)`, snapshot
+  startuje jako `'resolved'`, `'loading'` = otwarte okno debounce). Zmierzone: `'blur'` trzyma model pusty przy `dirty()==true`;
+  zapis programowy `value.set` omija debounce i kasuje oczekujący wpis UI; własny `Debouncer`: `ctx.value()` to wartość z modelu
+  (opóźniona o 1 wpis), `void` = zapis od razu, kolejny wpis abortuje poprzedni; `submit()` w trakcie debounce waliduje stary model
+  i nie odpala akcji; `request → undefined` zdejmuje `pending`, ale nie anuluje lecącego requestu; `DebounceTimer` `@experimental 22.0`.
+  Zweryfikowane: npm ci, ng build OK, ng test 14/14 + test mutacyjny. Angular 22.2.1, Node 22.14.0 (to samo obejście progu CLI).
+  Niezweryfikowane: ng serve/przeglądarka (Enter w polu z 'blur'), `debounce('blur')` na własnej `FormValueControl`, dostęp do surowego
+  tekstu w `Debouncer`, SSR/hydration, `mapResponse()`.
+- Następny poziom: `debounce('blur')` na własnej kontrolce `FormValueControl`, pozostałe opcjonalne pola
   `FormUiControl` (`required`/`pattern`/`readonly`/`hidden`/`disabledReasons`/`name`), SSR/hydration,
   `mapResponse()` w kontekście `@ngrx/effects`/Actions.
 

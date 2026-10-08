@@ -39,6 +39,7 @@ Serwer pchający zdarzenia po SSE (`System.Net.ServerSentEvents`) i WebSocket cz
 → [Artykuł](ai-prompts/ARTICLE.md) · [Kod](ai-prompts/code/)
 
 ### 🅰️ [Angular](angular/ARTICLE.md)
+W Signal Forms są dwa różne „debounce" — jedno opóźnia zapis do modelu, drugie tylko request — a `submit()` w trakcie debounce potrafi zwalidować nieaktualny model.
 → [Artykuł](angular/ARTICLE.md) · [Kod](angular/code/)
 
 ### 🗄️ [SQL Server](sqlserver/ARTICLE.md)
