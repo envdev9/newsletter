@@ -32,6 +32,7 @@ Krok 4 padł i kompensacja kroku 2 też: MassTransit przerywa wtedy cofanie, kro
 → [Artykuł](masstransit/ARTICLE.md) · [Kod](masstransit/code/)
 
 ### 🤖 [AI — Claude Code dla .NET/Angular/SQL](ai-claude-code/ARTICLE.md)
+`Contains` i `LIKE '%x%'` w EF Core czytają 371 stron zamiast 5 — skaner `ef-core-review` v2 łapie je po typie encji, a interceptor zapisuje prawdziwy plan zapytania; lista 5000 id: 29 ms vs 955 ms zależnie od trybu parametryzacji.
 → [Artykuł](ai-claude-code/ARTICLE.md) · [Kod](ai-claude-code/code/)
 
 ### ⚙️ [AI — agentic loop](ai-agentic-loop/ARTICLE.md)

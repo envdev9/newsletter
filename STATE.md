@@ -777,7 +777,13 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   AsNoTracking 200 śledzonych encji. 4 realne błędy skanera znalezione testami i naprawione. Niezweryfikowane: żywa sesja `claude`, auto-aktywacja,
   plany inne niż z cache dla jednego zapytania, FUNC-ON-COLUMN/TOLIST/INCLUDE/ASNOTRACKING tylko liczbą poleceń/tekstem SQL; skaner tekstowy
   rozpoznaje kontekst po nazwie zmiennej.
-- Następne: hook w żywej sesji `claude`; krok „wygeneruj plan z aplikacji" (interceptor); reguły `Contains` na dużych listach / `LIKE '%x%'`; dopasowanie po typie encji; spill typu Hash.
+- Wydanie #15, 2026-10-08: `ef-core-review` v2 — reguły `LIKE-LEADING-WILDCARD`, `CONTAINS-CONSTANT`, `CONTAINS-LIST`; dopasowanie po typie
+  (`DbSet<T>`, repo) zamiast nazwy zmiennej; `PlanCaptureInterceptor` (plan z cache → `.xml` → `scan_plan.py`). SQL Server 2022, EF Core 10.0.12, 50 000
+  wierszy: odczyty logiczne `==` 5, `StartsWith` 25, `Contains`/`EndsWith` 371 (scan); plan cache dla list 1–300: domyślnie 23 wpisy, `Parameter` 1,
+  `Constant` 301; lista 5000 id: 82 ms / 29 ms / 955 ms. `run_tests.py` 65/65 (realny błąd skanera: typ encji przy `HasIndex` w łańcuchu).
+  Pułapka: `SHOWPLAN_XML` nie zwraca planu w `sp_executesql` (interceptor czyta cache); cache dostawcy usług utrwala pierwszy tryb parametryzacji.
+  Niezweryfikowane: żywa sesja `claude`, auto-aktywacja, czasy z pojedynczych uruchomień, inne providery, 301. wpis cache w trybie Constant, `[Index]` atrybutem.
+- Następne: hook w żywej sesji `claude`; skanowanie planów z interceptora w testach integracyjnych/CI; `Contains` na PostgreSQL; spill typu Hash.
 
 ### ⚙️ AI — agentic loop / workflow kodowania
 - Omówione elementy: pętla tool-use, różnica komenda/skill/subagent/hook (kto naciska
