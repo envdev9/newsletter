@@ -866,7 +866,13 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   próg opłacalności ~245/264 załadowanych. Recall BM25 na 18 zapytaniach (głównie parafrazy) 10/18 (k=1), 11/18 (k=10) — wyższe k prawie nie pomaga. Zastrzeżenia: 12/12 w sesji zawyżone
   (zapytania słownictwem narzędzi, 2 ponowienia ręcznie), remisy BM25 po alfabecie. Niezweryfikowane: zachowanie modelu, reguły Claude Code (próg tool search, trwałość załadowanych definicji),
   wpływ na prompt cache, wyszukiwanie semantyczne, realne opisy serwerów MCP (brak dostępu do dokumentacji/CLI).
-- Następne: weryfikacja tool search/cache w dokumentacji; wyszukiwarka z synonimami/embeddingami na tym samym zestawie; analiza prawdziwego transkryptu (gdy odczyt dozwolony); dzielenie zadania na okna kontekstu (plik handoff, kryteria cięcia); weryfikacja reguł CLAUDE.md i „lost in the middle".
+- Wydanie #6 rubryki (#15), 2026-10-08: dzielenie zadania na okna kontekstu — model kosztów `ctxsplit.py` + `test_ctxsplit.py` (36 asercji, Python 3.10.4 stdlib) + lint pliku
+  handoff (`HANDOFF.example.md`, 383 tok.). Dane SYNTETYCZNE: 24 jednostki, 543 784 tok., okno 200 000, baza 10 000. Próg T=90 000: najtańsze „tnij przed jednostką, która się
+  nie zmieści" + handoff z żywymi decyzjami (1 466 975, koszt ważony cache); handoff z 3 ostatnich decyzji +31%, brak handoffu +44%, model czekania na auto-kompakcję +74%.
+  34/64 zależności sięgają >3 jednostki wstecz (stąd streszczenie ostatnich zdarzeń je gubi). Koszt płaski w T=30–90 tys. (~14%); optymalne T rośnie z bazą (45 tys. przy 5 tys.,
+  140 tys. przy 60 tys.); mały próg z cięciem w środku jednostki: 62 okna, 852 tys. tok. powtórzonej pracy. Niezweryfikowane: zachowanie modelu przy handoffie, realna auto-kompakcja
+  i `/compact`, mnożniki cache 0,1×/1,25× (z pamięci), wpływ długiego kontekstu na jakość, reguły lintu to heurystyka.
+- Następne: snapshot stanu zamiast dopisywania (`fold`); wyszukiwarka z synonimami/embeddingami na zestawie z #14; weryfikacja w żywym `claude`/dokumentacji (nowa sesja, wznowienie, `/compact`); analiza prawdziwego transkryptu (gdy odczyt dozwolony); reguły CLAUDE.md i „lost in the middle".
 
 ### ✍️ AI — prompty dla developera
 - Omówione elementy: 5 par zły/dobry prompt (konkretność+pliki/linie, "dlaczego" vs

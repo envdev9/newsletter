@@ -40,6 +40,7 @@ Urwany ostatni wiersz dziennika potrafił po cichu zgubić resztę historii agen
 → [Artykuł](ai-agentic-loop/ARTICLE.md) · [Kod](ai-agentic-loop/code/)
 
 ### 🧠 [AI — zarządzanie kontekstem](ai-context/ARTICLE.md)
+Zadanie 2,8× większe niż okno kontekstu: o koszcie decyduje to, co zgubisz przy przejściu między oknami — handoff z samych żywych decyzji bije brak handoffu o 44% (model kosztów na danych syntetycznych).
 → [Artykuł](ai-context/ARTICLE.md) · [Kod](ai-context/code/)
 
 ### ✍️ [AI — prompty dla developera](ai-prompts/ARTICLE.md)
