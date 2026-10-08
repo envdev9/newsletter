@@ -685,8 +685,17 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   = zero zwrotów; dodanie alternate-exchange do istniejącego exchange'a = `precondition_failed` tylko w `docker logs` (klient:
   `TaskCanceledException`). Niezweryfikowane: narzut `mandatory`, `Send`+`mandatory`, alternate-exchange przez policy, łańcuch,
   `headers`, klaster/TLS. Kontener `mt-unrouted-demo` usunięty.
+- Wydanie #15, 2026-10-08: Courier w 4 krokach — routing slip `ReserveInventory → AuthorizePayment → CreateShipment → NotifyCustomer`,
+  każdy z kompensacją. Zmienne slipa przez `CompletedWithVariables` (kolejne aktywności dostają `ReservationId` po nazwie właściwości);
+  porażka kroku 4 → kompensacja 3,2,1, potem `RoutingSlipFaulted`; kompensacja kroku 2 zawodzi (`context.Failed`) → łańcuch staje, krok 1
+  NIE jest kompensowany, przychodzi `RoutingSlipCompensationFailed` zamiast `Faulted`. Haczyki: `CompensateContext<TLog>` nie ma
+  `Arguments`/`Variables` (dane do cofnięcia trzeba zapisać w logu w `Execute`); `context.Completed(log, new {...})` nie istnieje;
+  konsument słuchający tylko `Completed`+`Faulted` pominie `CompensationFailed`; brak automatycznego ponawiania nieudanej kompensacji.
+  MassTransit 8.5.10, SDK 10.0.400, in-memory; build 0/0, scenariusze `ok`/`fail`/`fail-comp` uruchomione realnie. Niezweryfikowane:
+  RabbitMQ, `ReviseItinerary`, interakcja z `UseMessageRetry`, `RoutingSlipEvents` inne niż `All`, restart procesu w trakcie slipa,
+  przyczyna ~170 ms przerwy przed `ActivityFaulted`, brak testów (`dotnet test`).
 - Następny poziom: trwałe repozytorium sag (EF/Mongo/Redis) na RabbitMQ, `UseDelayedRedelivery` na prawdziwym
-  brokerze, itinerary z 3+ aktywnościami i częściową kompensacją, `mandatory`/returns dla niezroutowanych wiadomości.
+  brokerze, `ReviseItinerary`, Courier na RabbitMQ, restart procesu w trakcie slipa, `UseMessageRetry` + Courier.
 
 ### 🤖 AI — Claude Code dla .NET/Angular/SQL
 - Omówione przypadki użycia: slash command generujący testy xUnit dla klasy C#, hook

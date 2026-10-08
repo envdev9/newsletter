@@ -26,6 +26,7 @@ Jedna linijka `WithLifetime(ContainerLifetime.Persistent)` sprawiła, że Redis 
 → [Artykuł](aspire/ARTICLE.md) · [Kod](aspire/code/)
 
 ### 📨 [Messaging .NET z MassTransit](masstransit/ARTICLE.md)
+Krok 4 padł i kompensacja kroku 2 też: MassTransit przerywa wtedy cofanie, krok 1 zostaje nietknięty, a zamiast `Faulted` dostajesz osobne `CompensationFailed`.
 → [Artykuł](masstransit/ARTICLE.md) · [Kod](masstransit/code/)
 
 ### 🤖 [AI — Claude Code dla .NET/Angular/SQL](ai-claude-code/ARTICLE.md)
