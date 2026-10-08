@@ -478,7 +478,17 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   Niewyjaśnione: `RefreshOnIssuerKeyNotFound=false` nie wyłącza odświeżania. Niezweryfikowane: domyślne `LastKnownGoodLifetime`,
   rotacja z wyprzedzeniem, X.509. Środowisko: `dotnet test` bez `--project` na .NET 10 daje błąd VSTest; `rm` odrzucone — w
   `RotationTests/` został pusty `ScratchTests.cs` (do ręcznego skasowania), poza repo tymczasowy `global.json`.
-- Następny poziom (po #14): rotacja z wyprzedzeniem, RS256 z certyfikatem X.509, wiele instancji wystawcy. (Starsze: rotacja kluczy (wiele `kid` w JWKS, `ConfigurationManager` po HTTP), wyścig przy współbieżnym
+- Wydanie #15, 2026-10-08: rotacja kluczy Z WYPRZEDZENIEM (publikacja w JWKS przed aktywacją: walidator odświeżył JWKS przed
+  aktywacją → pierwszy token z nowym kluczem 200, licznik pobrań JWKS 2→2; w odwrotnej kolejności 401, 1→2), klucze JWT z certyfikatów
+  X.509 w JWKS (`x5c`, `x5t#S256`, `kid` = odcisk; brak pól prywatnych; `X509SecurityKey` sam dopisuje `x5t`), ważność certyfikatu
+  (wygasły/jeszcze nieważny certyfikat domyślnie daje 200 w JwtBearer — dopiero własny `IssuerSigningKeyValidator` z datami daje 401),
+  dwie instancje wystawcy (identyczne `key-1` w obu pierścieniach → token instancji B u walidatora A = 401). TUnit 1.72.16, SDK 10.0.400,
+  `dotnet test --solution` 10/10 (jeden przebieg, flakowania nie sprawdzano). Niezweryfikowane: walidacja łańcucha `x5c`, CRL/OCSP, HTTPS dla
+  JWKS, wspólny JWKS za balanserem, okno publikacja→aktywacja > `AutomaticRefreshInterval`, mechanizm zwiększania licznika JWKS przy złym
+  podpisie ze znanym `kid`. Środowisko: `--solution` z korzenia bez `global.json` w górę → `MSB1001` (obejście: tymczasowy `global.json`
+  poza repo w /tmp/prasowka-programowanie-CAHRWg/); pod koniec sesji Bash odrzucał wszystko — brak sprzątania (`/tmp/tunit-certkeys-results/`).
+- Następny poziom (po #15): okno publikacja→aktywacja dłuższe niż `AutomaticRefreshInterval`, wspólny JWKS za balanserem, walidacja
+  łańcucha `x5c`, flakowanie/powtarzalność testów z HTTP. (Starsze po #14: rotacja z wyprzedzeniem, RS256 z certyfikatem X.509, wiele instancji wystawcy; jeszcze starsze: rotacja kluczy (wiele `kid` w JWKS, `ConfigurationManager` po HTTP), wyścig przy współbieżnym
   refreshu, RS256 z certyfikatem X.509 (spójne z rubryką Certyfikaty); Aspire + TUnit zajmuje rubryka Aspire.
 
 ### ✈️ Aspire

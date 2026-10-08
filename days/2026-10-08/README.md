@@ -18,6 +18,7 @@ Serwer pchający zdarzenia po SSE (`System.Net.ServerSentEvents`) i WebSocket cz
 → [Artykuł](teamcity/ARTICLE.md) · [Kod](teamcity/code/)
 
 ### 🧪 [TUnit](tunit/ARTICLE.md)
+Wygasły certyfikat nadal podpisuje tokeny przyjmowane przez `JwtBearer`, chyba że sam dodasz sprawdzenie dat — plus dowód, że publikacja klucza w JWKS przed aktywacją usuwa pierwszy 401 po rotacji.
 → [Artykuł](tunit/ARTICLE.md) · [Kod](tunit/code/)
 
 ### ✈️ [Aspire](aspire/ARTICLE.md)
