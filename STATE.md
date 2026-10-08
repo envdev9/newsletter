@@ -94,6 +94,15 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
     źródło od nowa, `Take` robi `finally` generatora. Niezweryfikowane: `GroupBy`/`Join`/`Chunk` async, EF Core, `T` ≠ char/byte,
     nakładające się spany. Zostały puste bin/obj w code/ (ignorowane przez .gitignore).
   - Zostało: kolejne nowości .NET 10 do znalezienia (diff refleksyjny nie powtarzany w #14) → .NET 11 (gdy SDK) lub zejście do .NET 9.
+  - [x] `System.Net.ServerSentEvents` (`SseFormatter.WriteAsync` + `SseParser`, obieg w pamięci także z JSON) i `WebSocketStream`
+    (WebSocket jako `Stream`; `Create` = jedna wiadomość na zapis, `CreateWritableMessageStream` = jedna wiadomość z wielu zapisów) —
+    wydanie #15, 2026-10-08. Diff refleksyjny runtime 9.0.18 vs 10.0.11 powtórzony. Potwierdzone na net9.0: `CS0234` (SSE) i 3×`CS0103`
+    (WebSocketStream; osobne projekty `compat-check`/`compat-check-ws`). Zweryfikowane `dotnet run` (SDK 10.0.400; SDK 11 nadal niedostępne),
+    w pamięci, bez sieci. Haczyki: `\n` w `EventType`/`EventId` → `ArgumentException` w konstruktorze `SseItem`; `SseParser` jednorazowy
+    (`InvalidOperationException`), komentarze `:` pomijane; `Length` → `NotSupportedException`; `ownsWebSocket:false` zostawia `Open`,
+    `true` daje `Aborted`. Niezweryfikowane: prawdziwy HTTP/ASP.NET/`HttpClient`, sieciowy WebSocket i graceful close, historia pakietu NuGet SSE.
+  - Zostało z diffu: `ActivitySourceOptions`/`TelemetrySchemaUrl`, `JsonSerializer.DeserializeAsync` z `PipeReader`, `JsonKnownReferenceHandler`,
+    `FrozenDictionary.Create(ReadOnlySpan<...>)`, `OrderedDictionary.TryAdd(..., out int)`, `SlhDsa`/`CompositeMLDsa` → potem .NET 11 (gdy SDK).
 - Gdy funkcje .NET 10 się wyczerpią → .NET 11 → (dalsze nowości) → schodzimy w dół:
   9 → 8 → 7 → 6, potem wracamy do najnowszej dostępnej wersji.
 
