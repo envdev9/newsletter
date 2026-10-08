@@ -1216,6 +1216,16 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   przechodzą); niekrytyczne też egzekwowane; constraints na roocie też; każdy intermediate osobno. Żadne klucze prywatne nie
   trafiają na dysk. Niezweryfikowane: Windows/macOS/Go/Java/NSS/Chrome, `directoryName`/`otherName`/IPv6/IDN, `minimum`/`maximum`,
   łańcuchy ≥3 CA, `SslStream`/Kestrel z takim łańcuchem. `work/`, `bin/`, `obj/` zostały na dysku (w `.gitignore`).
+- Wydanie #15, 2026-10-08: **brama SCT w `SslStream`** — klient .NET zrywa handshake, jeśli cert serwera nie ma ważnego SCT od zaufanego
+  logu CT (polityka w `RemoteCertificateValidationCallback`; `SslStream` sam SCT nie sprawdza). 16 realnych handshake'ów TLS 1.3 na
+  loopbacku, 0 rozbieżności; scenariusze: brak SCT, nieznany log, zepsuty bit, timestamp z przyszłości, SCT przeniesiony do certu o innym
+  SAN, próg min=2 (dwa SCT z jednego logu = 1 głos), SCT-śmieć, zły `issuer_key_hash`, obcięta lista. Kontrola: `openssl verify`,
+  `openssl x509 -text` (3.0.2 tym razem czytelnie wypisał SCT), `verify_sct.py` (Python `cryptography`). Haczyki: poprawny łańcuch+nazwa
+  ≠ CT; liczy się podpis nad TBS, nie obecność rozszerzenia; klient dostaje zawsze ten sam `AuthenticationException` (powód logować w
+  callbacku); `ECDsa.SignData` domyślnie P1363, SCT wymaga DER; `X509Extension.RawData` ma SCT podwójnie w OCTET STRING;
+  `CreateSelfSigned` zwraca cert z kluczem; `GetSerialNumber()` little-endian. Niezweryfikowane: prawdziwe logi CT/CA ("logi" = 3 klucze w
+  procesie), SCT przez rozszerzenie TLS/OCSP, Kestrel jako strona egzekwująca, dryf zegara, rotacja logów, Windows/macOS, niezależność
+  łańcucha (na Linuksie to OpenSSL), tryb strict dla nieznanych SCT. `work/`, `bin/`, `obj/` w `.gitignore`.
 - Następny poziom: `consistency proof` (RFC 6962 §2.1.2) między dwoma STH + gossip protocol, Must-Staple + SCT razem,
   weryfikacja SCT "na żywo" w `SslStream`/Kestrelu (callback odrzucający połączenie bez ważnego SCT), ACME/`pebble`
   lokalnie (jeśli da się postawić bez sieci zewnętrznej — nigdy nie próbowane), Windows/macOS store, DANE/CAA.

@@ -54,6 +54,7 @@ W Signal Forms są dwa różne „debounce" — jedno opóźnia zapis do modelu,
 → [Artykuł](postgres-vector/ARTICLE.md) · [Kod](postgres-vector/code/)
 
 ### 🔐 [Certyfikaty i TLS (X.509)](certificates/ARTICLE.md)
+`SslStream` sam z siebie w ogóle nie sprawdza SCT — polityka Certificate Transparency musi siedzieć w callbacku, a jedno `return true` kasuje całe zabezpieczenie; 16 realnych handshake'ów TLS 1.3 to udowadnia.
 → [Artykuł](certificates/ARTICLE.md) · [Kod](certificates/code/)
 
 ---
