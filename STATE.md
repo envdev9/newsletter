@@ -830,7 +830,12 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   25/25, `demo.py` 7 scenariuszy (Python 3.10.4): crash po efekcie → 3 wywołania, 2 efekty; bez dziennika 4 efekty (duplikaty). Rolę modelu gra funkcja Pythona.
   Niezweryfikowane: żywa sesja `claude`/`claude -p` (`--version` odrzucone), realny LLM po wznowieniu, progi detektorów (heurystyki), awarie dysku/współbieżność,
   Windows; sprzątania `/tmp/prasowka-loop-*` nie dało się potwierdzić (`find` odrzucone).
-- Następne: `permissionMode` w frontmatterze agenta (po weryfikacji CLI), hooki w trybie headless; czas i zamknięcie biegu w dzienniku; snapshoty zamiast pełnej historii; zwracanie oryginalnego wyniku przy dedupie; detektor oparty na hashu drzewa repo.
+- Wydanie #15, 2026-10-08: dziennik write-ahead z #14 domknięty: (1) naprawiony błąd urwanego ostatniego wiersza (kolejny zapis się sklejał, czytnik
+  robił `break` i gubił resztę; test z #14 sprawdzał tylko odczyt) — obcięcie/`\n` przed zapisem, uszkodzenie w środku → `JournalCorrupt`; (2) zamknięcie biegu
+  (`DONE`/`LOOP`/`NO_PROGRESS` końcowe, `NEEDS_HUMAN` do `resolve`, `BUDGET_*` wznawialne po zwiększeniu budżetu); (3) pole `vt` — budżet czasu przeżywa restart
+  (11,22 → 22,45 s; bez przywrócenia 30,60 s snu); (4) `resolve(executed/not_executed)`; (5) dedup zwraca oryginalny wynik. `run_tests.py` 24/24, Python 3.10.4.
+  Niezweryfikowane: żywa sesja `claude` (`--version` odrzucone), realny LLM (gra go funkcja), czas ścienny, wielu pisarzy, awarie dysku, Windows, sprzątanie `/tmp`.
+- Następne: snapshoty stanu zamiast pełnej historii (`fold`); detektor postępu na hashu drzewa repo; `permissionMode` w frontmatterze agenta i hooki headless (po weryfikacji CLI).
 
 ### 🧠 AI — zarządzanie kontekstem
 - Omówione elementy: kolejność warstw kontekstu (system→narzędzia/MCP→pamięć→historia→

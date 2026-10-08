@@ -36,6 +36,7 @@ Krok 4 padł i kompensacja kroku 2 też: MassTransit przerywa wtedy cofanie, kro
 → [Artykuł](ai-claude-code/ARTICLE.md) · [Kod](ai-claude-code/code/)
 
 ### ⚙️ [AI — agentic loop](ai-agentic-loop/ARTICLE.md)
+Urwany ostatni wiersz dziennika potrafił po cichu zgubić resztę historii agenta — naprawa, zamknięcie biegu i wznawialny budżet czasu (bez niego restart kosztował 30,6 s snu zamiast 11,2 s).
 → [Artykuł](ai-agentic-loop/ARTICLE.md) · [Kod](ai-agentic-loop/code/)
 
 ### 🧠 [AI — zarządzanie kontekstem](ai-context/ARTICLE.md)
