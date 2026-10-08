@@ -16,6 +16,7 @@ Kto wygrywa, gdy zmienna ma 10 właścicieli? Dziesięć pojedynków warstw — 
 → [Artykuł](ansible/ARTICLE.md) · [Kod](ansible/code/)
 
 ### 🏗️ [TeamCity](teamcity/ARTICLE.md)
+Łańcuch Compile → Test+Lint → Package → Summary w 10 linijkach Kotlina (`sequential`/`parallel`) — a domyślna reakcja `sequential` sprawia, że testy biegną nawet po padniętej kompilacji.
 → [Artykuł](teamcity/ARTICLE.md) · [Kod](teamcity/code/)
 
 ### 🧪 [TUnit](tunit/ARTICLE.md)

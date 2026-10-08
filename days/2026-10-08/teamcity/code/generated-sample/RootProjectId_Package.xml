@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<build-type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2025.3/project-config.xsd">
+  <name>Package</name>
+  <description />
+  <settings>
+    <build-runners>
+      <runner id="RUNNER_1" name="Package" type="simpleRunner">
+        <parameters>
+          <param name="script.content" value="echo packaging" />
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+    </build-runners>
+    <dependencies>
+      <depend-on sourceBuildTypeId="RootProjectId_Test" />
+      <depend-on sourceBuildTypeId="RootProjectId_Lint" />
+    </dependencies>
+  </settings>
+</build-type>
+

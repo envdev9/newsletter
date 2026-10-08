@@ -380,6 +380,17 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   rewizji; przełączenie na Kotlin na pustym repo = chwilowo read-only; VCS root repo ustawień nie trafia do `settings.kts`.
   Niezweryfikowane: `buildSettingsMode` (brak agenta), blok `versionedSettings{}` w DSL, GitHub/GitLab/webhooki, równoczesny
   push, UI web, czemu `showSettingsChanges:true` wróciło jako `false`. Sprzątanie: kontener `tc-p14` (`rm -fv`), katalog roboczy.
+- Wydanie #15, 2026-10-08: **łańcuch buildów z DSL-owym `sequential { }` / `parallel { }`** (Compile → Test+Lint → Package → Summary) +
+  `reuseBuilds`, `onDependencyFailure`, `onDependencyCancel`. `mvn compile` w `maven:3.9-eclipse-temurin-21` → BUILD SUCCESS; żywy serwer
+  2025.07 + 2 agenty, `settings.kts` z repo przez versioned settings (5 build type'ów po 41 s od pushu). `sequential` to makro generujące
+  `snapshot(...)` (Show DSL zwraca rozwinięte). `parallel` = tylko brak zależności: z 1 agentem Test i Lint po kolei, z 2 w tej samej sekundzie.
+  Ponowne użycie: drugi `Summary` bez zmian → 5 buildów w kolejce zastąpionych, 1 uruchomiony; `reuseBuilds = NO` → nowe Test i Lint, Compile
+  reuse. Padnięty etap: `FAIL_TO_START` → `#N/A` failedToStart; `IGNORE` → Summary SUCCESS po padniętym Package; domyślne `sequential`
+  uruchamia Test po padniętym Compile (build FAILURE). Haczyki: domyślna zależność `RUN_ADD_PROBLEM` (Show DSL: pusty `snapshot(X) { }`);
+  opcje podaje się przy odbiorcy zależności; kolejka pokazuje kopie łańcucha. Niezweryfikowane: czy zwykłe `snapshot()` ma ten sam
+  default, `onDependencyCancel`, `ReuseBuilds.ANY`, `runOnSameAgent`, artifact deps, zagnieżdżone `parallel`, prawdziwy VCS w łańcuchu,
+  pełny przebieg od zera na finalnych plikach, podkomenda `gett` w `tc_live.py`. Sprzątanie: kontenery `tc-p15*`, obraz agenta
+  (pobrany przez nas), katalog roboczy w /tmp; obrazy server i maven były wcześniej, zostały.
 - Następny poziom: cascading merge (dwa `merge{}` feature'y, łańcuch feature→integration→main) na żywym serwerze;
   `versionedSettings{}` w pełnej pętli z realnym VCS; realny merge PR-a na żywym GitHubie (wymaga repo poza
   sandboxem); eksploracja pozostałych per-pluginowych artefaktów z `configs-dsl-kotlin-plugins-latest` (np. agent

@@ -1,0 +1,9 @@
+<vcs-root name="Settings Repo" vcsName="jetbrains.git" id="ChainDemo_SettingsRepo">
+  <project id="ChainDemo"/>
+  <properties>
+    <property name="url" value="file:///tmp/settings.git"/>
+    <property name="branch" value="refs/heads/main"/>
+    <property name="authMethod" value="ANONYMOUS"/>
+    <property name="username" value="tc-demo"/>
+  </properties>
+</vcs-root>

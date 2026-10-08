@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<build-type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2025.3/project-config.xsd">
+  <name>Summary</name>
+  <description />
+  <settings>
+    <build-runners>
+      <runner id="RUNNER_1" name="Summary" type="simpleRunner">
+        <parameters>
+          <param name="script.content" value="echo summary" />
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+    </build-runners>
+    <dependencies>
+      <depend-on sourceBuildTypeId="RootProjectId_Package">
+        <options>
+          <option name="run-build-if-dependency-failed" value="RUN" />
+          <option name="run-build-if-dependency-failed-to-start" value="RUN" />
+          <option name="take-started-build-with-same-revisions" value="true" />
+          <option name="take-successful-builds-only" value="true" />
+        </options>
+      </depend-on>
+    </dependencies>
+  </settings>
+</build-type>
+

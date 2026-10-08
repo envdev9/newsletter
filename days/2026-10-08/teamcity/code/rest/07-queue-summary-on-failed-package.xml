@@ -1,0 +1,6 @@
+<build>
+  <buildType id="ChainDemo_Summary"/>
+  <snapshot-dependencies>
+    <build id="18"/>
+  </snapshot-dependencies>
+</build>
