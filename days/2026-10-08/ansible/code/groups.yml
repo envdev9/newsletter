@@ -1,0 +1,9 @@
+---
+# Dwie grupy tego samego poziomu, jeden host w obu: kto wygrywa?
+- name: Grupy rownorzedne (host node2 w alpha i beta)
+  hosts: node2
+  gather_facts: false
+  tasks:
+    - name: Kolor
+      ansible.builtin.debug:
+        msg: "kolor = {{ kolor }}"

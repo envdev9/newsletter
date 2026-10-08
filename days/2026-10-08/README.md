@@ -12,6 +12,7 @@ Serwer pchający zdarzenia po SSE (`System.Net.ServerSentEvents`) i WebSocket cz
 → [Artykuł](dotnet/ARTICLE.md) · [Kod](dotnet/code/)
 
 ### 🔧 [Ansible](ansible/ARTICLE.md)
+Kto wygrywa, gdy zmienna ma 10 właścicieli? Dziesięć pojedynków warstw — od `role defaults` po `-e` — zmierzonych jednym playbookiem; zaskoczenie: `include_vars` bije `vars:` na tasku, a równorzędne grupy rozstrzyga alfabet.
 → [Artykuł](ansible/ARTICLE.md) · [Kod](ansible/code/)
 
 ### 🏗️ [TeamCity](teamcity/ARTICLE.md)

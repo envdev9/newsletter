@@ -1,0 +1,40 @@
+---
+# Pojedynki: kazda zmienna dNN jest zdefiniowana w DWOCH warstwach,
+# a wynik pokazuje, ktora wygrala. Kolejnosc pojedynkow = kolejnosc rosnacego priorytetu.
+- name: Pojedynki warstw zmiennych (host node1)
+  hosts: node1
+  gather_facts: false
+  vars:
+    d04: "play vars"
+    d05: "play vars"
+    d10: "play vars"
+  vars_files:
+    - vars/extra_file.yml
+  roles:
+    - demo
+  tasks:
+    - name: include_vars (d08 i d09)
+      ansible.builtin.include_vars:
+        file: vars/included.yml
+
+    - name: set_fact (d09 i d10)
+      ansible.builtin.set_fact:
+        d09: "set_fact"
+        d10: "set_fact"
+
+    - name: Wynik pojedynkow
+      ansible.builtin.debug:
+        msg:
+          - "d01 role defaults  vs group_vars/all    -> {{ d01 }}"
+          - "d02 group_vars/all vs group_vars/web    -> {{ d02 }}"
+          - "d03 group_vars/web vs host_vars         -> {{ d03 }}"
+          - "d04 host_vars      vs play vars         -> {{ d04 }}"
+          - "d05 play vars      vs vars_files        -> {{ d05 }}"
+          - "d06 vars_files     vs role vars         -> {{ d06 }}"
+          - "d07 role vars      vs task vars         -> {{ d07 }}"
+          - "d08 task vars      vs include_vars      -> {{ d08 }}"
+          - "d09 include_vars   vs set_fact          -> {{ d09 }}"
+          - "d10 play+set_fact  vs -e (jesli podano) -> {{ d10 }}"
+      vars:
+        d07: "task vars"
+        d08: "task vars"

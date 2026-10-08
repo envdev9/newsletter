@@ -234,6 +234,15 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   (część po 2×, część raz). Haczyk: pierwsza wersja miała sprzeczne reguły — syntax-check tego nie łapie. Niezweryfikowane:
   interaktywny TTY/`private`, kody ≠0/2, kod wyjścia przy `any_errors_fatal`, dynamic inventory przez `-i` (brak `+x`),
   vault/galaxy/Molecule, SSH/`become`.
+- Wydanie #15, 2026-10-08: **pierwszeństwo zmiennych (variable precedence)** — dziesięć pojedynków warstw w jednym playbooku
+  (`precedence.yml`), drabinka od najsłabszej: `role defaults` < `group_vars/all` < `group_vars/<grupa>` < `host_vars` < `vars:` playa <
+  `vars_files` < `vars/` roli < `vars:` taska < `include_vars` < `set_fact` < `-e`. Rozstrzyganie równorzędnych grup (`groups.yml`):
+  wygrywa późniejsza alfabetycznie; `ansible_group_priority` to odwraca. ansible-core 2.17.14, syntax-check + każdy scenariusz raz.
+  Haczyki: `vars/` roli bije `vars:` playa (do nadpisywania daj `defaults`); `include_vars` bije `vars:` taska; `set_fact` bije
+  `group_vars`, nad nim tylko `-e`; zmiana nazwy grupy może zmienić konfigurację; syntax-check nie pokazuje zwycięzcy.
+  Niezweryfikowane: parametry roli/`include_role`, `block` vars, `register`, fakty, `group_vars` przy playbooku, vault/galaxy/Molecule,
+  SSH/`become`, dynamic inventory przez `-i`.
+  Do rozważenia: parametry roli i `include_role`, `block` vars, `lineinfile`/`blockinfile`, `template` z `validate`, `assemble`, `set_stats`.
 - Następny poziom: Molecule (gdyby `ansible-galaxy` kiedyś przestał być blokowany); zdalne SSH/`become`
   (jeśli kiedykolwiek dostępne — środowisko na razie blokuje nawet sprawdzenie `sshd`); własny
   **inventory plugin** (dynamic inventory jako skrypt zwracający JSON, podłączony przez `-i`, nie
