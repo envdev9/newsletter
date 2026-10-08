@@ -578,9 +578,18 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   sieć, nie procesy. Wolumin: 0 nowych w 7 trybach (zamyka wątek z #13). Niezweryfikowane: mechanizm DCP (etykiety
   `creatorProcessId` — wniosek z nazw), `ConsoleLifetime` jako hipoteza, dashboard, `ContainerLifetime.Persistent`, stałe porty,
   Windows/Podman. Posprzątano (docker ps -a bez nowych zasobów).
-- Następny poziom: dashboard (wizualna inspekcja — nadal nieobejrzany), `SharedType.Keyed` (kilka AppHostów o
-  różnych konfiguracjach w jednej sesji), `WithDataVolume` + EF Core migracje, osierocone kontenery po zabiciu
-  procesu, integracja user-secrets z prawdziwym menedżerem sekretów w trybie publish.
+- Wydanie #15, 2026-10-08: `ContainerLifetime.Persistent` (jedna linijka `WithLifetime(...)` na Redisie) — `Persist.Probe` uruchamia
+  kolejne procesy z nowym AppHostem: zapis, czyste zamknięcie, odczyt, zapis, `kill -9`, odczyt. Zmierzone (Docker 29.1.3, Aspire 13.5.2,
+  SDK 10.0.400): to samo ID i `startedAt` kontenera po czystym zamknięciu i po `kill -9` (nowy AppHost się podpina); dane Redisa przeżywają
+  bez `WithDataVolume`; `dcp`/`CacheApi` znikają (Persistent dotyczy tylko kontenera); nazwa stabilna (`cache-4ab92b86`), przy `Session`
+  losowy sufiks, kontrola `Session` → 404. Haczyki: Aspire nigdy nie usuwa trwałego kontenera (`docker rm -f` robi developer); trwały
+  kontener ≠ trwałe dane (znikają z kontenerem → osobno `WithDataVolume`); `ConfigurationManager.GetValue` w AppHoście bez pakietu się nie
+  kompiluje (indeksator `Configuration["..."]`). Dwa pełne przebiegi, posprzątane (tylko własne kontenery). Niezweryfikowane: dashboard,
+  źródło stabilnego hasła (user-secrets odczyt zablokowany), zmiana konfiguracji zasobu przy działającym trwałym kontenerze, `Persistent` +
+  `WithDataVolume`, stałe porty, EF Core, inne obrazy, Windows/macOS/Podman; sufiks nazwy = hash ścieżki to tylko przypuszczenie.
+- Następny poziom: zmiana konfiguracji zasobu przy trwałym kontenerze, `Persistent` + `WithDataVolume`, dashboard (wizualna inspekcja —
+  nadal nieobejrzany), `SharedType.Keyed` (kilka AppHostów o różnych konfiguracjach w jednej sesji), `WithDataVolume` + EF Core migracje,
+  integracja user-secrets z prawdziwym menedżerem sekretów w trybie publish.
 
 ### 📨 Messaging .NET (MassTransit)
 - Aktualny poziom trudności: **podstawy (opanowane)**

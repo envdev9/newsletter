@@ -22,6 +22,7 @@ Wygasły certyfikat nadal podpisuje tokeny przyjmowane przez `JwtBearer`, chyba 
 → [Artykuł](tunit/ARTICLE.md) · [Kod](tunit/code/)
 
 ### ✈️ [Aspire](aspire/ARTICLE.md)
+Jedna linijka `WithLifetime(ContainerLifetime.Persistent)` sprawiła, że Redis z danymi przeżył `kill -9` AppHosta i został podpięty przez następny — ale teraz to Ty go sprzątasz.
 → [Artykuł](aspire/ARTICLE.md) · [Kod](aspire/code/)
 
 ### 📨 [Messaging .NET z MassTransit](masstransit/ARTICLE.md)
