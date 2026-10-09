@@ -45,6 +45,7 @@ PSP chroni w zapytaniu tylko jedną skośną kolumnę (wygrywa większy iloraz m
 → [Artykuł](sqlserver/ARTICLE.md) · [Kod](sqlserver/code/)
 
 ### 🧬 [PostgreSQL jako baza wektorowa](postgres-vector/ARTICLE.md)
+Embeddingi 3072-wymiarowe nie wejdą do indeksu HNSW jako `vector`, ale jako `halfvec` wejdą w połowie rozmiaru — a zwykły `SET hnsw.iterative_scan` przecieka między żądaniami na puli Npgsql (398 z 400 zapytań trafiło na cudzy tryb).
 → [Artykuł](postgres-vector/ARTICLE.md) · [Kod](postgres-vector/code/)
 
 ### 🔐 [Certyfikaty i TLS (X.509)](certificates/ARTICLE.md)

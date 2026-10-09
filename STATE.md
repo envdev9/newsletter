@@ -1178,9 +1178,22 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   blokowałby CONCURRENTLY — naprawione przez `CREATE PROCEDURE` z `COMMIT` w pętli. `run-demo.sh` jako całość
   nadal nieodpalony (sandbox odrzuca `.sh`, jak w #7) — kroki wykonane ręcznie dwukrotnie od zera.
   Niezweryfikowane: `HalfVector` w .NET, partycjonowanie z HNSW, kod z #2 (fastembed, nadal niezweryfikowany).
-- Następny poziom: `HalfVector` w .NET, `iterative_scan` w .NET z pulą połączeń, partycjonowanie z HNSW, naprawa i
-  uruchomienie kodu z #2 (realne embeddingi fastembed), rozdzielenie `DropIndex`+`CreateIndexConcurrently` na dwie
-  osobne migracje (rada EF z #8) w praktycznym przykładzie.
+- Wydanie #9, 2026-10-09: **`HalfVector` w .NET** (binary COPY + odczyt; 64 wymiary: `pg_column_size` 264 B `vector` vs 136 B
+  `halfvec`; HNSW 11,4 vs 8,7 MB, −24%; 1536 wymiarów indeks dokładnie 2,00× mniejszy: 24 584 192 vs 12 296 192 B), limity
+  wymiarów (HNSW na `vector(3072)` → błąd >2000; indeks na `(e::halfvec(3072))` działa; `halfvec(4001)` > limit 4000), indeks
+  na rzutowaniu `embedding::halfvec(64)` używany tylko gdy zapytanie ma to samo rzutowanie. Recall@10 halfvec 1,000 vs vector
+  0,995/0,955 (niedeterminizm budowy grafu, nie zaleta halfvec). **`iterative_scan` z pulą Npgsql**: filtr 5% bez indeksu
+  `off` → 39/200 wierszy (recall 0,195), `strict_order`/`relaxed_order` 200/200; z B-tree (~0,5%) planner nie używa HNSW.
+  Domyślny reset puli czyści `SET`; z `No Reset On Close=true` plain `SET` przecieka (398/400 zapytań cudzego zadania widziało
+  `relaxed_order`), `set_config(...,true)` w transakcji → 0/400; rekomendacja: default przez `Options=-c ...` w connection
+  stringu + wyjątki `set_config(..., true)`. Pułapki: `CREATE EXTENSION` na już połączonym → "Cannot resolve 'vector'"
+  (`ReloadTypesAsync()`), `SHOW hnsw.iterative_scan` na świeżym backendzie → 42704 (użyć `current_setting(...,true)`).
+  .NET 10.0.400, Npgsql 10.0.3, Pgvector 0.3.2, pg16, dane SYNTETYCZNE (20 000×64). Brak `run-demo.sh` (sekwencja ręczna,
+  jeden przebieg). Niezweryfikowane: recall halfvec przy 1536/3072 na prawdziwych embeddingach, `max_scan_tuples` w działaniu,
+  partycjonowanie z HNSW, `HalfVector` w EF Core, mechanizm pustego `SHOW` po resecie, kod z #2 (fastembed). Kontener usunięty.
+- Następny poziom: partycjonowanie z HNSW (indeks na partycję, pruning), `max_scan_tuples` w działaniu, naprawa kodu z #2
+  (realne embeddingi fastembed, recall halfvec przy 1536), `HalfVector` w EF Core, rozdzielenie `DropIndex`+
+  `CreateIndexConcurrently` na dwie osobne migracje (rada EF z #8).
 
 ### 🔐 Certyfikaty i TLS (X.509)
 - Aktualny poziom trudności: **podstawy (opanowane)**
