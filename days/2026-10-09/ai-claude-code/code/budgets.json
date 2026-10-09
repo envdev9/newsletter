@@ -1,0 +1,6 @@
+{
+  "btree_eq": {"max_buffers": 10},
+  "btree_contains": {"max_buffers": 100},
+  "btree_pattern_ops_startswith": {"max_buffers": 10},
+  "gin_trgm_contains": {"max_buffers": 100}
+}

@@ -26,6 +26,7 @@
 → [Artykuł](masstransit/ARTICLE.md) · [Kod](masstransit/code/)
 
 ### 🤖 [AI — Claude Code dla .NET/Angular/SQL](ai-claude-code/ARTICLE.md)
+Ten sam `Email.Contains(term)` z EF Core to na PostgreSQL 1696 buforów i Seq Scan, a z jednym indeksem GIN 17 — skaner planów `EXPLAIN` w `ef-core-review` v3 potrafi zatrzymać takie zapytanie w CI, zanim trafi na produkcję.
 → [Artykuł](ai-claude-code/ARTICLE.md) · [Kod](ai-claude-code/code/)
 
 ### ⚙️ [AI — agentic loop](ai-agentic-loop/ARTICLE.md)

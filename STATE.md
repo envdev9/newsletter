@@ -783,7 +783,16 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   `Constant` 301; lista 5000 id: 82 ms / 29 ms / 955 ms. `run_tests.py` 65/65 (realny błąd skanera: typ encji przy `HasIndex` w łańcuchu).
   Pułapka: `SHOWPLAN_XML` nie zwraca planu w `sp_executesql` (interceptor czyta cache); cache dostawcy usług utrwala pierwszy tryb parametryzacji.
   Niezweryfikowane: żywa sesja `claude`, auto-aktywacja, czasy z pojedynczych uruchomień, inne providery, 301. wpis cache w trybie Constant, `[Index]` atrybutem.
-- Następne: hook w żywej sesji `claude`; skanowanie planów z interceptora w testach integracyjnych/CI; `Contains` na PostgreSQL; spill typu Hash.
+- Wydanie #16, 2026-10-09: `ef-core-review` v3 — dialekt PostgreSQL/Npgsql (`UseNpgsql`, `EF.Functions.ILike`, INFO `PG-STARTSWITH-OPCLASS`, wyciszone
+  `STRING-UNICODE`/`CONTAINS-LIST` dla Npgsql), `PgPlanCaptureInterceptor` (`EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)` → plik), `scan_pg_plan.py`
+  (`SEQ-SCAN`, `HASH-SPILL`, `SORT-SPILL`, `TEMP-IO`, `ESTIMATE-SKEW`, `BUDGET`; exit 1 = bramka CI, `budgets.json`). PostgreSQL 16.14 (własny
+  kontener, usunięty), 200 000 wierszy, EF Core 10.0.12, SDK 10.0.400. `ids.Contains` → jedna tablica `= ANY(@p)` (1 wpis `pg_stat_statements`
+  vs 300 w trybie `Constant`). Bufory: `StartsWith` btree Seq Scan 1696, z `varchar_pattern_ops` 4; `Contains` dopiero z GIN `gin_trgm_ops` 17
+  (vs 1696); GIN gorszy dla `eq` (461) i `startswith` (255) niż btree (4). Spill: self-join 200k×200k 4 partie Hash przy domyślnym `work_mem`, 256
+  przy 64kB. `run_tests.py` 40/40 (pierwszy przebieg 38/40 przez złe oczekiwania testu). Niezweryfikowane: żywa sesja `claude` (CLI odrzucone przez
+  uprawnienia), spill Hash na SQL Server (brak SQL Servera), `ESTIMATE-SKEW` tylko ręcznym planem, progi arbitralne, koszt zapisu/rozmiar GIN, `ILIKE`/`citext`,
+  bramka tylko exit code, nie w prawdziwym CI.
+- Następne: hook w żywej sesji `claude`; spill typu Hash na SQL Server; koszt zapisu i rozmiar `gin_trgm_ops`; `ILIKE`/`citext` na PostgreSQL.
 
 ### ⚙️ AI — agentic loop / workflow kodowania
 - Omówione elementy: pętla tool-use, różnica komenda/skill/subagent/hook (kto naciska

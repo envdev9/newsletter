@@ -1,0 +1,77 @@
+[
+  {
+    "Plan": {
+      "Node Type": "Bitmap Heap Scan",
+      "Parallel Aware": false,
+      "Async Capable": false,
+      "Relation Name": "customers",
+      "Alias": "c",
+      "Startup Cost": 163.66,
+      "Total Cost": 237.40,
+      "Plan Rows": 20,
+      "Plan Width": 38,
+      "Actual Startup Time": 8.707,
+      "Actual Total Time": 8.709,
+      "Actual Rows": 1,
+      "Actual Loops": 1,
+      "Recheck Cond": "((\"Email\")::text ~~ 'user77777.22a4%'::text)",
+      "Rows Removed by Index Recheck": 0,
+      "Exact Heap Blocks": 1,
+      "Lossy Heap Blocks": 0,
+      "Shared Hit Blocks": 255,
+      "Shared Read Blocks": 0,
+      "Shared Dirtied Blocks": 0,
+      "Shared Written Blocks": 0,
+      "Local Hit Blocks": 0,
+      "Local Read Blocks": 0,
+      "Local Dirtied Blocks": 0,
+      "Local Written Blocks": 0,
+      "Temp Read Blocks": 0,
+      "Temp Written Blocks": 0,
+      "Plans": [
+        {
+          "Node Type": "Bitmap Index Scan",
+          "Parent Relationship": "Outer",
+          "Parallel Aware": false,
+          "Async Capable": false,
+          "Index Name": "ix_email_trgm",
+          "Startup Cost": 0.00,
+          "Total Cost": 163.66,
+          "Plan Rows": 20,
+          "Plan Width": 0,
+          "Actual Startup Time": 8.696,
+          "Actual Total Time": 8.697,
+          "Actual Rows": 1,
+          "Actual Loops": 1,
+          "Index Cond": "((\"Email\")::text ~~ 'user77777.22a4%'::text)",
+          "Shared Hit Blocks": 254,
+          "Shared Read Blocks": 0,
+          "Shared Dirtied Blocks": 0,
+          "Shared Written Blocks": 0,
+          "Local Hit Blocks": 0,
+          "Local Read Blocks": 0,
+          "Local Dirtied Blocks": 0,
+          "Local Written Blocks": 0,
+          "Temp Read Blocks": 0,
+          "Temp Written Blocks": 0
+        }
+      ]
+    },
+    "Planning": {
+      "Shared Hit Blocks": 1,
+      "Shared Read Blocks": 0,
+      "Shared Dirtied Blocks": 0,
+      "Shared Written Blocks": 0,
+      "Local Hit Blocks": 0,
+      "Local Read Blocks": 0,
+      "Local Dirtied Blocks": 0,
+      "Local Written Blocks": 0,
+      "Temp Read Blocks": 0,
+      "Temp Written Blocks": 0
+    },
+    "Planning Time": 0.141,
+    "Triggers": [
+    ],
+    "Execution Time": 8.746
+  }
+]
