@@ -1092,9 +1092,21 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   zera ręcznym `docker exec sqlcmd`; `run-demo.sh` jako plik nieodpalony (Bash blokuje `.sh`). Niezweryfikowane: dokładny
   próg skośności (95 000–100 000), pierwszeństwo hintu wariantu vs rodzica, mechanizm czyszczenia TOMBSTONE, wpływ
   nieaktualnych statystyk na plan, plan zapytania z 582 215 reads. Kontenery posprzątane.
-- Następny poziom: PSP z wieloma predykatami, hint wariantu z `USE HINT` i jego pierwszeństwo nad hintem rodzica,
-  mechanizm czyszczenia `TOMBSTONE`, `AUTO_UPDATE_STATISTICS OFF` i koszt nieaktualnych statystyk NCCI, dokładny próg
-  skośności PSP.
+- Wydanie #16, 2026-10-09: **PSP z wieloma predykatami** (`dbo.Ev`: `TenantId` 190000:1 i `Region` 179999:1 — w wariantach
+  `predicate_range` tylko `TenantId`; gigant + `Region=2` 5737 reads vs 5 z `RECOMPILE`; na tabelach EvC–EvF wybierany jest
+  predykat o większym ilorazie max:min, nie kolejność w `WHERE`; remis 190000:190000 wygrał `Region`, reguła remisu nieznana).
+  **Hint wariantu vs rodzica (`USE HINT`)**: sprzeczne `FORCE_LEGACY_…`/`FORCE_DEFAULT_CARDINALITY_ESTIMATION` — hint wariantu
+  nadpisuje rodzica w obu kierunkach, wariant bez hintu dziedziczy; widać w planie z cache (`CardinalityEstimationModelVersion`),
+  `sys.query_store_plan` pokazuje stale 160. **`AUTO_UPDATE_STATISTICS OFF` na tabeli z NCCI** (1 mln + 600 000 wierszy
+  `Status=7`): estymata 1264,91 vs 600 000 (~474×), plan DOP 1, Adaptive Join Row mode, grant 245 MB, 1651 ms; po
+  `UPDATE STATISTICS … FULLSCAN` DOP 2, Batch mode, grant 435 MB, 701 ms (2,3×); spilla nie było. SQL Server 2022 RTM-CU27,
+  skrypty 01–10 zweryfikowane 2× od zera na 2 kontenerach (`docker exec sqlcmd`); `run-demo.sh` jako plik nieodpalony.
+  Niezweryfikowane: PSP z 2 predykatami w jednym wariancie, reguła remisu, kolejność ustawiania hintów (zawsze wariant po
+  rodzicu), hinty inne niż `USE HINT`, spill, udział równoległości w zysku 2,3×, mechanizm TOMBSTONE, próg skośności
+  (95 000–100 000). Kontenery posprzątane.
+- Następny poziom: PSP z dwoma predykatami w jednym wariancie i reguła remisu, pierwszeństwo hintu przy odwrotnej kolejności
+  ustawiania + hinty QS inne niż `USE HINT`, prawdziwy spill przy `AUTO_UPDATE_STATISTICS OFF`, `AUTO_UPDATE_STATISTICS_ASYNC`,
+  mechanizm `TOMBSTONE`, próg skośności PSP.
 
 ### 🧬 PostgreSQL — baza wektorowa (pgvector)
 - Aktualny poziom trudności: **podstawy (opanowane)**
