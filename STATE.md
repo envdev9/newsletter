@@ -103,6 +103,18 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
     `true` daje `Aborted`. Niezweryfikowane: prawdziwy HTTP/ASP.NET/`HttpClient`, sieciowy WebSocket i graceful close, historia pakietu NuGet SSE.
   - Zostało z diffu: `ActivitySourceOptions`/`TelemetrySchemaUrl`, `JsonSerializer.DeserializeAsync` z `PipeReader`, `JsonKnownReferenceHandler`,
     `FrozenDictionary.Create(ReadOnlySpan<...>)`, `OrderedDictionary.TryAdd(..., out int)`, `SlhDsa`/`CompositeMLDsa` → potem .NET 11 (gdy SDK).
+  - [x] `JsonSerializer.DeserializeAsync<T>(PipeReader)` / `DeserializeAsyncEnumerable<T>(PipeReader)` (`System.Text.Json`) i
+    `ActivitySourceOptions` + `ActivitySource.TelemetrySchemaUrl`/`Tags` (`System.Diagnostics`) — wydanie #17, 2026-10-10.
+    Potwierdzone na net9.0: 2×`CS1503` (PipeReader→Stream) oraz `CS0246`+`CS1061`. Zweryfikowane `dotnet run` (SDK 10.0.400;
+    SDK 11 nadal niedostępne). Haczyki: `DeserializeAsync` wraca dopiero po `Complete()` writera, nie po kompletnym obiekcie
+    (nie do ramkowania wiadomości na długim połączeniu); serializator nie zamyka readera; drugi dokument/urwany string →
+    `JsonException`; ~58 MB JSON: peak working set 58 MB (strumień) vs 166–171 MB (`List<T>`), czasy wahały się bardziej niż
+    różniły tryby. `ActivitySource`: stary konstruktor `(name, version)` zostawia schemat i `Tags` jako `null`; opcje kopiowane
+    przy konstrukcji; `TelemetrySchemaUrl` nie jest walidowany; kolejność tagów niezachowana. Niezweryfikowane: Kestrel/
+    `BodyReader`, prawdziwy socket, `JsonTypeInfo`/source-gen, eksport OTLP `schema_url`, wielowątkowość, .NET 11.
+    Puste bin/obj zostały w code/ (ignorowane przez .gitignore).
+  - Zostało z diffu: `JsonKnownReferenceHandler`, `FrozenDictionary.Create(ReadOnlySpan<...>)`,
+    `OrderedDictionary.TryAdd(..., out int)`, `SlhDsa`/`CompositeMLDsa` → potem .NET 11 (gdy SDK) lub zejście do .NET 9.
 - Gdy funkcje .NET 10 się wyczerpią → .NET 11 → (dalsze nowości) → schodzimy w dół:
   9 → 8 → 7 → 6, potem wracamy do najnowszej dostępnej wersji.
 

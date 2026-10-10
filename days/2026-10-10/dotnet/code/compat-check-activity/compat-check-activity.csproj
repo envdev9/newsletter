@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- CELOWO net9.0: ten projekt ma sie NIE skompilowac - dowod, ze API jest nowoscia .NET 10.
+       Wymaga SDK 9.x obok (sprawdzone na 9.0.316). Brak PackageReference. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>
