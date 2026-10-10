@@ -32,6 +32,7 @@ Zakomentowany test to test zapomniany — TUnit pozwala pominąć go z powodem, 
 → [Artykuł](ai-claude-code/ARTICLE.md) · [Kod](ai-claude-code/code/)
 
 ### ⚙️ [AI — agentic loop](ai-agentic-loop/ARTICLE.md)
+Agent, który po raz piąty puszcza testy na tym samym kodzie, ma tekst błędu za każdym razem inny, więc stary detektor milczy — hash drzewa repo zatrzymuje go po 3 porażkach, a snapshoty zmniejszają dziennik prawie 6 razy bez zmiany wyniku.
 → [Artykuł](ai-agentic-loop/ARTICLE.md) · [Kod](ai-agentic-loop/code/)
 
 ### 🧠 [AI — zarządzanie kontekstem](ai-context/ARTICLE.md)

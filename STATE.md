@@ -872,7 +872,15 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   (`DONE`/`LOOP`/`NO_PROGRESS` końcowe, `NEEDS_HUMAN` do `resolve`, `BUDGET_*` wznawialne po zwiększeniu budżetu); (3) pole `vt` — budżet czasu przeżywa restart
   (11,22 → 22,45 s; bez przywrócenia 30,60 s snu); (4) `resolve(executed/not_executed)`; (5) dedup zwraca oryginalny wynik. `run_tests.py` 24/24, Python 3.10.4.
   Niezweryfikowane: żywa sesja `claude` (`--version` odrzucone), realny LLM (gra go funkcja), czas ścienny, wielu pisarzy, awarie dysku, Windows, sprzątanie `/tmp`.
-- Następne: snapshoty stanu zamiast pełnej historii (`fold`); detektor postępu na hashu drzewa repo; `permissionMode` w frontmatterze agenta i hooki headless (po weryfikacji CLI).
+- Wydanie #17, 2026-10-10: **detektor postępu na hashu drzewa repo** (`tree_hash` po treści plików, nie `mtime`, pomija `obj/`/`bin/`/`.git`;
+  zlicza porażki weryfikacji na tym samym hashu, 3. → `TREE_STALL`) i **snapshoty stanu** (`Summary` + rekord `snapshot` w `fold`, `compact()` przez
+  `.tmp`+`fsync`+`os.replace`, `compact_every`/`compact_keep`, `archive=True` twardym dowiązaniem). `run_tests.py` 41/41, `demo.py`, Python 3.10.4 stdlib.
+  Zmierzone: zapętlone modele bez detektora spalają 20 kroków, z nim `TREE_STALL` po 5 (koszt 345→89) i po 10 (oscylacja v1↔v2, 430→215); brak fałszywych
+  alarmów w fazie rozeznania; dziennik 15007 B/61 rekordów → 2555 B/6 przy tym samym wyniku (30 kroków, koszt 1900, 15 efektów); crash w dwóch punktach
+  kompaktowania daje ten sam wynik. Haczyki: snapshot poprawny tylko gdy stan czytany wyłącznie przez `fold`; archiwum audytowe osobno.
+  Niezweryfikowane: żywy `claude`/`claude -p` (`--version` odrzucone), realny LLM (modele to funkcje), progi (`tree_repeat=3`, `WINDOW=12`) to heurystyki,
+  wydajność hashowania dużych repo, `git write-tree`, wielu pisarzy, Windows, scalanie segmentów archiwum, sprzątanie `/tmp/prasowka-loop3-*`.
+- Następne: `permissionMode` w frontmatterze agenta i hooki headless (po weryfikacji CLI); scalanie archiwum w jedną oś zdarzeń; `git write-tree` jako hash drzewa.
 
 ### 🧠 AI — zarządzanie kontekstem
 - Omówione elementy: kolejność warstw kontekstu (system→narzędzia/MCP→pamięć→historia→
