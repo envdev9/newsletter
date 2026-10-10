@@ -1,0 +1,1 @@
+Napisz ADR o tym, że używamy backoffu wykładniczego.

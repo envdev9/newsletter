@@ -1,0 +1,33 @@
+ZADANIE
+Napisz ADR-0001 (docs-good/ADR-0001-exponential-backoff.md) opisujący decyzję, którą
+już podjęliśmy i zaimplementowaliśmy w Retry/Backoff.cs. Dokumentujesz decyzję - nie projektujesz nowej.
+
+DECYZJA (od człowieka, nie do zmiany ani "ulepszania")
+- ponowienia z wykładniczym opóźnieniem, limit prób, sufit pojedynczego opóźnienia
+- ponawiamy każdy wyjątek poza OperationCanceledException
+- NIE ma jittera (świadomie odłożone)
+
+KONTEKST OD CZŁOWIEKA (jedyne źródło "dlaczego")
+Wywołania zewnętrznego API zwracają przejściowe błędy (408, 429, 5xx); natychmiastowe
+ponowienia pogarszają sytuację usługi, która już ma problem.
+
+FAKTY O KODZIE
+<facts>{{wynik: python3 -B docs_check.py facts --root . --src Retry}}</facts>
+
+FORMAT (walidowany maszynowo)
+- Nagłówek `# ADR-0001: <tytuł>`; linia `Data: RRRR-MM-DD` (dzisiejsza data od człowieka: {{data}}).
+- Sekcje `## Status` (jedno słowo: Proponowany | Przyjęty | Odrzucony | Zastąpiony),
+  `## Kontekst`, `## Decyzja`, `## Konsekwencje`.
+- W Decyzji i Konsekwencjach wartości liczbowe wyłącznie jako `Typ.Nazwa` = wartość [jednostka],
+  zgodnie z `constants` z facts.
+- Konsekwencje: punkty "- Pozytywne: ..." i "- Negatywne: ...". Negatywne MUSI być niepuste i
+  konkretne (co tracimy, kiedy to zaboli) - wywnioskuj z decyzji, nie z ogólników.
+- Wskaż plik `.cs`, którego dotyczy decyzja, w backtickach.
+
+ZAKAZY
+- Nie wymyślaj powodów, których nie ma w KONTEKŚCIE ("ze względu na wydajność", "zgodnie z dobrymi praktykami").
+  Brak powodu = linia "BRAK DANYCH: ..." w odpowiedzi poza plikiem.
+- Nie dodawaj alternatyw, których człowiek nie podał.
+
+GOTOWE, GDY
+`python3 -B docs_check.py check --root . --src Retry --docs docs-good` zwraca 0 (reguły AD01-AD05, MD05).

@@ -39,6 +39,7 @@ Agent, który po raz piąty puszcza testy na tym samym kodzie, ma tekst błędu 
 → [Artykuł](ai-context/ARTICLE.md) · [Kod](ai-context/code/)
 
 ### ✍️ [AI — prompty dla developera](ai-prompts/ARTICLE.md)
+Dokumentacja z modelu zmyśla parametry i starzeje się po cichu — dziś fakty o kodzie wchodzą do promptu ze skryptu, a ten sam skrypt waliduje wynik; zmierzone na 11 rozjazdach: walidator 9/11, kompilator 2/11.
 → [Artykuł](ai-prompts/ARTICLE.md) · [Kod](ai-prompts/code/)
 
 ### 🅰️ [Angular](angular/ARTICLE.md)

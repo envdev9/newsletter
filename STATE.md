@@ -940,7 +940,15 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   M10 (reszta groszy na końcu) przechodzi property testy, łapie go tylko test przykładowy. Lint 4/4 zgodny z oczekiwaniem, test negatywny 2/13 reguł (exit 1). Niezweryfikowane: jakość
   odpowiedzi modelu (żaden nie uruchamiany), naiwny zestaw pisany ze znajomością mutantów (zawyża różnicę), reprezentatywność 14 mutantów, Stryker.NET, M08 równoważny z domysłu,
   `dotnet test --project` spoza global.json → MSB1001 (użyto `dotnet run --project`). Mogą zostać `bin/obj` (w .gitignore). Dokumentacja (XML-doc/README/ADR) nieomówiona.
-- Następne: prompty do dokumentacji (XML-doc, README, ADR) z walidatorem zgodności z kodem; łańcuch promptów z kontraktem między krokami; porównanie ze Stryker.NET i ślepym zestawem; ewaluacja na prawdziwym modelu.
+- Wydanie #17, 2026-10-10: prompty do dokumentacji (XML-doc, README, ADR) — 3 pary zły/dobry; fakty o kodzie wchodzą do promptu ze skryptu
+  (`docs_check.py facts`), wynik wraca przez ten sam skrypt (`check`); brak danych → `BRAK DANYCH`. Kod: `Retry`, `Retry.Stale`, `Retry.Demo`,
+  `docs-good`/`docs-stale`, `drift_test.py`. .NET 10.0.400, Python 3.10.4. `Retry` 0 ostrzeżeń, `Retry.Stale` 5 (CS1572×2, CS1573×2, CS1574);
+  `Retry.Demo` 15/15 przykładów z README/ADR; walidator na docs-stale: 22 rozjazdy; 11 wstrzykniętych dryfów: walidator 9/11, kompilator 2/11,
+  `Retry.Demo` 4/11, razem 11/11. Haczyki: kompilator widzi tylko parametry/`cref` w `///`; walidator ślepy na zmianę zachowania przy niezmienionym
+  opisie (przykłady muszą się uruchamiać); nie złapał dopisanego argumentu `jitter` w przykładzie. Niezweryfikowane: jakikolwiek model (żaden
+  nie uruchamiany), reprezentatywność 11 dryfów (dobrane razem z regułami → zawyżone), walidator oparty na regexach (nie Roslyn; brak atrybutów,
+  `partial`, zagnieżdżonych typów), prompty z `prompts/` nie lintowane, środkowy krok łańcucha tylko szkic. Zostały `bin/obj` (.gitignore).
+- Następne: łańcuch promptów z kontraktem między krokami (uruchamiany end-to-end); porównanie ze Stryker.NET i ślepym zestawem; walidator na Roslynie; ewaluacja na prawdziwym modelu.
 
 ### 🅰️ Angular
 - Aktualny poziom trudności: **podstawy (opanowane)**

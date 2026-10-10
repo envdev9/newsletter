@@ -1,0 +1,32 @@
+ZADANIE
+Uzupełnij komentarze XML-doc (///) dla publicznych składowych w Retry/Backoff.cs.
+Zmieniasz WYŁĄCZNIE linie zaczynające się od ///. Nie ruszaj kodu, nie zmieniaj sygnatur.
+
+FAKTY O KODZIE (wygenerowane skryptem, nie z Twojej pamięci)
+<facts>
+{{wynik: python3 -B docs_check.py facts --root . --src Retry}}
+</facts>
+Facts są ŹRÓDŁEM PRAWDY o: nazwach i liczbie parametrów, parametrach typu, wyjątkach rzucanych
+w ciele metody i wartościach stałych. Kod źródłowy poniżej służy Ci do zrozumienia CO metoda robi.
+
+<source file="Retry/Backoff.cs">
+{{treść pliku}}
+</source>
+
+WYMAGANIA
+1. Każdy parametr z `params` ma <param name="...">; każdy parametr typu ma <typeparam>. Nic ponad to.
+2. <exception cref="X"> dokładnie dla typów z `throws` danej metody, każdy z warunkiem
+   ("gdy ...") sformułowanym na podstawie kodu. Nie dokumentuj wyjątków, których nie ma w `throws`.
+3. <returns> dla metod zwracających wartość; bez <returns> dla void/Task.
+4. Liczby ze stałych podawaj tylko w formie <c>Nazwa = wartość</c> (np. <c>MaxAttempts = 6</c>)
+   i dokładnie taką wartość, jaka jest w `constants`. Nie wpisuj liczb, których nie ma w facts.
+5. Opisuj zachowanie, nie powtarzaj nazwy ("Delay: oblicza opóźnienie" jest bezwartościowe).
+   Jeśli czegoś nie da się ustalić z kodu (np. dlaczego wybrano 30 s), NIE zgaduj -
+   zostaw w tym miejscu linię `// BRAK DANYCH: <czego brakuje>` i zapytaj.
+
+FORMAT ODPOWIEDZI
+Jeden blok: cały plik Retry/Backoff.cs po zmianach. Po nim lista "BRAK DANYCH" (może być pusta).
+
+GOTOWE, GDY
+`python3 -B docs_check.py check --root . --src Retry --docs docs-good` kończy się kodem 0
+oraz `dotnet build Retry` nie zgłasza ostrzeżeń CS15xx.
