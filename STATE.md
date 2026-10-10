@@ -255,6 +255,14 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   Niezweryfikowane: parametry roli/`include_role`, `block` vars, `register`, fakty, `group_vars` przy playbooku, vault/galaxy/Molecule,
   SSH/`become`, dynamic inventory przez `-i`.
   Do rozważenia: parametry roli i `include_role`, `block` vars, `lineinfile`/`blockinfile`, `template` z `validate`, `assemble`, `set_stats`.
+- Wydanie #17, 2026-10-10: **edycja plików** — `lineinfile` (`regexp`, `insertafter`, `state: absent`), `blockinfile` (własny
+  `marker`), `template` z `validate` (`%s`), `assemble` (conf.d → jeden plik). ansible-core 2.17.14; syntax-check + `edit_files.yml`
+  2 przebiegi (changed=8 → 0), `template_validate.yml` (zepsuty JSON odrzucony, cel nietknięty; poprawna zmiana, potem changed=0),
+  `assemble.yml` 3 przebiegi. Haczyki: `lineinfile` bez `regexp` dopisuje nową linię przy każdej zmianie wartości (changed=0 tego nie
+  wykryje); `marker` to tożsamość bloku; `validate` bez `%s` → błąd; `assemble` sortuje nazwy jako napisy (`5-` między `10-` a `50-`),
+  nie usuwa fragmentów-sierot; zmienna `port` → `[WARNING]` (zarezerwowana). Niezweryfikowane: kolizja markera w dwóch rolach,
+  `backup`/`create`, `validate` w `lineinfile`/`blockinfile`, `assemble` z `validate`, `nginx -t`/`visudo -c`, SSH/`become`,
+  vault/galaxy/Molecule. Nietknięte z "Do rozważenia": `set_stats`, parametry roli/`include_role`, `block` vars.
 - Następny poziom: Molecule (gdyby `ansible-galaxy` kiedyś przestał być blokowany); zdalne SSH/`become`
   (jeśli kiedykolwiek dostępne — środowisko na razie blokuje nawet sprawdzenie `sshd`); własny
   **inventory plugin** (dynamic inventory jako skrypt zwracający JSON, podłączony przez `-i`, nie

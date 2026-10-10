@@ -12,6 +12,7 @@
 → [Artykuł](dotnet/ARTICLE.md) · [Kod](dotnet/code/)
 
 ### 🔧 [Ansible](ansible/ARTICLE.md)
+Edytuj, nie nadpisuj — `lineinfile`, `blockinfile`, `template` z `validate` i `assemble`: jak zmienić jedną linię cudzego pliku, nie zepsuć go i nie zostawić po sobie śmieci, które `changed=0` przemilczy.
 → [Artykuł](ansible/ARTICLE.md) · [Kod](ansible/code/)
 
 ### 🏗️ [TeamCity](teamcity/ARTICLE.md)

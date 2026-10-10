@@ -1,0 +1,60 @@
+---
+# assemble: konfiguracja w stylu conf.d - wiele malych fragmentow -> jeden plik,
+# sklejany w kolejnosci LEKSYKOGRAFICZNEJ nazw plikow.
+- name: assemble z fragmentow
+  hosts: local
+  gather_facts: false
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl17
+    frag_dir: /tmp/ansible-demo-lvl17/conf.d
+    target: /tmp/ansible-demo-lvl17/merged.conf
+    # -e bad_name=true dodaje fragment "5-early.conf" (pulapka sortowania)
+    bad_name: false
+    fragments:
+      - { name: 10-base.conf, text: "base=1" }
+      - { name: 50-app.conf, text: "app=on" }
+      - { name: 90-end.conf, text: "end=1" }
+  tasks:
+    - name: Katalog fragmentow
+      ansible.builtin.file:
+        path: "{{ frag_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Fragmenty
+      ansible.builtin.copy:
+        dest: "{{ frag_dir }}/{{ item.name }}"
+        content: "{{ item.text }}\n"
+        mode: "0644"
+      loop: "{{ fragments }}"
+      loop_control:
+        label: "{{ item.name }}"
+
+    - name: Fragment z pulapka w nazwie
+      ansible.builtin.copy:
+        dest: "{{ frag_dir }}/5-early.conf"
+        content: "early=1\n"
+        mode: "0644"
+      when: bad_name | bool
+
+    - name: Skladanie pliku
+      ansible.builtin.assemble:
+        src: "{{ frag_dir }}"
+        dest: "{{ target }}"
+        regexp: '\.conf$'
+        delimiter: "# ---"
+        mode: "0644"
+      register: asm
+
+    - name: Czy zmienil
+      ansible.builtin.debug:
+        msg: "changed={{ asm.changed }}"
+
+    - name: Wynik
+      ansible.builtin.command: cat {{ target }}
+      register: out
+      changed_when: false
+
+    - name: Zawartosc
+      ansible.builtin.debug:
+        var: out.stdout_lines

@@ -1,0 +1,47 @@
+---
+# template + validate: Ansible renderuje do pliku TYMCZASOWEGO, odpala walidator
+# (%s = sciezka tymczasowego pliku) i dopiero przy kodzie wyjscia 0 podmienia cel.
+- name: template z validate
+  hosts: local
+  gather_facts: false
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl17
+    target: /tmp/ansible-demo-lvl17/settings.json
+    # -e broken_json=true => szablon wyrenderuje niepoprawny JSON (brakujacy cudzyslow)
+    broken_json: false
+    workers: 4
+    # walidator: python3 -m json.tool rzuca blad na niepoprawnym JSON
+    validator: "python3 -m json.tool %s"
+  tasks:
+    - name: Katalog roboczy
+      ansible.builtin.file:
+        path: "{{ demo_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Render z walidacja
+      block:
+        - name: settings.json z validate
+          ansible.builtin.template:
+            src: settings.json.j2
+            dest: "{{ target }}"
+            mode: "0644"
+            validate: "{{ validator }}"
+          register: rendered
+
+        - name: Wynik renderowania
+          ansible.builtin.debug:
+            msg: "changed={{ rendered.changed }}"
+      rescue:
+        - name: Walidacja odrzucila plik
+          ansible.builtin.debug:
+            msg: "{{ ansible_failed_result.msg }} / exit={{ ansible_failed_result.exit_status | default('-') }} / stderr={{ ansible_failed_result.stderr | default('') | trim }}"
+
+    - name: Zawartosc celu po przebiegu
+      ansible.builtin.command: cat {{ target }}
+      register: out
+      changed_when: false
+
+    - name: Cel
+      ansible.builtin.debug:
+        var: out.stdout_lines

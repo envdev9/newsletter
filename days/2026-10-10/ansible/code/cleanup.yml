@@ -1,0 +1,10 @@
+---
+# Sprzatanie artefaktow testowych (file state: absent usuwa katalog rekurencyjnie).
+- name: Sprzatanie
+  hosts: local
+  gather_facts: false
+  tasks:
+    - name: Usuniecie katalogu demo
+      ansible.builtin.file:
+        path: /tmp/ansible-demo-lvl17
+        state: absent

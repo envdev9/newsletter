@@ -1,0 +1,89 @@
+---
+# lineinfile + blockinfile: edycja ISTNIEJACEGO pliku, idempotentnie.
+# Plik startowy symuluje fragment sshd_config / appsettings w formie klucz-wartosc.
+- name: lineinfile i blockinfile
+  hosts: local
+  gather_facts: false
+  vars:
+    demo_dir: /tmp/ansible-demo-lvl17
+    target: /tmp/ansible-demo-lvl17/app.conf
+    ssh_port: 2222
+    # -e naive=true pokazuje pulapke: lineinfile BEZ regexp
+    naive: false
+  tasks:
+    - name: Katalog roboczy
+      ansible.builtin.file:
+        path: "{{ demo_dir }}"
+        state: directory
+        mode: "0755"
+
+    # force: false -> plik startowy tworzymy tylko raz, kolejne przebiegi go nie ruszaja
+    - name: Plik startowy (tylko gdy go nie ma)
+      ansible.builtin.copy:
+        dest: "{{ target }}"
+        force: false
+        mode: "0644"
+        content: |
+          # app.conf - plik startowy
+          Port 22
+          LogLevel INFO
+          #PermitRootLogin yes
+          MaxSessions 10
+
+    - name: Port - regexp znajduje linie i ja zastepuje
+      ansible.builtin.lineinfile:
+        path: "{{ target }}"
+        regexp: '^#?Port\s'
+        line: "Port {{ ssh_port }}"
+
+    - name: PermitRootLogin - odkomentowanie i zmiana jedna linia
+      ansible.builtin.lineinfile:
+        path: "{{ target }}"
+        regexp: '^#?\s*PermitRootLogin\s'
+        line: "PermitRootLogin no"
+
+    - name: Brakujaca linia trafia dokladnie po MaxSessions (insertafter)
+      ansible.builtin.lineinfile:
+        path: "{{ target }}"
+        regexp: '^ClientAliveInterval\s'
+        line: "ClientAliveInterval 120"
+        insertafter: '^MaxSessions\s'
+
+    - name: Usuniecie linii (state absent)
+      ansible.builtin.lineinfile:
+        path: "{{ target }}"
+        regexp: '^LogLevel\s'
+        state: absent
+
+    # Dwa NIEZALEZNE bloki - kazdy ma wlasny marker, wiec nie depcza sobie po palcach
+    - name: Blok allow-users
+      ansible.builtin.blockinfile:
+        path: "{{ target }}"
+        marker: "# {mark} ANSIBLE: allow-users"
+        block: |
+          AllowUsers deploy
+          AllowUsers ci
+
+    - name: Blok limits
+      ansible.builtin.blockinfile:
+        path: "{{ target }}"
+        marker: "# {mark} ANSIBLE: limits"
+        block: |
+          MaxAuthTries 3
+          LoginGraceTime 30
+
+    - name: Pulapka - lineinfile BEZ regexp dopisuje kolejna linie przy kazdej zmianie wartosci
+      ansible.builtin.lineinfile:
+        path: "{{ target }}"
+        line: "Banner /etc/issue.{{ item }}"
+      loop: [v1, v2]
+      when: naive | bool
+
+    - name: Zawartosc pliku
+      ansible.builtin.command: cat {{ target }}
+      register: out
+      changed_when: false
+
+    - name: Wynik
+      ansible.builtin.debug:
+        var: out.stdout_lines
