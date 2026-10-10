@@ -519,6 +519,14 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   JWKS, wspólny JWKS za balanserem, okno publikacja→aktywacja > `AutomaticRefreshInterval`, mechanizm zwiększania licznika JWKS przy złym
   podpisie ze znanym `kid`. Środowisko: `--solution` z korzenia bez `global.json` w górę → `MSB1001` (obejście: tymczasowy `global.json`
   poza repo w /tmp/prasowka-programowanie-CAHRWg/); pod koniec sesji Bash odrzucał wszystko — brak sprzątania (`/tmp/tunit-certkeys-results/`).
+- Wydanie #17, 2026-10-10: zmiana kierunku z JWT na **pomijanie testów** — `[Skip("powód")]`, własny `SkipAttribute` z
+  `ShouldSkip(TestRegisteredContext)` (`[RequiresEnvVar]`, `[LinuxOnly]`), `Skip.Test("...")` w ciele testu, `[Explicit]`.
+  TUnit 1.73.19, SDK 10.0.400. **CZĘŚCIOWO zweryfikowane:** `dotnet build` 0 błędów/0 ostrzeżeń (API istnieje), jeden test-zapalnik
+  1/1 przeszedł, potem środowisko odrzucało każde `dotnet test` (też moja próba i bezpośrednie uruchomienie binarki) — wyniki
+  skip/explicit NIEzweryfikowane, artykuł mówi to wprost. Obserwacja: przebieg wypisał artefakt `*-report.html`. Niezweryfikowane:
+  liczba `skipped`, `[Explicit]` przez `--treenode-filter`, moment wywołania `ShouldSkip`, kod wyjścia gdy wszystko pominięte.
+  Nieruszone: `[Property]` + filtr, `TestContext.Output`/artefakty, `ITestExecutor`/`ITestSkipper`, `--report-trx`/coverage,
+  `[ParallelGroup]`. Do powtórzenia ze zweryfikowanym przebiegiem. W code/ zostały bin/obj (w .gitignore).
 - Następny poziom (po #15): okno publikacja→aktywacja dłuższe niż `AutomaticRefreshInterval`, wspólny JWKS za balanserem, walidacja
   łańcucha `x5c`, flakowanie/powtarzalność testów z HTTP. (Starsze po #14: rotacja z wyprzedzeniem, RS256 z certyfikatem X.509, wiele instancji wystawcy; jeszcze starsze: rotacja kluczy (wiele `kid` w JWKS, `ConfigurationManager` po HTTP), wyścig przy współbieżnym
   refreshu, RS256 z certyfikatem X.509 (spójne z rubryką Certyfikaty); Aspire + TUnit zajmuje rubryka Aspire.

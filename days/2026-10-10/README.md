@@ -18,6 +18,7 @@
 → [Artykuł](teamcity/ARTICLE.md) · [Kod](teamcity/code/)
 
 ### 🧪 [TUnit](tunit/ARTICLE.md)
+Zakomentowany test to test zapomniany — TUnit pozwala pominąć go z powodem, warunkiem środowiskowym albo oznaczyć `[Explicit]`, ale w tym wydaniu uczciwie: kod się kompiluje, a przebieg testów nie został zweryfikowany (środowisko odrzuciło `dotnet test`).
 → [Artykuł](tunit/ARTICLE.md) · [Kod](tunit/code/)
 
 ### ✈️ [Aspire](aspire/ARTICLE.md)

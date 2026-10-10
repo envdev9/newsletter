@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="SkipLab/SkipLab.csproj" />
+  <Project Path="SkipLab.Tests/SkipLab.Tests.csproj" />
+</Solution>
