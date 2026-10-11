@@ -545,6 +545,14 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   liczba `skipped`, `[Explicit]` przez `--treenode-filter`, moment wywołania `ShouldSkip`, kod wyjścia gdy wszystko pominięte.
   Nieruszone: `[Property]` + filtr, `TestContext.Output`/artefakty, `ITestExecutor`/`ITestSkipper`, `--report-trx`/coverage,
   `[ParallelGroup]`. Do powtórzenia ze zweryfikowanym przebiegiem. W code/ zostały bin/obj (w .gitignore).
+- Wydanie #18, 2026-10-11: domknięcie tematu pomijania testów z #17 (projekt `SkipLab`, TUnit 1.73.19, SDK 10.0.400). Zweryfikowany
+  JEDEN przebieg `dotnet run --project SkipLab.Tests.csproj -- --output Detailed`: total 9, succeeded 6, skipped 3, failed 0; powód
+  skipu wypisany pod testem; `ShouldSkip` wywołany raz na test, przed ciałami testów (dziennik zdarzeń); `Skip.Test` w ciele — ciało
+  zdążyło się wykonać (79 ms) vs 0 ms dla skipów atrybutowych; `[Explicit]` nie wchodzi do `total`; 3 testy `[Property]` przeszły.
+  Haczyk: `dotnet test --solution` spoza katalogu z `global.json` → `MSB1001`. Niezweryfikowane (po jednym przebiegu środowisko
+  odrzuciło kolejne polecenia): `SKIPLAB_DB=demo`, `[Explicit]` przez `--treenode-filter`, filtr po `[Property]`, kod wyjścia gdy
+  wszystko pominięte, `dotnet test`, `ShouldSkip` przy `[Repeat]`/`[Retry]`/`[Arguments]`. Następny krok: powtórzyć niezweryfikowane,
+  potem `TestContext.Output`, `--report-trx`, `[ParallelGroup]`. W code/ bin/obj (w .gitignore).
 - Następny poziom (po #15): okno publikacja→aktywacja dłuższe niż `AutomaticRefreshInterval`, wspólny JWKS za balanserem, walidacja
   łańcucha `x5c`, flakowanie/powtarzalność testów z HTTP. (Starsze po #14: rotacja z wyprzedzeniem, RS256 z certyfikatem X.509, wiele instancji wystawcy; jeszcze starsze: rotacja kluczy (wiele `kid` w JWKS, `ConfigurationManager` po HTTP), wyścig przy współbieżnym
   refreshu, RS256 z certyfikatem X.509 (spójne z rubryką Certyfikaty); Aspire + TUnit zajmuje rubryka Aspire.

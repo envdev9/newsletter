@@ -18,6 +18,7 @@ Cykl w grafie obiektów wywala serializator po 64 poziomach — `JsonKnownRefere
 → [Artykuł](teamcity/ARTICLE.md) · [Kod](teamcity/code/)
 
 ### 🧪 [TUnit](tunit/ARTICLE.md)
+Pominięty test nie może być cichy — dziś dowód z realnego przebiegu: `ShouldSkip` woła się raz, przed ciałem testu, powód skipu ląduje w raporcie, a `[Explicit]` nie wchodzi nawet do `total`.
 → [Artykuł](tunit/ARTICLE.md) · [Kod](tunit/code/)
 
 ### ✈️ [Aspire](aspire/ARTICLE.md)
