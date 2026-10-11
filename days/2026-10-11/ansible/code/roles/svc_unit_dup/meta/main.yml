@@ -1,0 +1,3 @@
+---
+# Bez tej linii ta sama rola z TYMI SAMYMI parametrami wykonalaby sie raz.
+allow_duplicates: true

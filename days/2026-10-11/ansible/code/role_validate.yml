@@ -1,0 +1,50 @@
+---
+# argument_specs w akcji: kazdy przypadek w osobnym block/rescue, pokazujemy komunikat.
+# (vars: "{{ slownik }}" w include_role jest niedozwolone - stad jawne bloki.)
+- name: Walidacja parametrow roli przez meta/argument_specs.yml
+  hosts: local
+  gather_facts: false
+  tasks:
+    - name: "1) brak wymaganego svc_name"
+      block:
+        - ansible.builtin.include_role: { name: svc_unit }
+          vars: { svc_port: 9000 }
+      rescue:
+        - ansible.builtin.debug:
+            msg: "ODRZUCONE [1]: {{ ansible_failed_result.msg }}"
+
+    - name: "2) svc_env spoza choices"
+      block:
+        - ansible.builtin.include_role: { name: svc_unit }
+          vars: { svc_name: v2, svc_env: qa }
+      rescue:
+        - ansible.builtin.debug:
+            msg: "ODRZUCONE [2]: {{ ansible_failed_result.msg }}"
+
+    - name: "3) svc_port nie jest liczba"
+      block:
+        - ansible.builtin.include_role: { name: svc_unit }
+          vars: { svc_name: v3, svc_port: "osiem" }
+      rescue:
+        - ansible.builtin.debug:
+            msg: "ODRZUCONE [3]: {{ ansible_failed_result.msg }}"
+
+    - name: "4) nieznany parametr svc_color"
+      block:
+        - ansible.builtin.include_role: { name: svc_unit }
+          vars: { svc_name: v4, svc_color: red }
+        - ansible.builtin.debug:
+            msg: "PRZESZLO [4]: nieznana zmienna nie jest bledem w include_role"
+      rescue:
+        - ansible.builtin.debug:
+            msg: "ODRZUCONE [4]: {{ ansible_failed_result.msg }}"
+
+    - name: "5) svc_port jako napis '9500'"
+      block:
+        - ansible.builtin.include_role: { name: svc_unit }
+          vars: { svc_name: v5, svc_port: "9500" }
+        - ansible.builtin.debug:
+            msg: "PRZESZLO [5]: napis '9500' zaakceptowany i skonwertowany do int"
+      rescue:
+        - ansible.builtin.debug:
+            msg: "ODRZUCONE [5]: {{ ansible_failed_result.msg }}"

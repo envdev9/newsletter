@@ -1,0 +1,21 @@
+---
+- name: "[svc_unit] katalog {{ svc_dir }}"
+  ansible.builtin.file:
+    path: "{{ svc_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: "[svc_unit] zapis {{ svc_name }}.unit"
+  ansible.builtin.copy:
+    dest: "{{ svc_dir }}/{{ svc_name }}.unit"
+    content: |
+      name={{ svc_name }}
+      port={{ svc_port }}
+      env={{ svc_env }}
+      replicas={{ svc_replicas }}
+    mode: "0644"
+  register: svc_unit_result
+
+- name: "[svc_unit] wynik"
+  ansible.builtin.debug:
+    msg: "{{ svc_name }}: port={{ svc_port }} env={{ svc_env }} replicas={{ svc_replicas }} changed={{ svc_unit_result.changed }}"

@@ -1,0 +1,46 @@
+---
+# set_stats: metryki calego przebiegu (nie hosta), wypisywane w CUSTOM STATS po PLAY RECAP.
+# Wymaga show_custom_stats=true:  env ANSIBLE_SHOW_CUSTOM_STATS=true ansible-playbook ...
+- name: Zbieranie statystyk z floty
+  hosts: fleet
+  gather_facts: false
+  tasks:
+    - name: Katalog demo
+      ansible.builtin.file:
+        path: /tmp/ansible-demo-lvl18
+        state: directory
+        mode: "0755"
+      run_once: true
+
+    - name: Zapis jednostek (units z inventory)
+      ansible.builtin.copy:
+        dest: "/tmp/ansible-demo-lvl18/stats-{{ inventory_hostname }}.txt"
+        content: "units={{ units }}\n"
+        mode: "0644"
+      register: written
+
+    - name: Statystyki - aggregate (sumowanie po hostach)
+      ansible.builtin.set_stats:
+        data:
+          units_total: "{{ units | int }}"
+          hosts_done: 1
+        aggregate: true
+
+    - name: Statystyki - suma liczona raz (run_once), liczba a nie napis zlepiony
+      ansible.builtin.set_stats:
+        data:
+          units_sum_once: "{{ ansible_play_hosts | map('extract', hostvars, 'units') | map('int') | sum }}"
+      run_once: true
+
+    - name: Statystyki - bez aggregate (ostatni zapis wygrywa)
+      ansible.builtin.set_stats:
+        data:
+          last_host: "{{ inventory_hostname }}"
+          aggregate_off: "{{ units | int }}"
+        aggregate: false
+
+    - name: Statystyki - per_host (osobno dla kazdego hosta)
+      ansible.builtin.set_stats:
+        data:
+          written_changed: "{{ written.changed }}"
+        per_host: true

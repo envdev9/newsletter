@@ -1,0 +1,41 @@
+---
+# Parametry roli, deduplikacja, include_role w petli.
+# Wszystko pisze do /tmp/ansible-demo-lvl18; sprzatanie: cleanup.yml
+
+- name: "A) roles: - ta sama rola, rozne parametry, potem IDENTYCZNE parametry"
+  hosts: local
+  gather_facts: false
+  roles:
+    - { role: svc_note, tag: "one" }
+    - { role: svc_note, tag: "two" }
+    - { role: svc_note, tag: "one" }        # identyczne jak pierwsze -> pominiete?
+    - { role: svc_unit_dup, tag: "same" }
+    - { role: svc_unit_dup, tag: "same" }   # allow_duplicates: true -> wykona sie
+
+- name: "B) include_role w petli - kazda iteracja wykonuje role"
+  hosts: local
+  gather_facts: false
+  vars:
+    services:
+      - { name: alpha, port: 9001 }
+      - { name: beta,  port: 9002, env: stage, replicas: 3 }
+      - { name: alpha, port: 9001 }          # duplikat - include_role i tak wykona
+  tasks:
+    - name: Wdrozenie uslug przez include_role
+      ansible.builtin.include_role:
+        name: svc_unit
+      vars:
+        svc_name: "{{ item.name }}"
+        svc_port: "{{ item.port }}"
+        svc_env: "{{ item.env | default('dev') }}"
+        svc_replicas: "{{ item.replicas | default(1) }}"
+      loop: "{{ services }}"
+      loop_control:
+        label: "{{ item.name }}"
+
+    - name: Ta sama rola, inny punkt wejscia (tasks_from)
+      ansible.builtin.include_role:
+        name: svc_unit
+        tasks_from: health
+      vars:
+        svc_name: beta

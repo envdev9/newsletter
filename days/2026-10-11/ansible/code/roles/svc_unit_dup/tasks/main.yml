@@ -1,0 +1,4 @@
+---
+- name: "[svc_unit_dup] uruchomienie roli"
+  ansible.builtin.debug:
+    msg: "svc_unit_dup wykonana (parametr tag={{ tag | default('brak') }})"

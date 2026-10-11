@@ -1,0 +1,50 @@
+---
+# Czy zmienne roli "wyciekaja" do playa? Cztery sposoby wywolania tej samej roli.
+# Po kazdej roli odczytujemy: parametr (svc_port), default roli (svc_env), nieistniejaca (svc_nope).
+
+- name: "A) roles: (statycznie)"
+  hosts: local
+  gather_facts: false
+  roles:
+    - { role: svc_unit, svc_name: scope-a, svc_port: 9100 }
+  tasks:
+    - name: "Widok z playa po roles"
+      ansible.builtin.debug:
+        msg: "svc_port={{ svc_port | default('NIEDEFINIOWANE') }} svc_env={{ svc_env | default('NIEDEFINIOWANE') }} svc_unit_result={{ svc_unit_result is defined }}"
+
+- name: "B) include_role (dynamicznie, domyslnie public: false)"
+  hosts: local
+  gather_facts: false
+  tasks:
+    - name: Rola
+      ansible.builtin.include_role:
+        name: svc_unit
+      vars: { svc_name: scope-b, svc_port: 9200 }
+    - name: Widok z playa po include_role
+      ansible.builtin.debug:
+        msg: "svc_port={{ svc_port | default('NIEDEFINIOWANE') }} svc_env={{ svc_env | default('NIEDEFINIOWANE') }} svc_unit_result={{ svc_unit_result is defined }}"
+
+- name: "C) include_role z public: true"
+  hosts: local
+  gather_facts: false
+  tasks:
+    - name: Rola
+      ansible.builtin.include_role:
+        name: svc_unit
+        public: true
+      vars: { svc_name: scope-c, svc_port: 9300 }
+    - name: Widok z playa po include_role public
+      ansible.builtin.debug:
+        msg: "svc_port={{ svc_port | default('NIEDEFINIOWANE') }} svc_env={{ svc_env | default('NIEDEFINIOWANE') }} svc_unit_result={{ svc_unit_result is defined }}"
+
+- name: "D) import_role (statycznie, jak roles:)"
+  hosts: local
+  gather_facts: false
+  tasks:
+    - name: Rola
+      ansible.builtin.import_role:
+        name: svc_unit
+      vars: { svc_name: scope-d, svc_port: 9400 }
+    - name: Widok z playa po import_role
+      ansible.builtin.debug:
+        msg: "svc_port={{ svc_port | default('NIEDEFINIOWANE') }} svc_env={{ svc_env | default('NIEDEFINIOWANE') }} svc_unit_result={{ svc_unit_result is defined }}"

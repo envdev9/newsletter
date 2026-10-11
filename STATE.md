@@ -273,6 +273,15 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   nie usuwa fragmentów-sierot; zmienna `port` → `[WARNING]` (zarezerwowana). Niezweryfikowane: kolizja markera w dwóch rolach,
   `backup`/`create`, `validate` w `lineinfile`/`blockinfile`, `assemble` z `validate`, `nginx -t`/`visudo -c`, SSH/`become`,
   vault/galaxy/Molecule. Nietknięte z "Do rozważenia": `set_stats`, parametry roli/`include_role`, `block` vars.
+- Wydanie #18, 2026-10-11: **rola jak metoda z sygnaturą** — deduplikacja `roles:` (te same parametry → pominięta bez ostrzeżenia;
+  `allow_duplicates: true`), `include_role` w pętli nie deduplikuje, `tasks_from` (drugi punkt wejścia), `meta/argument_specs.yml`
+  (5 przypadków; nieznany parametr NIE jest błędem, `"9500"` rzutowane na int), wyciek zmiennych po wywołaniu roli (`roles:`/
+  `import_role` — widać DEFAULT roli, nie przekazany parametr; `include_role` nic bez `public: true`; `register` zawsze), `vars:` na
+  `block`, `set_stats` (`aggregate` na napisach konkatenuje: `"253"`; poprawnie `run_once` + `sum`). ansible-core 2.17.14, syntax-check
+  + realne uruchomienia (role_params 2×: changed=3→0, set_stats 2×, reszta 1×). Haczyk: `vars: "{{ dict }}"` w `include_role` →
+  błąd. Niezweryfikowane: wbudowane `show_custom_stats` (env odrzucone; własny callback `dump_custom_stats.py`), `include_role` z
+  `apply:`, `private_role_vars`, kolejność zapisu `aggregate: false`, vault/galaxy/Molecule, SSH/`become`. W code/ zostało
+  `callback_plugins/__pycache__`. Zostało z "Do rozważenia": `include_role` + `apply:`, `private_role_vars`, `set_stats` w wielu playach.
 - Następny poziom: Molecule (gdyby `ansible-galaxy` kiedyś przestał być blokowany); zdalne SSH/`become`
   (jeśli kiedykolwiek dostępne — środowisko na razie blokuje nawet sprawdzenie `sshd`); własny
   **inventory plugin** (dynamic inventory jako skrypt zwracający JSON, podłączony przez `-i`, nie

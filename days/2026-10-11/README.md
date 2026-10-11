@@ -12,6 +12,7 @@ Cykl w grafie obiektów wywala serializator po 64 poziomach — `JsonKnownRefere
 → [Artykuł](dotnet/ARTICLE.md) · [Kod](dotnet/code/)
 
 ### 🔧 [Ansible](ansible/ARTICLE.md)
+Rola to metoda z sygnaturą — `argument_specs`, deduplikacja wywołań i wyciek zmiennych: zmierzone, że po `roles:` w playu widać default roli, nie przekazany parametr, a `set_stats` z `aggregate` na napisach cicho skleja „2”+„5”+„3” w „253”.
 → [Artykuł](ansible/ARTICLE.md) · [Kod](ansible/code/)
 
 ### 🏗️ [TeamCity](teamcity/ARTICLE.md)

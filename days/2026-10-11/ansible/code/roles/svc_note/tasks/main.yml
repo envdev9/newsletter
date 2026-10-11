@@ -1,0 +1,5 @@
+---
+# Rola BEZ allow_duplicates - do pokazania deduplikacji.
+- name: "[svc_note] uruchomienie roli"
+  ansible.builtin.debug:
+    msg: "svc_note wykonana (parametr tag={{ tag | default('brak') }})"

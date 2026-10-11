@@ -1,0 +1,66 @@
+---
+# vars na poziomie block: zakres, zagniezdzenie, nadpisywanie przez task i wplyw na role.
+- name: Zmienne bloku
+  hosts: local
+  gather_facts: false
+  vars:
+    env: "play-level"
+  tasks:
+    - name: "0) przed blokiem"
+      ansible.builtin.debug:
+        msg: "env={{ env }}"
+
+    - name: "Blok zewnetrzny"
+      vars:
+        env: "outer-block"
+        region: "eu"
+      block:
+        - name: "1) w bloku zewnetrznym"
+          ansible.builtin.debug:
+            msg: "env={{ env }} region={{ region }}"
+
+        - name: "Blok wewnetrzny"
+          vars:
+            env: "inner-block"
+          block:
+            - name: "2) w bloku wewnetrznym"
+              ansible.builtin.debug:
+                msg: "env={{ env }} region={{ region }}"
+
+            - name: "3) task nadpisuje blok"
+              ansible.builtin.debug:
+                msg: "env={{ env }}"
+              vars:
+                env: "task-level"
+
+        - name: "4) po bloku wewnetrznym"
+          ansible.builtin.debug:
+            msg: "env={{ env }}"
+
+        - name: "5) rola w bloku, ktory NIE ustawia svc_env (kontrola: default roli)"
+          ansible.builtin.include_role:
+            name: svc_unit
+          vars:
+            svc_name: block-demo
+      rescue:
+        - name: rescue
+          ansible.builtin.debug:
+            msg: "env w rescue={{ env }}"
+
+    - name: "6) po bloku zewnetrznym - zmienne bloku zniknely"
+      ansible.builtin.debug:
+        msg: "env={{ env }} region={{ region | default('NIEDEFINIOWANE') }}"
+
+- name: "Blok z vars bije role defaults (svc_env)"
+  hosts: local
+  gather_facts: false
+  tasks:
+    - name: "Blok ustawia svc_env=prod, include_role bez vars"
+      vars:
+        svc_env: "prod"
+        svc_replicas: 4
+      block:
+        - ansible.builtin.include_role:
+            name: svc_unit
+          vars:
+            svc_name: block-demo-2

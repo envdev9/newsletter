@@ -1,0 +1,7 @@
+---
+# Wartosci domyslne = "publiczny interfejs" roli (najslabsza warstwa pierwszenstwa).
+# svc_name celowo BEZ wartosci domyslnej: parametr obowiazkowy (patrz meta/argument_specs.yml).
+svc_port: 8080
+svc_env: "dev"
+svc_replicas: 1
+svc_dir: "/tmp/ansible-demo-lvl18/units"

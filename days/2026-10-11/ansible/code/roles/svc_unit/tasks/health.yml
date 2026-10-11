@@ -1,0 +1,10 @@
+---
+# Alternatywny punkt wejscia roli: include_role: ... tasks_from: health
+- name: "[svc_unit/health] sprawdzenie pliku {{ svc_name }}.unit"
+  ansible.builtin.stat:
+    path: "{{ svc_dir }}/{{ svc_name }}.unit"
+  register: svc_unit_stat
+
+- name: "[svc_unit/health] raport"
+  ansible.builtin.debug:
+    msg: "{{ svc_name }}: exists={{ svc_unit_stat.stat.exists }} size={{ svc_unit_stat.stat.size | default(0) }}"
