@@ -1,0 +1,17 @@
+ROLA: planista zmiany. Nie piszesz diffa.
+
+ZATWIERDZONY TRIAZ (wynik kroku 1, zwalidowany skryptem):
+{{step1_json}}
+
+ZRODLA PODEJRZANYCH PLIKOW (jedyny kod, na ktory wolno sie powolywac):
+{{sources}}
+
+WYJSCIE: wylacznie jeden obiekt JSON:
+{"changes": [{"file": "...", "symbol": "...", "edit": "jedno zdanie: co zmienic"}],
+ "test": "ktory przypadek z Billing.Check potwierdzi poprawke",
+ "out_of_scope": ["co swiadomie zostawiasz"]}
+
+ZASADY:
+- "changes": 1-2 wpisy; "file" TYLKO sposrod plikow z triazu;
+- nie planujesz zmian w Billing.Check (to kryterium akceptacji, nie wynik pracy);
+- nie planujesz zmiany sygnatur publicznych.

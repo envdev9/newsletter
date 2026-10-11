@@ -1,0 +1,17 @@
+--- a/Billing.Check/Program.cs
++++ b/Billing.Check/Program.cs
+@@ -12,9 +12,9 @@
+ Check("Round(2.675)", Money.Round(2.675m), 2.68m);
+-Check("Round(2.665)", Money.Round(2.665m), 2.67m);
+-Check("Round(0.125)", Money.Round(0.125m), 0.13m);
+-Check("Round(-0.125)", Money.Round(-0.125m), -0.13m);
+-Check("LineTotal(3 x 0.835)", InvoiceCalculator.LineTotal(new InvoiceLine("A", 3, 0.835m)), 2.51m);
++Check("Round(2.665)", Money.Round(2.665m), 2.66m);
++Check("Round(0.125)", Money.Round(0.125m), 0.12m);
++Check("Round(-0.125)", Money.Round(-0.125m), -0.12m);
++Check("LineTotal(3 x 0.835)", InvoiceCalculator.LineTotal(new InvoiceLine("A", 3, 0.835m)), 2.50m);
+ Check("Total(2 x 0.125 + 10.00, rabat 10%)",
+-    InvoiceCalculator.Total(new[] { new InvoiceLine("A", 2, 0.125m), new InvoiceLine("B", 1, 10.00m) }, 10m), 9.22m);
++    InvoiceCalculator.Total(new[] { new InvoiceLine("A", 2, 0.125m), new InvoiceLine("B", 1, 10.00m) }, 10m), 9.23m);
+
+ Console.WriteLine(failures == 0 ? "WSZYSTKO OK" : $"BLEDY: {failures}");

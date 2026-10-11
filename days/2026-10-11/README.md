@@ -39,6 +39,7 @@ Hash drzewa repo z `git write-tree` zamiast własnego (przy 5000 plików ~8× sz
 → [Artykuł](ai-context/ARTICLE.md) · [Kod](ai-context/code/)
 
 ### ✍️ [AI — prompty dla developera](ai-prompts/ARTICLE.md)
+Zamiast mega-promptu „napraw i upewnij się, że testy przechodzą" — łańcuch triaż → plan → patch z kontraktem między krokami; na 7 nagraniach 0 fałszywych zielonych vs 2 w wersji bez kontraktów (uczciwie: bez prawdziwego modelu, to test łańcucha, nie LLM-a).
 → [Artykuł](ai-prompts/ARTICLE.md) · [Kod](ai-prompts/code/)
 
 ### 🅰️ [Angular](angular/ARTICLE.md)

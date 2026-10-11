@@ -1,0 +1,1 @@
+{"symptom": "3 x 0.835 daje 2.50 zamiast 2.51; 0.125 daje 0.12 zamiast 0.13 - polowki zaokraglane do parzystej", "suspects": [{"symbol": "Money.Round", "file": "Billing/Money.cs"}], "unknowns": ["czy Money.Percent wymaga tej samej reguly"]}

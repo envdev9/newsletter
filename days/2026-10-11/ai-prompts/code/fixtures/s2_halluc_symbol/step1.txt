@@ -1,0 +1,1 @@
+{"symptom": "3 x 0.835 daje 2.50 zamiast 2.51; kwota 0.125 daje 0.12 zamiast 0.13", "suspects": [{"symbol": "InvoiceCalculator.RoundTotal", "file": "Billing/InvoiceCalculator.cs"}], "unknowns": []}

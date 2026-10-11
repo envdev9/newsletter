@@ -983,7 +983,15 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   opisie (przykłady muszą się uruchamiać); nie złapał dopisanego argumentu `jitter` w przykładzie. Niezweryfikowane: jakikolwiek model (żaden
   nie uruchamiany), reprezentatywność 11 dryfów (dobrane razem z regułami → zawyżone), walidator oparty na regexach (nie Roslyn; brak atrybutów,
   `partial`, zagnieżdżonych typów), prompty z `prompts/` nie lintowane, środkowy krok łańcucha tylko szkic. Zostały `bin/obj` (.gitignore).
-- Następne: łańcuch promptów z kontraktem między krokami (uruchamiany end-to-end); porównanie ze Stryker.NET i ślepym zestawem; walidator na Roslynie; ewaluacja na prawdziwym modelu.
+- Wydanie #18, 2026-10-11: **łańcuch promptów z kontraktem między krokami** (triaż → plan → patch; `chain.py`, kontrakty C01–C17, `Billing` +
+  `Billing.Check`, nagrania w `fixtures/`). Wejście kroku = zwalidowany wynik poprzedniego, kryterium akceptacji tylko do odczytu, błędy walidatora
+  wracają jako lista reguł (prompt naprawczy), „nie wiem" w formacie (`unknowns`). Zweryfikowane: .NET 10.0.400, Python 3.10.4; `Billing.Check` przed
+  poprawką 5 FAIL (banker's rounding); `test_chain.py` 7 nagrań: kontrakty 6/7 zgodności, 0 fałszywych zielonych, 1 fałszywy czerwony, 12 wywołań vs
+  baseline 5/7, 2 fałszywe zielone, 15 wywołań. **Żaden model nie był uruchamiany** — `fixtures/` to nagrania pisane ręcznie; wynik mówi o łańcuchu, nie o
+  modelu; scenariusze i reguły powstały razem (wynik zawyżony). Haczyki: zielone testy mogą być bezwartościowe (S4); ścisły JSON daje fałszywy czerwony;
+  zła poprawka w dobrym formacie odpada dopiero w bramce końcowej. Niezweryfikowane: pętla naprawcza (prompt tylko budowany), koszt tokenów, Roslyn
+  (indeks symboli to regexy), sprzątanie `/tmp` (`ls` odrzucone).
+- Następne: porównanie ze Stryker.NET i ślepym zestawem; walidator na Roslynie; ewaluacja na prawdziwym modelu; pomiar kosztu tokenów łańcucha vs jeden prompt.
 
 ### 🅰️ Angular
 - Aktualny poziom trudności: **podstawy (opanowane)**
