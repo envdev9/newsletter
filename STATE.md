@@ -907,7 +907,15 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   kompaktowania daje ten sam wynik. Haczyki: snapshot poprawny tylko gdy stan czytany wyłącznie przez `fold`; archiwum audytowe osobno.
   Niezweryfikowane: żywy `claude`/`claude -p` (`--version` odrzucone), realny LLM (modele to funkcje), progi (`tree_repeat=3`, `WINDOW=12`) to heurystyki,
   wydajność hashowania dużych repo, `git write-tree`, wielu pisarzy, Windows, scalanie segmentów archiwum, sprzątanie `/tmp/prasowka-loop3-*`.
-- Następne: `permissionMode` w frontmatterze agenta i hooki headless (po weryfikacji CLI); scalanie archiwum w jedną oś zdarzeń; `git write-tree` jako hash drzewa.
+- Wydanie #18, 2026-10-11: **hash drzewa z `git write-tree`** (`gittree.py`, `GitTreeObserver`, tymczasowy `GIT_DIR`, nie rusza indeksu użytkownika;
+  wpina się w `Supervisor(observer=...)`) i **oś zdarzeń z archiwów dziennika** (`timeline.py`: segmenty `archive-NNNNN` + żywy plik, kontrola ciągłości,
+  dedup, równoważność z żywym plikiem; `TimelineGap`/`TimelineMismatch`). `run_tests.py` 22/22, `demo.py`, Python 3.10.4, git 2.34.1. Zmierzone: hash
+  zgodny z `git write-tree`; `chmod +x` zmienia hash gita, nie hash Pythona; 5000 plików: własny 421 ms vs git z trwałym indeksem 45–54 ms (200 plików:
+  własny szybszy; szum, rząd wielkości). Błąd z #17 znaleziony: crash między `os.link` a `os.replace` → archiwum i żywy dziennik to ten sam inode, archiwum
+  rośnie po wznowieniu (79 zdarzeń zamiast 61) — dodano punkt `compact_archived` i odporne składanie osi. Haczyki: plik śledzony przed wpisem do
+  `.gitignore` wchodzi do hasha; zagnieżdżone repo = gitlink. Niezweryfikowane: `claude` CLI (`--version` odrzucone; `permissionMode`/hooki headless nadal
+  bez weryfikacji), realny LLM, Windows/CRLF, dyski sieciowe, wielu pisarzy, sprzątanie `/tmp`.
+- Następne: `permissionMode` w frontmatterze agenta i hooki headless (po weryfikacji CLI); inne kierunki wyższego poziomu pętli (np. wielu pisarzy/blokada dziennika).
 
 ### 🧠 AI — zarządzanie kontekstem
 - Omówione elementy: kolejność warstw kontekstu (system→narzędzia/MCP→pamięć→historia→

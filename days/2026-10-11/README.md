@@ -32,6 +32,7 @@ Pominięty test nie może być cichy — dziś dowód z realnego przebiegu: `Sho
 → [Artykuł](ai-claude-code/ARTICLE.md) · [Kod](ai-claude-code/code/)
 
 ### ⚙️ [AI — agentic loop](ai-agentic-loop/ARTICLE.md)
+Hash drzewa repo z `git write-tree` zamiast własnego (przy 5000 plików ~8× szybszy z trwałym indeksem), a przy okazji pułapka: crash w kompaktowaniu sprawia, że archiwum i żywy dziennik to ten sam inode — oś zdarzeń pokazuje 79 zdarzeń zamiast 61.
 → [Artykuł](ai-agentic-loop/ARTICLE.md) · [Kod](ai-agentic-loop/code/)
 
 ### 🧠 [AI — zarządzanie kontekstem](ai-context/ARTICLE.md)
