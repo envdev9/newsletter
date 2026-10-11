@@ -115,6 +115,16 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
     Puste bin/obj zostały w code/ (ignorowane przez .gitignore).
   - Zostało z diffu: `JsonKnownReferenceHandler`, `FrozenDictionary.Create(ReadOnlySpan<...>)`,
     `OrderedDictionary.TryAdd(..., out int)`, `SlhDsa`/`CompositeMLDsa` → potem .NET 11 (gdy SDK) lub zejście do .NET 9.
+  - [x] `JsonKnownReferenceHandler` (`Unspecified`/`Preserve`/`IgnoreCycles`, nowa właściwość `ReferenceHandler` w
+    `[JsonSourceGenerationOptions]`) i `FrozenDictionary.Create(ReadOnlySpan<KeyValuePair<,>>)` (także z komparatorem jako
+    pierwszym argumentem) — wydanie #18, 2026-10-11. Potwierdzone na net9.0 (CS0246/CS0103, CS0117; kompilacja przez SDK
+    10.0.400 z pakietem referencyjnym net9, nie SDK 9.0.316). Zweryfikowane `dotnet run`: cykl bez obsługi → `InvalidOperationException`
+    (głębokość 64); `Preserve` → `$id`/`$ref`/`$values`, round-trip OK; `IgnoreCycles` → `null` w miejsce cyklu (gubi dane).
+    `FrozenDictionary.Create`: duplikaty kluczy — ostatni wygrywa, bez wyjątku; pusty span → `Empty`; 100 tys. par: 8371 KB vs
+    12146 KB (`ToFrozenDictionary` na tablicy), przyczyna równości z drogą przez `Dictionary` niezbadana. `FrozenSet.Create(span)`
+    istnieje już na net9 (nie nowość). Niezweryfikowane: kod source generatora, ASP.NET, `Preserve` z konstruktorami parametrycznymi,
+    czasy, SDK 11 (dostępne tylko 8.0.422/8.0.425/9.0.316/10.0.400). Puste bin/obj w code/ (ignorowane przez .gitignore).
+  - Zostało z diffu: `OrderedDictionary.TryAdd(..., out int)`, `SlhDsa`/`CompositeMLDsa` → potem .NET 11 (gdy SDK) lub zejście do .NET 9.
 - Gdy funkcje .NET 10 się wyczerpią → .NET 11 → (dalsze nowości) → schodzimy w dół:
   9 → 8 → 7 → 6, potem wracamy do najnowszej dostępnej wersji.
 
