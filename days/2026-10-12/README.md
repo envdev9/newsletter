@@ -33,6 +33,7 @@ Co się dzieje z routing slipem Couriera, gdy proces ginie w trakcie kroku — n
 → [Artykuł](ai-agentic-loop/ARTICLE.md) · [Kod](ai-agentic-loop/code/)
 
 ### 🧠 [AI — zarządzanie kontekstem](ai-context/ARTICLE.md)
+Snapshot stanu zamiast dopisywania logu: 300 zdarzeń = 6037 tok., po `fold` 565 tok. (10,7×) — i czytelnik, który ucina log od najstarszych, odtwarza stan na 28–52%, a ze snapshotu na 100% (dane syntetyczne, model niesprawdzany).
 → [Artykuł](ai-context/ARTICLE.md) · [Kod](ai-context/code/)
 
 ### ✍️ [AI — prompty dla developera](ai-prompts/ARTICLE.md)

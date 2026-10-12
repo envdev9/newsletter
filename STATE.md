@@ -961,7 +961,14 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   34/64 zależności sięgają >3 jednostki wstecz (stąd streszczenie ostatnich zdarzeń je gubi). Koszt płaski w T=30–90 tys. (~14%); optymalne T rośnie z bazą (45 tys. przy 5 tys.,
   140 tys. przy 60 tys.); mały próg z cięciem w środku jednostki: 62 okna, 852 tys. tok. powtórzonej pracy. Niezweryfikowane: zachowanie modelu przy handoffie, realna auto-kompakcja
   i `/compact`, mnożniki cache 0,1×/1,25× (z pamięci), wpływ długiego kontekstu na jakość, reguły lintu to heurystyka.
-- Następne: snapshot stanu zamiast dopisywania (`fold`); wyszukiwarka z synonimami/embeddingami na zestawie z #14; weryfikacja w żywym `claude`/dokumentacji (nowa sesja, wznowienie, `/compact`); analiza prawdziwego transkryptu (gdy odczyt dozwolony); reguły CLAUDE.md i „lost in the middle".
+- Wydanie #7 rubryki (#19), 2026-10-12: **snapshot stanu zamiast dopisywania logu (`fold`)** + weryfikator snapshotu — `ctxfold.py`, `test_ctxfold.py` (31/31),
+  `SNAPSHOT.bad.example.md` (Python 3.10.4 stdlib, `-B`). Dane SYNTETYCZNE (300 zdarzeń, 35 kluczy z 105 nadpisaniami, stan końcowy 42 elementy, tokeny = bajty/4):
+  log 6037 tok. vs snapshot 565 (10,7×); snapshot z uzasadnieniami 932 (+65%). Czytelnik poprawny: `append_all`/`fold` 100%, `append_cap(1500)` 52%, `append_cap(500)` 28%;
+  naiwny (pierwsza wzmianka, ignoruje RM/DEL): log 59% + 60 „widmowych" elementów, snapshot 100%. Snapshot + ogon: dokładność naiwnego 97,6% (ogon co 5) → 79,5% (co 100),
+  rozmiar 434 → 1296 tok. Niezmienniki: `fold(snapshot(a)+b)==fold(a+b)` 200 podziałów + łańcuch 30 foldów; bez sortowania po `t` rozjazd 52 elementy. `verify` 6/6 wstrzykniętych
+  błędów, exit 1. Haczyki: zbiory add-only rosną bez limitu; fold wymaga typowanych zdarzeń i porządku. Niezweryfikowane: zachowanie modelu (czytelnik naiwny to mój model),
+  `/compact`/wznowienie/dokumentacja `claude`, realne rozkłady zdarzeń, „lost in the middle", reguły CLAUDE.md.
+- Następne: wyszukiwarka z synonimami/embeddingami na zestawie z #14; weryfikacja w żywym `claude`/dokumentacji (nowa sesja, wznowienie, `/compact`); analiza prawdziwego transkryptu (gdy odczyt dozwolony); reguły CLAUDE.md i „lost in the middle".
 
 ### ✍️ AI — prompty dla developera
 - Omówione elementy: 5 par zły/dobry prompt (konkretność+pliki/linie, "dlaczego" vs
