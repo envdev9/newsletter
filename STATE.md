@@ -769,8 +769,17 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   MassTransit 8.5.10, SDK 10.0.400, in-memory; build 0/0, scenariusze `ok`/`fail`/`fail-comp` uruchomione realnie. Niezweryfikowane:
   RabbitMQ, `ReviseItinerary`, interakcja z `UseMessageRetry`, `RoutingSlipEvents` inne niż `All`, restart procesu w trakcie slipa,
   przyczyna ~170 ms przerwy przed `ActivityFaulted`, brak testów (`dotnet test`).
-- Następny poziom: trwałe repozytorium sag (EF/Mongo/Redis) na RabbitMQ, `UseDelayedRedelivery` na prawdziwym
-  brokerze, `ReviseItinerary`, Courier na RabbitMQ, restart procesu w trakcie slipa, `UseMessageRetry` + Courier.
+- Wydanie #19, 2026-10-12: **Courier na prawdziwym RabbitMQ i śmierć procesu w trakcie kroku** — czterokrokowy itinerary z #15 na
+  brokerze (worker i `start` w osobnych procesach), ścieżka szczęśliwa → `RoutingSlipCompleted` w `slip-events`. Awaria zasymulowana
+  `Environment.FailFast` w kroku 2 PO skutku, PRZED potwierdzeniem (exit 134): `rabbitmqctl list_queues` → `authorize-payment_execute`
+  `messages_ready=1`, `consumers=0`, reszta pusta; nikt nie dostał `Faulted` (brak zdarzenia końcowego). Haczyki: REST API po awarii
+  dwukrotnie nadal pokazywało `consumers=1` (prawdę dał dopiero `rabbitmqctl`); pierwsze 8 znaków `ExecutionId` jest z czasu i
+  identyczne dla kroków (logować ostatnie 12). MassTransit + MassTransit.RabbitMQ 8.5.10, RabbitMQ `4.3-management`, .NET 10, build 0/0.
+  **Niezweryfikowane (polecenia odrzucone przez uprawnienia):** `kill -9` (użyto FailFast), drugi worker i redelivery
+  (`redelivered=True`, czy skutek wykona się drugi raz), tryb `idempotent`, graceful shutdown (SIGTERM), treść wiadomości slipa
+  (peek). Kod tych trybów jest i się kompiluje, ale nie był wykonany. Kontener `mt-courier-restart-demo` usunięty (`docker ps -a`).
+- Następny poziom: dokończyć pomiar z #19 (redelivery po restarcie workera, idempotencja skutku, SIGTERM), trwałe repozytorium sag
+  (EF/Mongo/Redis) na RabbitMQ, `UseDelayedRedelivery` na prawdziwym brokerze, `ReviseItinerary`, `UseMessageRetry` + Courier.
 
 ### 🤖 AI — Claude Code dla .NET/Angular/SQL
 - Omówione przypadki użycia: slash command generujący testy xUnit dla klasy C#, hook
