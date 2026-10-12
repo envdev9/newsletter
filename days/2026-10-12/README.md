@@ -40,6 +40,7 @@ Snapshot stanu zamiast dopisywania logu: 300 zdarzeń = 6037 tok., po `fold` 565
 → [Artykuł](ai-prompts/ARTICLE.md) · [Kod](ai-prompts/code/)
 
 ### 🅰️ [Angular](angular/ARTICLE.md)
+`debounce('blur')` na własnej kontrolce Signal Forms: bez outputu `touch` kontrolka się kompiluje, a model nie zapisuje się nigdy (`touched=false`, `dirty=true`) — plus co dokładnie `[formField]` wstrzykuje do kontrolki i jak `disabled`/`hidden` omijają walidację (13/13 testów).
 → [Artykuł](angular/ARTICLE.md) · [Kod](angular/code/)
 
 ### 🗄️ [SQL Server](sqlserver/ARTICLE.md)

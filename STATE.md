@@ -1122,9 +1122,21 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   Zweryfikowane: npm ci, ng build OK, ng test 14/14 + test mutacyjny. Angular 22.2.1, Node 22.14.0 (to samo obejście progu CLI).
   Niezweryfikowane: ng serve/przeglądarka (Enter w polu z 'blur'), `debounce('blur')` na własnej `FormValueControl`, dostęp do surowego
   tekstu w `Debouncer`, SSR/hydration, `mapResponse()`.
-- Następny poziom: `debounce('blur')` na własnej kontrolce `FormValueControl`, pozostałe opcjonalne pola
-  `FormUiControl` (`required`/`pattern`/`readonly`/`hidden`/`disabledReasons`/`name`), SSR/hydration,
-  `mapResponse()` w kontekście `@ngrx/effects`/Actions.
+- Wydanie #19, 2026-10-12: **`debounce('blur')` na własnej kontrolce `FormValueControl`** (`SkuInput`) + pozostałe opcjonalne pola
+  `FormUiControl`. Brak outputu `touch`: kompiluje się, a po 1 s `model==''`, `touched==false`, `dirty==true` — model nie zapisuje
+  się nigdy; w trakcie pisania model stoi, błąd `required` widać mimo tekstu, po blurze zmienia się na `pattern`. Trzy sposoby domknięcia
+  oczekującego wpisu: blur, Enter z `touch.emit()` (`submit()` odpala akcję raz), zniszczenie kontrolki (`flushSync` w cleanup bindingu,
+  bez `touched`). Pola zasilane przez `[formField]` bez bindowania: kontrolka dostaje `required`/`pattern`/`maxLength`/`name`
+  (`a.form0.sku`)/`disabledReasons`; natywny `<input>` — `required`/`maxLength`/`name` jako własności DOM (`pattern` pusty); host
+  własnej kontrolki nic. `disabled`/`readonly`/`hidden` pomijają walidację (`submit()` przechodzi z pustym `required`); `touched`/`dirty`
+  maskowane, wracają w trybie `edit`; `hidden` bez `@if` zostawia kontrolkę w DOM + ostrzeżenie dev; oczekujący wpis trafia do modelu mimo
+  `disabled`. Angular 22.2.2, TS 6.0.3, Vitest 5.0.3, jsdom 30.1.2, Node v22.14.0. Zweryfikowane: `ng build` OK (7,2 s, 199,89 kB),
+  `ng test` 13/13; test mutacyjny (usunięcie `debounce('blur')`) → 5 testów pada, po przywróceniu 13/13. Lockfile wygenerowany na nowo
+  (22.2.2 zamiast 22.2.1; `cp` odrzucone). Workaround progu Node w `node_modules` jak #9/#12 (niecommitowany). Niezweryfikowane:
+  `ng serve`/przeglądarka (zdarzenia syntetyczne, jsdom), `FormCheckboxControl`/interop z `ControlValueAccessor`, SSR/hydration,
+  `mapResponse()`, `aria-*` czytnikiem ekranu.
+- Następny poziom: SSR/hydration, `mapResponse()` w kontekście `@ngrx/effects`/Actions, `FormCheckboxControl` z `debounce`,
+  interop z `ControlValueAccessor`, `ng serve` w prawdziwej przeglądarce (o ile dostępna).
 
 ### 🗄️ SQL Server
 - Aktualny poziom trudności: **podstawy (opanowane, w pełni zweryfikowane)**
