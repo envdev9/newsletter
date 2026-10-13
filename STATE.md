@@ -778,8 +778,22 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   **Niezweryfikowane (polecenia odrzucone przez uprawnienia):** `kill -9` (użyto FailFast), drugi worker i redelivery
   (`redelivered=True`, czy skutek wykona się drugi raz), tryb `idempotent`, graceful shutdown (SIGTERM), treść wiadomości slipa
   (peek). Kod tych trybów jest i się kompiluje, ale nie był wykonany. Kontener `mt-courier-restart-demo` usunięty (`docker ps -a`).
-- Następny poziom: dokończyć pomiar z #19 (redelivery po restarcie workera, idempotencja skutku, SIGTERM), trwałe repozytorium sag
-  (EF/Mongo/Redis) na RabbitMQ, `UseDelayedRedelivery` na prawdziwym brokerze, `ReviseItinerary`, `UseMessageRetry` + Courier.
+- Wydanie #20, 2026-10-13: **dokończenie pomiaru z #19 — Courier na RabbitMQ: redelivery, idempotencja, graceful shutdown.** Tryby
+  `worker`/`start`/`inspect`/`peek`. Treść slipa w kolejce po śmierci workera (`peek` = REST `/get`, `ack_requeue_true`): niesie
+  `activityLogs` (liczba mnoga) i `variables` (`reservationId`), wykonane kroki znikają z itinerary. Drugi worker dostał krok 2 z
+  `redelivered=True` i wykonał skutek DRUGI raz; z flagą `idempotent` krok dostał `SKIP`, bez duplikatu. Graceful shutdown:
+  `StopApplication()` w trakcie kroku → `COMPLETED` 8,4 s po `ApplicationStopping`, jeden `EFFECT`, bez anulowania tokenu; bezczynny
+  worker zamyka się w 0,2 s. Haczyki: podwójny skutek kończy się zwykłym `RoutingSlipCompleted` (Courier duplikatu nie wykrywa);
+  `redelivered=True` tylko dla kroku w toku, kolejne `False`; pierwsza wersja trybu `idempotent` miała błąd (zmieniony format linii
+  księgi → skutek wykonany mimo flagi) — test idempotencji bez redelivery nic nie dowodzi; po `StopApplication()` slip zostaje
+  zaparkowany w `create-shipment_execute` (`ready=1`, `consumers=0`) do startu kolejnego workera; sam `peek` oznacza wiadomość jako
+  `redelivered`. MassTransit + MassTransit.RabbitMQ 8.5.10, RabbitMQ `4.3-management`, .NET SDK 10.0.400, build 0/0.
+  **Niezweryfikowane:** prawdziwe `kill`/`kill -9`/SIGTERM z długą łaską (procesy zatrzymywane `TaskStop` — dokładny sygnał nieznany),
+  zachowanie po `ShutdownTimeout`, współbieżne workery i atomowość klucza idempotentności, `UseMessageRetry` + Courier,
+  `ReviseItinerary`, trwałe sagi, `UseDelayedRedelivery`, brak `dotnet test`; każdy scenariusz raz. Kontener `mt-redelivery-demo`
+  usunięty (`docker ps -a`). W `code/` zostały pliki `ledger-a..e.log` (w `.gitignore`).
+- Następny poziom: trwałe repozytorium sag (EF/Mongo/Redis) na RabbitMQ, `UseDelayedRedelivery` na prawdziwym brokerze,
+  `ReviseItinerary`, `UseMessageRetry` + Courier, zachowanie po `ShutdownTimeout`, atomowy klucz idempotentności przy 2 workerach.
 
 ### 🤖 AI — Claude Code dla .NET/Angular/SQL
 - Omówione przypadki użycia: slash command generujący testy xUnit dla klasy C#, hook
