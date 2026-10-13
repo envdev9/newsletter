@@ -982,7 +982,14 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   rozmiar 434 → 1296 tok. Niezmienniki: `fold(snapshot(a)+b)==fold(a+b)` 200 podziałów + łańcuch 30 foldów; bez sortowania po `t` rozjazd 52 elementy. `verify` 6/6 wstrzykniętych
   błędów, exit 1. Haczyki: zbiory add-only rosną bez limitu; fold wymaga typowanych zdarzeń i porządku. Niezweryfikowane: zachowanie modelu (czytelnik naiwny to mój model),
   `/compact`/wznowienie/dokumentacja `claude`, realne rozkłady zdarzeń, „lost in the middle", reguły CLAUDE.md.
-- Następne: wyszukiwarka z synonimami/embeddingami na zestawie z #14; weryfikacja w żywym `claude`/dokumentacji (nowa sesja, wznowienie, `/compact`); analiza prawdziwego transkryptu (gdy odczyt dozwolony); reguły CLAUDE.md i „lost in the middle".
+- Wydanie #8 rubryki (#20), 2026-10-13: **wyszukiwarka narzędzi bez wspólnego słowa i uczciwa ewaluacja** — `ctxsearch.py`, `test_ctxsearch.py` (40/40, Python 3.10.4 stdlib, `-B`).
+  Katalog 264 narzędzi z #14 (26 380 tok.); porównane: BM25, TF-IDF trigramów znaków, synonimy po stronie zapytania, aliasy w opisach, RRF, prior sesji. Zbiory dev=18/test=30/fresh=15.
+  BM25: recall@5 34/40 ze wspólnym słowem, 4/23 bez. `bm25+syn` @5/@1: dev 18/18 · 18/18, test 26/30 · 21/30, fresh 13/15 · 8/15 (BM25 test 17/30). Bez wspólnego słowa: syn 19/23,
+  alias 17/23, ngram 3/23, rrf(bm25,ngram) 0/23 — fuzja nie pomaga. Aliasy: +3 370 tok. (+12,8%). Koszt recall ≥90%: syn k=5 (~500 tok.), alias k=10 (~1127), bm25 nie dobija nawet przy k=264.
+  `peek` (dopisanie 4 haseł po obejrzeniu błędów) 26→28/30 — to przeuczenie na zbiorze. Prior sesji: boost 0 → 8/12 @1, 0,1–1,0 → 12/12, 3,0 → 11/12. Ukryte obciążenie: bez priora wygrywa
+  `jira__*_comment` (przyczyna niezbadana). Stoplista nie pomogła; `indexes`≠`index` (brak `-es`). Niezweryfikowane: prawdziwe embeddingi (stdlib, „semantyka” = ręczny słownik), zachowanie modelu,
+  dokumentacja/żywy `claude` (WebFetch odrzucony), „lost in the middle”/reguły CLAUDE.md; zapytania, słownik i aliasy pisał jeden autor; zestaw „niejednoznaczny” 12 zapytań, jedna rodzina.
+- Następne: embeddingi (gdy dostępny model/biblioteka); weryfikacja w żywym `claude`/dokumentacji (nowa sesja, wznowienie, `/compact`); analiza prawdziwego transkryptu (gdy odczyt dozwolony); reguły CLAUDE.md i „lost in the middle"; niezależny zestaw zapytań pisany przez kogoś innego.
 
 ### ✍️ AI — prompty dla developera
 - Omówione elementy: 5 par zły/dobry prompt (konkretność+pliki/linie, "dlaczego" vs

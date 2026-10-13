@@ -33,6 +33,7 @@ Drugi worker, podwójne obciążenie karty i `RoutingSlipCompleted` jakby nic si
 → [Artykuł](ai-agentic-loop/ARTICLE.md) · [Kod](ai-agentic-loop/code/)
 
 ### 🧠 [AI — zarządzanie kontekstem](ai-context/ARTICLE.md)
+Wyszukiwarka narzędzi zna tylko słowa z nazw: BM25 trafia 34/40 zapytań ze wspólnym słowem i 4/23 bez niego — jak to naprawić synonimami, aliasami i priorem sesji oraz jak nie oszukać się ewaluacją na zbiorze, który widziałeś.
 → [Artykuł](ai-context/ARTICLE.md) · [Kod](ai-context/code/)
 
 ### ✍️ [AI — prompty dla developera](ai-prompts/ARTICLE.md)
