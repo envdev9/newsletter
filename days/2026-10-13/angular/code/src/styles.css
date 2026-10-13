@@ -1,0 +1,5 @@
+body { font-family: system-ui, sans-serif; margin: 2rem; }
+.error { color: #b00020; }
+.hint { color: #555; }
+.ok { color: #1b7f3b; }
+label { display: block; margin-top: 1rem; font-weight: 600; }

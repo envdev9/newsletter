@@ -40,6 +40,7 @@ Wyszukiwarka narzędzi zna tylko słowa z nazw: BM25 trafia 34/40 zapytań ze ws
 → [Artykuł](ai-prompts/ARTICLE.md) · [Kod](ai-prompts/code/)
 
 ### 🅰️ [Angular](angular/ARTICLE.md)
+Stary `ControlValueAccessor` działa pod `[formField]` bez zmian i dostaje `debounce` — ale `reset()` w trakcie okna cofa UI i nie anuluje wpisu, więc blur go „wskrzesza” (18/18 testów, test mutacyjny); do tego `FormCheckboxControl` z `debounce(300)`.
 → [Artykuł](angular/ARTICLE.md) · [Kod](angular/code/)
 
 ### 🗄️ [SQL Server](sqlserver/ARTICLE.md)

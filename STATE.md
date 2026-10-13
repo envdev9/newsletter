@@ -1156,8 +1156,21 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   (22.2.2 zamiast 22.2.1; `cp` odrzucone). Workaround progu Node w `node_modules` jak #9/#12 (niecommitowany). Niezweryfikowane:
   `ng serve`/przeglądarka (zdarzenia syntetyczne, jsdom), `FormCheckboxControl`/interop z `ControlValueAccessor`, SSR/hydration,
   `mapResponse()`, `aria-*` czytnikiem ekranu.
-- Następny poziom: SSR/hydration, `mapResponse()` w kontekście `@ngrx/effects`/Actions, `FormCheckboxControl` z `debounce`,
-  interop z `ControlValueAccessor`, `ng serve` w prawdziwej przeglądarce (o ile dostępna).
+- Wydanie #20, 2026-10-13: **`FormCheckboxControl` z `debounce` i stary `ControlValueAccessor` pod `[formField]`.** Własny przełącznik
+  (`checked` zamiast `value`) z `debounce(300)`/`debounce('blur')` vs natywny `<input type=checkbox>`; `StarRating` jako CVA bez zmian w
+  komponencie. Zmierzone: kolejność CVA przy montowaniu `registerOnChange`, `registerOnTouched`, `writeValue(0)`, `setDisabledState(false)`
+  (też gdy pole nigdy nie jest wyłączone), brak echa `writeValue` po zmianie z UI; `debounce(300)` → zapis dokładnie po 300 ms, 3 kliki w
+  oknie = 1 zapis, 2 kliki → model bez zmian ale `dirty()==true`; natywny checkbox: po kliku `touched()==false`, dopiero blur; `readonly` —
+  CVA nie ma metody (pole trafia tylko do zwykłego `input()`), `disabled` przez `setDisabledState`; stare `NG_VALIDATORS` łączą się ze schematem
+  (kolejność błędów `["minStars","min"]`, klucz słownika → `kind`); CVA + `FormValueControl` na jednej klasie: wygrywa CVA, `value` martwe,
+  `touch.emit()` nie domyka `debounce('blur')`; PUŁAPKA: `reset()` w trakcie debounce cofa UI (`writeValue(0)`), ale nie anuluje wpisu — blur
+  potem zapisuje stary (`afterBlur {current:5, model:5}`); zniszczenie CVA z oczekującym wpisem → model dostaje wartość (`flushSync` też na
+  ścieżce CVA). Angular 22.2.2, TS 6.0.3, Vitest 5.0.4, jsdom 30.1.2, Node v22.14.0 (to samo obejście progu CLI, niecommitowane).
+  Zweryfikowane: `npm install` (279 pakietów), `ng build` OK (6,8 s, 203,01 kB), `ng test` 18/18; test mutacyjny → 5 pada, po przywróceniu 18/18.
+  Lockfile wygenerowany na nowo. Niezweryfikowane: `ng serve`/przeglądarka (zdarzenia syntetyczne, jsdom), obejście pułapki `reset()`
+  (zaproponowane, nietestowane), CVA z `ngModel`/`FormControl`, `NG_ASYNC_VALIDATORS`, SSR/hydration, `mapResponse()`, `aria-*`.
+- Następny poziom: SSR/hydration, `mapResponse()` w kontekście `@ngrx/effects`/Actions, przetestowanie obejścia `reset()` w trakcie debounce,
+  CVA + `NG_ASYNC_VALIDATORS`, `ng serve` w prawdziwej przeglądarce (o ile dostępna).
 
 ### 🗄️ SQL Server
 - Aktualny poziom trudności: **podstawy (opanowane, w pełni zweryfikowane)**
