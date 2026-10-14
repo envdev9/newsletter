@@ -33,6 +33,7 @@ Saga, która przeżywa restart procesu: stan w EF Core (SQLite), `Version` jako 
 → [Artykuł](ai-agentic-loop/ARTICLE.md) · [Kod](ai-agentic-loop/code/)
 
 ### 🧠 [AI — zarządzanie kontekstem](ai-context/ARTICLE.md)
+Ten sam plik czytany po raz ósmy kosztuje 14 tokenów zamiast 7962 — ale „sprytne" kasowanie starych odczytów (retro) unieważnia cache i wychodzi drożej niż dopisywanie diffów (append): 2,65× taniej wg kosztu ważonego.
 → [Artykuł](ai-context/ARTICLE.md) · [Kod](ai-context/code/)
 
 ### ✍️ [AI — prompty dla developera](ai-prompts/ARTICLE.md)

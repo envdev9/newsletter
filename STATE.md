@@ -996,7 +996,13 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   `peek` (dopisanie 4 haseł po obejrzeniu błędów) 26→28/30 — to przeuczenie na zbiorze. Prior sesji: boost 0 → 8/12 @1, 0,1–1,0 → 12/12, 3,0 → 11/12. Ukryte obciążenie: bez priora wygrywa
   `jira__*_comment` (przyczyna niezbadana). Stoplista nie pomogła; `indexes`≠`index` (brak `-es`). Niezweryfikowane: prawdziwe embeddingi (stdlib, „semantyka” = ręczny słownik), zachowanie modelu,
   dokumentacja/żywy `claude` (WebFetch odrzucony), „lost in the middle”/reguły CLAUDE.md; zapytania, słownik i aliasy pisał jeden autor; zestaw „niejednoznaczny” 12 zapytań, jedna rodzina.
-- Następne: embeddingi (gdy dostępny model/biblioteka); weryfikacja w żywym `claude`/dokumentacji (nowa sesja, wznowienie, `/compact`); analiza prawdziwego transkryptu (gdy odczyt dozwolony); reguły CLAUDE.md i „lost in the middle"; niezależny zestaw zapytań pisany przez kogoś innego.
+- Wydanie #9 rubryki (#21), 2026-10-14: **powtórzone odczyty plików — dedupikacja przy zapisie (append) vs retroaktywna (retro) a cache** — `ctxdedup.py`,
+  `test_ctxdedup.py` (30 asercji, Python 3.10.4 stdlib, `-B`). Sesja 17 kroków (8 odczytów, 4 edycje, 5 testów) na realnych plikach (`ctxsearch.py` 7962 tok.).
+  Token-tury: none 574 604, retro 235 431 (2,44×), append 295 676 (1,94×); koszt ważony cache (0,10×/1,25×): none 107 963, retro 97 405, append 40 795 (2,65×).
+  retro zapisuje do cache więcej niż none (64 228 vs 43 915 tok.) — mutacja środka historii unieważnia resztę. Odczyt po edycji 33–106 tok. (diff) zamiast 7962; bez zmian 14 tok.
+  Rekonstrukcja 8/8 odczytów, fuzz 300 edycji diffu. Mnożnik odczytu cache ≤0,50 → wygrywa append; przy 0,05 retro gorszy niż none. append zostawia 1 nieaktualną kopię pliku (9238 tok.).
+  Niezweryfikowane: zachowanie modelu, mnożniki cache (z pamięci), rozkład powtórzeń w realnych sesjach, deduplikacja w `claude`, `/compact` (wiszący stub), CRLF/binaria; próg diffu 50% umowny.
+- Następne: embeddingi (gdy dostępny model/biblioteka); `last_seen` po kompakcji + test wiszącego stuba; dedupikacja wyników `grep`/`ls`; weryfikacja w żywym `claude`/dokumentacji (nowa sesja, wznowienie, `/compact`); analiza prawdziwego transkryptu (gdy odczyt dozwolony); reguły CLAUDE.md i „lost in the middle"; niezależny zestaw zapytań pisany przez kogoś innego.
 
 ### ✍️ AI — prompty dla developera
 - Omówione elementy: 5 par zły/dobry prompt (konkretność+pliki/linie, "dlaczego" vs
