@@ -792,7 +792,14 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   zachowanie po `ShutdownTimeout`, współbieżne workery i atomowość klucza idempotentności, `UseMessageRetry` + Courier,
   `ReviseItinerary`, trwałe sagi, `UseDelayedRedelivery`, brak `dotnet test`; każdy scenariusz raz. Kontener `mt-redelivery-demo`
   usunięty (`docker ps -a`). W `code/` zostały pliki `ledger-a..e.log` (w `.gitignore`).
-- Następny poziom: trwałe repozytorium sag (EF/Mongo/Redis) na RabbitMQ, `UseDelayedRedelivery` na prawdziwym brokerze,
+- Wydanie #21, 2026-10-14: **trwała saga w EF Core (SQLite, in-memory transport)** — `OrderState : ISagaVersion` (`Version` jako token
+  współbieżności), `EntityFrameworkRepository` z `ConcurrencyMode`, tryby `submit`/`pay`/`race`/`show`. MassTransit + EntityFrameworkCore
+  8.5.10, EF Core Sqlite 9.0.10, .NET SDK 10.0.400, `dotnet build` 0 błędów. Haczyk zmierzony: typy wiadomości bez namespace →
+  `ArgumentException: Messages types must have a valid namespace`. **Niezweryfikowane (polecenia `dotnet <dll>` odrzucone):**
+  wznowienie sagi po restarcie, konflikt wersji przy wyścigu (retry/noretry), `Pessimistic` na SQLite, ostrzeżenie NU1903 dla
+  `SQLitePCLRaw.lib.e_sqlite3`. Kod i scenariusze A/B są w `code/README.md`, nie były wykonane.
+- Następny poziom: uruchomić scenariusze restartu i wyścigu z #21, trwałe sagi na PostgreSQL z pesymistycznym lockiem i na RabbitMQ,
+  `UseDelayedRedelivery` na prawdziwym brokerze,
   `ReviseItinerary`, `UseMessageRetry` + Courier, zachowanie po `ShutdownTimeout`, atomowy klucz idempotentności przy 2 workerach.
 
 ### 🤖 AI — Claude Code dla .NET/Angular/SQL
