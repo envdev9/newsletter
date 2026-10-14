@@ -40,6 +40,7 @@ Ten sam plik czytany po raz ósmy kosztuje 14 tokenów zamiast 7962 — ale „s
 → [Artykuł](ai-prompts/ARTICLE.md) · [Kod](ai-prompts/code/)
 
 ### 🅰️ [Angular](angular/ARTICLE.md)
+`FieldState.reset('')` naprawia pułapkę `reset()` w trakcie debounce — a stary `NG_ASYNC_VALIDATORS` pod `[formField]` jest po cichu ignorowany (0 wywołań, pole `valid`); zamiennik: `validateAsync` + `resource()` (14/14 testów, test mutacyjny).
 → [Artykuł](angular/ARTICLE.md) · [Kod](angular/code/)
 
 ### 🗄️ [SQL Server](sqlserver/ARTICLE.md)

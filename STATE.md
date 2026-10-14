@@ -1182,8 +1182,17 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   Zweryfikowane: `npm install` (279 pakietów), `ng build` OK (6,8 s, 203,01 kB), `ng test` 18/18; test mutacyjny → 5 pada, po przywróceniu 18/18.
   Lockfile wygenerowany na nowo. Niezweryfikowane: `ng serve`/przeglądarka (zdarzenia syntetyczne, jsdom), obejście pułapki `reset()`
   (zaproponowane, nietestowane), CVA z `ngModel`/`FormControl`, `NG_ASYNC_VALIDATORS`, SSR/hydration, `mapResponse()`, `aria-*`.
-- Następny poziom: SSR/hydration, `mapResponse()` w kontekście `@ngrx/effects`/Actions, przetestowanie obejścia `reset()` w trakcie debounce,
-  CVA + `NG_ASYNC_VALIDATORS`, `ng serve` w prawdziwej przeglądarce (o ile dostępna).
+- Wydanie #21, 2026-10-14: **obejście pułapki `reset()` w trakcie debounce i `NG_ASYNC_VALIDATORS` pod `[formField]`.** Dwa różne `reset()`:
+  `FormField.reset()` tylko odświeża kontrolkę z modelu, `FieldState.reset(value)` zeruje `dirty`/`touched` i ustawia model. Pułapka z #20 gorsza:
+  przy `debounce(300)` wpis ląduje w modelu po 300 ms, a UI trzyma stary tekst do blura (`ui:"START"`, `model:"TYPED"`). Obejście `f.pole().reset('')`
+  (opcjonalnie + `FormField.reset()`) nic nie wskrzesza — `debounce(300)`, `'blur'`, w trakcie lecącego async. Stary `NG_ASYNC_VALIDATORS`
+  pod `[formField]` cicho ignorowany (0 wywołań, pole `valid`, bez ostrzeżenia; pod `[formControl]` działa); zamiennik `validateAsync` + `resource()`:
+  3 szybkie wpisy = 1 request, błąd `taken`. Angular 22.2.2, TS 6.0.3, Vitest 5.0.4, jsdom 30.1.2, Node 22.14.0 (obejście progu CLI,
+  niecommitowane). Zweryfikowane: `npm install`, `ng build` OK (6,9 s, 208,59 kB), `ng test` 14/14, test mutacyjny (4 padają). Niezweryfikowane:
+  `ng serve`/przeglądarka, przyczyna rozjazdu UI/model to wniosek z kodu `signals.mjs`, `NG_ASYNC_VALIDATORS` na natywnym `<input>`, CVA z
+  `ngModel`/`FormControl` obok `[formField]`, sygnał abort przy resecie, SSR/hydration, `mapResponse()`, `aria-*`.
+- Następny poziom: SSR/hydration formularza (`renderApplication` w Node), `mapResponse()` w kontekście `@ngrx/effects`/Actions,
+  CVA z `ngModel`, `ng serve` w prawdziwej przeglądarce (o ile dostępna).
 
 ### 🗄️ SQL Server
 - Aktualny poziom trudności: **podstawy (opanowane, w pełni zweryfikowane)**
