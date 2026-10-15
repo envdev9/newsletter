@@ -1448,6 +1448,11 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   `CreateSelfSigned` zwraca cert z kluczem; `GetSerialNumber()` little-endian. Niezweryfikowane: prawdziwe logi CT/CA ("logi" = 3 klucze w
   procesie), SCT przez rozszerzenie TLS/OCSP, Kestrel jako strona egzekwująca, dryf zegara, rotacja logów, Windows/macOS, niezależność
   łańcucha (na Linuksie to OpenSSL), tryb strict dla nieznanych SCT. `work/`, `bin/`, `obj/` w `.gitignore`.
-- Następny poziom: `consistency proof` (RFC 6962 §2.1.2) między dwoma STH + gossip protocol, Must-Staple + SCT razem,
-  weryfikacja SCT "na żywo" w `SslStream`/Kestrelu (callback odrzucający połączenie bez ważnego SCT), ACME/`pebble`
-  lokalnie (jeśli da się postawić bez sieci zewnętrznej — nigdy nie próbowane), Windows/macOS store, DANE/CAA.
+- Wydanie #22, 2026-10-15: **dowód spójności logu CT (RFC 6962 §2.1.2 / RFC 9162 §2.1.4.2)** — generacja (`SUBPROOF`) i iteracyjna
+  weryfikacja, podpisane STH (`TreeHeadSignature`), split-view, monitor jako maszyna stanów (podpis, rollback, equivocation). Zmierzone
+  (.NET 10.0.400, OpenSSL 3.0.2): 4656/4656 par (m,n≤96) OK, najdłuższy dowód 8 elementów, 632 692 mutacji → 0 przyjętych; niezależny
+  `verify_consistency.py` (inny algorytm) 325 przypadków, 0 rozbieżności; `openssl dgst -verify` na STH. Haczyki: m=n, m potęga 2, długość
+  dowodu, DER vs P1363. Niezweryfikowane: prawdziwy log CT/`get-sth-consistency` (brak sieci), gossip jako transport, drzewa >96 liści,
+  wydajność, Windows/macOS. `work/`, `bin/`, `obj/` w `.gitignore`.
+- Następny poziom: Must-Staple (`id-pe-tlsfeature`) + stapling + SCT razem, CAA/DANE (TLSA z certu), Kestrel jako strona egzekwująca
+  SCT/mTLS, ACME/`pebble` lokalnie (jeśli da się bez sieci zewnętrznej — nigdy nie próbowane), Windows/macOS store.
