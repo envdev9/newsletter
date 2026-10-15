@@ -662,9 +662,16 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   kompiluje (indeksator `Configuration["..."]`). Dwa pełne przebiegi, posprzątane (tylko własne kontenery). Niezweryfikowane: dashboard,
   źródło stabilnego hasła (user-secrets odczyt zablokowany), zmiana konfiguracji zasobu przy działającym trwałym kontenerze, `Persistent` +
   `WithDataVolume`, stałe porty, EF Core, inne obrazy, Windows/macOS/Podman; sufiks nazwy = hash ścieżki to tylko przypuszczenie.
-- Następny poziom: zmiana konfiguracji zasobu przy trwałym kontenerze, `Persistent` + `WithDataVolume`, dashboard (wizualna inspekcja —
-  nadal nieobejrzany), `SharedType.Keyed` (kilka AppHostów o różnych konfiguracjach w jednej sesji), `WithDataVolume` + EF Core migracje,
-  integracja user-secrets z prawdziwym menedżerem sekretów w trybie publish.
+- Wydanie #22, 2026-10-15: zmiana konfiguracji trwałego kontenera + `Persistent` + `WithDataVolume` (`Reconfig.Probe`, 3 pełne przebiegi).
+  Zmiana env lub taga obrazu → Aspire tworzy kontener od nowa (nowe ID/startedAt, ta sama nazwa `cache-<hash>`), dane bez woluminu
+  przepadają; ta sama konfiguracja → ten sam kontener. `WithDataVolume` sam włącza `--save 60 1` (`WithPersistence()` nic nie zmienia):
+  `docker rm` w ciągu 60 s od zapisu gubi dane, po 75 s wracają z woluminu do nowego kontenera. `docker stop` 10,4 s, kod 137 (PID 1 to
+  `/bin/sh -c redis-server`; hipoteza gubionego SIGTERM, bez inspekcji sygnałów). Docker 29.1.3, Aspire 13.5.2, SDK 10.0.400, Redis 8.6/7-alpine.
+  Posprzątano (też anonimowe woluminy i sieć po wcześniejszych wersjach probe'a, po nazwach). Niezweryfikowane: dashboard, mechanizm
+  wykrywania zmiany i które zmiany go wywołują (zmierzone tylko env i tag), źródło stabilnego hasła/`UserSecretsId`, Postgres przy
+  `docker rm -f`, `SharedType.Keyed`, EF Core, `publish`, Windows/macOS/Podman.
+- Następny poziom: dashboard (wizualna inspekcja — nadal nieobejrzany), `SharedType.Keyed`, `WithDataVolume` + EF Core migracje na
+  Postgresie (czy przeżywa `docker rm`), integracja user-secrets z prawdziwym menedżerem sekretów w trybie publish.
 
 ### 📨 Messaging .NET (MassTransit)
 - Aktualny poziom trudności: **podstawy (opanowane)**

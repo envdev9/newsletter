@@ -20,6 +20,7 @@
 → [Artykuł](tunit/ARTICLE.md) · [Kod](tunit/code/)
 
 ### ✈️ [Aspire](aspire/ARTICLE.md)
+Zmiana env lub taga obrazu cicho odtwarza „trwały" kontener i kasuje dane, a `WithDataVolume` zapisuje na dysk dopiero co 60 s — `docker rm` tuż po zapisie gubi dane mimo woluminu (3 pełne przebiegi na Aspire 13.5.2).
 → [Artykuł](aspire/ARTICLE.md) · [Kod](aspire/code/)
 
 ### 📨 [Messaging .NET z MassTransit](masstransit/ARTICLE.md)
