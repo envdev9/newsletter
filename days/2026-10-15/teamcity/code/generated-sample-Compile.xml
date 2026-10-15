@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<build-type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2025.3/project-config.xsd">
+  <name>Compile</name>
+  <description />
+  <settings>
+    <options>
+      <option name="artifactRules" value="out/** =&gt; build-out" />
+    </options>
+    <build-runners>
+      <runner id="RUNNER_1" name="Compile" type="simpleRunner">
+        <parameters>
+          <param name="script.content"><![CDATA[test ! -f /tmp/fail-compile
+mkdir -p out
+echo "compiled by Compile #%build.number% (build id %teamcity.build.id%)" > out/app.txt
+cat out/app.txt]]></param>
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+    </build-runners>
+  </settings>
+</build-type>
+

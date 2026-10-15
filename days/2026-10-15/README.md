@@ -14,6 +14,7 @@
 → [Artykuł](ansible/ARTICLE.md) · [Kod](ansible/code/)
 
 ### 🏗️ [TeamCity](teamcity/ARTICLE.md)
+`snapshot` i `artifacts` wybierają builda niezależnie — łańcuch może zbudować z artefaktu ze starego buildu, a zwykły `snapshot { }` po padniętym Compile i tak uruchamia krok (`RUN_ADD_PROBLEM`); zmierzone na żywym serwerze 2025.07, 19 buildów.
 → [Artykuł](teamcity/ARTICLE.md) · [Kod](teamcity/code/)
 
 ### 🧪 [TUnit](tunit/ARTICLE.md)

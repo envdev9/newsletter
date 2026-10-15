@@ -1,0 +1,4 @@
+<build>
+  <buildType id="ArtDemo_Test"/>
+  <snapshot-dependencies><build id="1"/></snapshot-dependencies>
+</build>

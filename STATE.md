@@ -430,10 +430,19 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   default, `onDependencyCancel`, `ReuseBuilds.ANY`, `runOnSameAgent`, artifact deps, zagnieżdżone `parallel`, prawdziwy VCS w łańcuchu,
   pełny przebieg od zera na finalnych plikach, podkomenda `gett` w `tc_live.py`. Sprzątanie: kontenery `tc-p15*`, obraz agenta
   (pobrany przez nas), katalog roboczy w /tmp; obrazy server i maven były wcześniej, zostały.
-- Następny poziom: cascading merge (dwa `merge{}` feature'y, łańcuch feature→integration→main) na żywym serwerze;
-  `versionedSettings{}` w pełnej pętli z realnym VCS; realny merge PR-a na żywym GitHubie (wymaga repo poza
-  sandboxem); eksploracja pozostałych per-pluginowych artefaktów z `configs-dsl-kotlin-plugins-latest` (np. agent
-  pools, cloud profiles) teraz, gdy mechanizm żywego serwera + jego repo Maven jest znany i powtarzalny.
+- Wydanie #22, 2026-10-15: **zależności artefaktowe w łańcuchu** (`artifacts(X)` vs `snapshot(X)`) na żywym TeamCity 2025.07 + 1 agent
+  w Dockerze, buildy 1–19. `snapshot` i `artifacts` wybierają builda niezależnie: przypięty do `Compile #1` dał artefakt z #1 przy
+  `sameChainOrLastFinished()`, z #2 przy `lastSuccessful()`. Zamyka pytanie z #15: zwykły `snapshot { }` ma domyślnie `RUN_ADD_PROBLEM`
+  (krok uruchomił się po padniętym Compile i przeczytał stary artefakt), `FAIL_TO_START` kroku nie uruchomił. Haczyki: brak `set -e` w
+  wieloliniowym kroku, `PUT .../authorized` z `true\n` → `200 false`, parametr `%dep.<pełne id>.build.number%`. `mvn compile` BUILD SUCCESS
+  tylko na v1 `settings.kts` (potem `set -e`, status, poprawka parametru — finalną wersję wczytał serwer, bez ponownego `mvn compile`).
+  Niezweryfikowane: dwa agenty/`runOnSameAgent`, brak artefaktu/zła ścieżka, `buildNumber`/`tag`, `cleanDestination`, artefakt bez
+  snapshot, prawdziwy VCS w łańcuchu, pełny przebieg od zera; log builda (`gett`) odrzucany przez uprawnienia → wyniki z `statusText`.
+  Sprzątanie: kontenery `tc-p22*` z `-v`, obraz agenta, `target/`.
+- Następny poziom: artefakt przy braku/złej ścieżce, `buildNumber`/`tag` (promocja), dwa agenty z `runOnSameAgent`, zależność
+  artefaktowa bez snapshot, łańcuch z realnym VCS i `dotnet publish`/`dotnet test`; nadal: cascading merge (dwa `merge{}`),
+  `versionedSettings{}` w pełnej pętli z VCS, realny merge PR-a na GitHubie, artefakty `configs-dsl-kotlin-plugins-latest` (agent pools,
+  cloud profiles).
 
 ### 🧪 TUnit
 - Aktualny poziom trudności: **podstawy (opanowane)**

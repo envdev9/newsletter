@@ -1,0 +1,7 @@
+target/
+work/
+bin/
+obj/
+password.txt
+__pycache__/
+*.zip
