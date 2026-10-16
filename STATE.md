@@ -1397,9 +1397,20 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   .NET 10.0.400, Npgsql 10.0.3, Pgvector 0.3.2, pg16, dane SYNTETYCZNE (20 000×64). Brak `run-demo.sh` (sekwencja ręczna,
   jeden przebieg). Niezweryfikowane: recall halfvec przy 1536/3072 na prawdziwych embeddingach, `max_scan_tuples` w działaniu,
   partycjonowanie z HNSW, `HalfVector` w EF Core, mechanizm pustego `SHOW` po resecie, kod z #2 (fastembed). Kontener usunięty.
-- Następny poziom: partycjonowanie z HNSW (indeks na partycję, pruning), `max_scan_tuples` w działaniu, naprawa kodu z #2
-  (realne embeddingi fastembed, recall halfvec przy 1536), `HalfVector` w EF Core, rozdzielenie `DropIndex`+
-  `CreateIndexConcurrently` na dwie osobne migracje (rada EF z #8).
+- Wydanie #23, 2026-10-16: **partycjonowanie z HNSW + `hnsw.max_scan_tuples`** (czysty SQL przez psql; PG 16.15, pgvector 0.8.6,
+  dane SYNTETYCZNE 20 000×64, 8 tenantów po 2500). `PARTITION BY LIST (tenant)`, indeks HNSW na rodzicu = osobny graf w każdej
+  partycji (suma 11 MB jak monolit); pruning: stała w planie, `Subplans Removed: 7` przy generic planie, `Merge Append` z 8 skanami
+  bez filtra; filtr po kolumnie spoza klucza → brak pruningu, planner wybrał Seq Scan+Sort. Recall@10 (20 zapytań, 2× identycznie):
+  bez filtra ef=10 0,945 vs 1,000, ef=40 0,990 vs 1,000; `tenant=3` ef=40 0,445 (4,5 wiersza) vs 0,870, ef=100 0,500 vs 1,000.
+  `max_scan_tuples` (filtr 5%, relaxed_order): off 0,180 (1,8 wiersza), 100 → 0,785, 500 → 0,935, 2000/20000 → 0,940.
+  Utrzymanie: `REINDEX` partycji 667 ms; `CREATE INDEX CONCURRENTLY` na partycjonowanym rodzicu = błąd; wzorzec `ON ONLY` +
+  CONCURRENTLY per partycja + `ATTACH` (indeks `ON ONLY` ma `indisvalid=f` do podpięcia ostatniej partycji). Haczyki: zbyt niski
+  `max_scan_tuples` cicho zwraca mniej wierszy niż `LIMIT`; partycje pomagają tylko przy filtrze po kluczu; bez filtra płacisz N skanów.
+  Niezweryfikowane: czasy/planowanie przy 50–500 partycjach, `max_scan_tuples` w obrębie partycji, `DETACH CONCURRENTLY`,
+  EF Core/Npgsql z partycjami, `HalfVector` w EF Core, kod z #2 (fastembed). `run-demo.sh` nie powstał. Kontener usunięty.
+- Następny poziom: latencja i planowanie przy 50–500 partycjach, `DETACH PARTITION CONCURRENTLY`, rozdzielenie `DropIndex`+
+  `CreateIndexConcurrently` na dwie migracje EF, partycjonowanie przez EF Core, `HalfVector` w EF Core, naprawa kodu z #2
+  (realne embeddingi fastembed, recall halfvec przy 1536).
 
 ### 🔐 Certyfikaty i TLS (X.509)
 - Aktualny poziom trudności: **podstawy (opanowane)**

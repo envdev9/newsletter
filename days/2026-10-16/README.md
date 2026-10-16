@@ -45,6 +45,7 @@ Spill do tempdb leczy się sam po jednym wykonaniu (memory grant feedback), ale 
 → [Artykuł](sqlserver/ARTICLE.md) · [Kod](sqlserver/code/)
 
 ### 🧬 [PostgreSQL — pgvector](postgres-vector/ARTICLE.md)
+Osiem tenantów w jednej tabeli wektorów i `WHERE tenant = 3` zwraca 4,5 wiersza z 10? Partycje z osobnym grafem HNSW na tenanta dają zawsze 10 wierszy i recall do 1,00, a `max_scan_tuples` pokazuje, jak łatwo cicho uciąć wyniki.
 → [Artykuł](postgres-vector/ARTICLE.md) · [Kod](postgres-vector/code/)
 
 ### 🔐 [Certyfikaty i TLS](certificates/ARTICLE.md)
