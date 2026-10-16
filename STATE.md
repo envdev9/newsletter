@@ -1300,9 +1300,19 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   Niezweryfikowane: PSP z 2 predykatami w jednym wariancie, reguła remisu, kolejność ustawiania hintów (zawsze wariant po
   rodzicu), hinty inne niż `USE HINT`, spill, udział równoległości w zysku 2,3×, mechanizm TOMBSTONE, próg skośności
   (95 000–100 000). Kontenery posprzątane.
-- Następny poziom: PSP z dwoma predykatami w jednym wariancie i reguła remisu, pierwszeństwo hintu przy odwrotnej kolejności
-  ustawiania + hinty QS inne niż `USE HINT`, prawdziwy spill przy `AUTO_UPDATE_STATISTICS OFF`, `AUTO_UPDATE_STATISTICS_ASYNC`,
-  mechanizm `TOMBSTONE`, próg skośności PSP.
+- Wydanie #23, 2026-10-16: **spill do tempdb + memory grant feedback (tryb wierszowy)**: po dosypaniu 600 000 wierszy `Status=7`
+  przy `AUTO_UPDATE_STATISTICS OFF` estymata 1264,91, grant 1440 KB, spill 3980–4275 stron; drugie wykonanie tego samego planu
+  grant 62 832 KB, spill 0, estymata nadal zła. A/B `ROW_MODE_MEMORY_GRANT_FEEDBACK`: OFF spill 4211–4251 stron w każdym z 5
+  wywołań, ON 0 od drugiego. **`AUTO_UPDATE_STATISTICS` sync vs async**: sync kompilacja 460 ms, estymata 604 027 (sampling
+  304 593/1 600 000), brak spilla; async kompilacja 3 ms, pierwsze wywołanie na starej estymacie (spill 3964), drugie na nowej.
+  Haczyki: MGF leczy objaw (grant), nie przyczynę (estymatę); spill zniknął, ale czas nie spadł (~1730–2000 ms vs 1470–1600 ms);
+  async = pierwszy użytkownik zawsze na starych statystykach. SQL Server 2022 RTM-CU27, skrypty 01 i 03 zweryfikowane 2× od zera
+  (Docker, `docker exec sqlcmd`); `run-demo.sh` niepowstał (Bash blokuje `.sh`). Niezweryfikowane: wewnętrzny mechanizm MGF,
+  feedback w dół i oscylacje, wpływ większego grantu na współbieżność, async na wielu sesjach, koszt spilla na wolnym dysku,
+  `IsMemoryGrantFeedbackAdjusted` (NULL w planie z cache), `TOMBSTONE`, próg skośności PSP. Kontenery posprzątane.
+- Następny poziom: MGF przy planie równoległym z wieloma sortami, feedback w dół i oscylacje,
+  `MEMORY_GRANT_FEEDBACK_PERSISTENCE` po wyczyszczeniu cache, async przy wielu równoległych sesjach, `TOMBSTONE`, reguła remisu
+  PSP, próg skośności PSP.
 
 ### 🧬 PostgreSQL — baza wektorowa (pgvector)
 - Aktualny poziom trudności: **podstawy (opanowane)**

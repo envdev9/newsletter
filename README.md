@@ -41,6 +41,7 @@ gotowy, ale weryfikację ograniczyło środowisko (szczegóły w artykułach).
 
 | # | Data | Wydanie | Rubryki |
 |---|------|---------|---------|
+| 23 | 2026-10-16 | [Otwórz](days/2026-10-16/README.md) | 🗄️ SQL Server · 🧬 pgvector · 🤖 AI Claude Code |
 | 22 | 2026-10-15 | [Otwórz](days/2026-10-15/README.md) | 🏗️ TeamCity · ✈️ Aspire · 🔐 TLS |
 | 21 | 2026-10-14 | [Otwórz](days/2026-10-14/README.md) | 📨 MassTransit · 🧠 AI context · 🅰️ Angular |
 | 20 | 2026-10-13 | [Otwórz](days/2026-10-13/README.md) | 🔷 .NET · 🔧 Ansible · 🏗️ TeamCity · 🧪 TUnit · ✈️ Aspire · 📨 MassTransit · 🤖 AI×4 · 🅰️ Angular · 🗄️ SQL Server · 🧬 pgvector · 🔐 TLS |
