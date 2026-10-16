@@ -894,6 +894,17 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   uprawnienia), spill Hash na SQL Server (brak SQL Servera), `ESTIMATE-SKEW` tylko ręcznym planem, progi arbitralne, koszt zapisu/rozmiar GIN, `ILIKE`/`citext`,
   bramka tylko exit code, nie w prawdziwym CI.
 - Następne: hook w żywej sesji `claude`; spill typu Hash na SQL Server; koszt zapisu i rozmiar `gin_trgm_ops`; `ILIKE`/`citext` na PostgreSQL.
+- Wydanie #23, 2026-10-16: **domknięcie długu z #16 na PostgreSQL 16** (własny kontener, 200 000 e-maili, `bench.sql`/`bench2.sql`): koszt zapisu
+  i rozmiar GIN `gin_trgm_ops` oraz `ILIKE`/`lower()`/`citext`. INSERT 200k: bez indeksu 457 ms, btree 2739, `varchar_pattern_ops` 1541,
+  GIN 8661; insert 20k do zaindeksowanej: 34/257/900 ms (brak/btree/GIN); UPDATE 20k: 89/416/1156. Rozmiar: po insercie przyrostowym 19 MB
+  każdy; po `CREATE INDEX` btree 12 MB, GIN 15 MB; budowa GIN 3,99 s vs btree 1,24 s. `fastupdate` on 933 ms (276 stron pending list) vs off
+  10 481 ms (porównanie nieczyste — off wstawiał do większej tabeli). `lower(email)=` bez indeksu funkcyjnego Seq Scan (2132 buforów), z indeksem
+  lub `citext` 4; `varchar_pattern_ops` nie pomaga przy `ILIKE` z prefiksem; prefiks na `citext` Seq Scan; GIN dla `ILIKE '%…%'` 824 bufory;
+  `gin_trgm_ops` na `citext` nieużyty przez `LIKE '%…%'`, działa dopiero indeks na `(email::text)`. Haczyk: indeks to kredyt — GIN kosztuje
+  3–19× przy zapisie. Niezweryfikowane: reguły skilla `ef-core-review` NIE zmienione (3 reguły to propozycja: `TOLOWER-NO-FUNC-INDEX`,
+  `ILIKE-PATTERN-OPS`, ostrzeżenie citext+GIN), czasy z pojedynczych uruchomień, latencja przy pełnej pending list, autovacuum, kolacje nie-ASCII,
+  żywa sesja `claude`, spill Hash na SQL Server; H12 uruchomione ręcznie, pełny `bench2.sql` z H12 nie powtórzony. Kontener usunięty.
+- Następne: wdrożyć 3 reguły do `scan_ef.py` z testami; latencja zapytania przy pełnej pending list; hook w żywej sesji `claude`; spill Hash na SQL Server.
 
 ### ⚙️ AI — agentic loop / workflow kodowania
 - Omówione elementy: pętla tool-use, różnica komenda/skill/subagent/hook (kto naciska

@@ -26,6 +26,7 @@
 → [Artykuł](masstransit/ARTICLE.md) · [Kod](masstransit/code/)
 
 ### 🤖 [AI — Claude Code dla .NET/Angular/SQL](ai-claude-code/ARTICLE.md)
+Ile naprawdę kosztuje indeks GIN `gin_trgm_ops`, który ratuje `Contains`: 8,7 s vs 0,5 s przy insercie 200 tys. wierszy oraz pułapki `ILIKE`, `lower()` i `citext`, zmierzone na PostgreSQL 16.
 → [Artykuł](ai-claude-code/ARTICLE.md) · [Kod](ai-claude-code/code/)
 
 ### ⚙️ [AI — agentic loop / workflow kodowania](ai-agentic-loop/ARTICLE.md)
