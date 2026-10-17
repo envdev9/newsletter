@@ -996,7 +996,14 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   rośnie po wznowieniu (79 zdarzeń zamiast 61) — dodano punkt `compact_archived` i odporne składanie osi. Haczyki: plik śledzony przed wpisem do
   `.gitignore` wchodzi do hasha; zagnieżdżone repo = gitlink. Niezweryfikowane: `claude` CLI (`--version` odrzucone; `permissionMode`/hooki headless nadal
   bez weryfikacji), realny LLM, Windows/CRLF, dyski sieciowe, wielu pisarzy, sprzątanie `/tmp`.
-- Następne: `permissionMode` w frontmatterze agenta i hooki headless (po weryfikacji CLI); inne kierunki wyższego poziomu pętli (np. wielu pisarzy/blokada dziennika).
+- Wydanie #24, 2026-10-17: **dwóch nadzorców na jednym dzienniku WAL** (`joblock.py`: brak blokady / `FlockLock` na osobnym `.lock` / `ExclLock`
+  `O_EXCL` + wykrywanie martwego właściciela po pid i czasie startu z `/proc`), prawdziwe procesy + `SIGKILL`; `run_tests.py` 20/20 (2 przebiegi), Python 3.10.4,
+  Linux. Zmierzone: bez blokady średnio 23,4 efektu zamiast 12 (`fold.total` zawsze 12 — dziennik nie zdradza duplikatów); klucz idempotencji check-then-write
+  nie chroni (17,0); `flock` 12 efektów w 20/20 także po SIGKILL; `O_EXCL` po kill -9 blokuje na stałe, a naprawa "sprawdź pid i usuń" ma wyścig (5/100, 13/100
+  z oknem 10 ms; flock 0/100). Pułapki flock: zamek na samym `journal.jsonl` ginie po `os.replace` z `compact`; `unlink` pliku `.lock`; dziecko po `fork()`
+  trzyma zamek; reuse PID (symulacja). Błąd: `compact_every=4` bez blokady → wspólny `.tmp` → 20/40 procesów `FileNotFoundError`. Niezweryfikowane: żywy `claude`,
+  NFS/Windows/macOS, >3 pisarzy, dzierżawa z heartbeatem/`SIGSTOP`, prawdziwy reuse PID.
+- Następne: dzierżawa z heartbeatem + fencing token; `permissionMode` w frontmatterze agenta i hooki headless (po weryfikacji CLI); inne kierunki wyższego poziomu pętli (np. wielu pisarzy/blokada dziennika).
 
 ### 🧠 AI — zarządzanie kontekstem
 - Omówione elementy: kolejność warstw kontekstu (system→narzędzia/MCP→pamięć→historia→

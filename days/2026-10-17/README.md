@@ -32,6 +32,7 @@ Gdzie ląduje output testu, co trafia do TRX, jakie kody wyjścia zwraca przebie
 → [Artykuł](ai-claude-code/ARTICLE.md) · [Kod](ai-claude-code/code/)
 
 ### ⚙️ [AI — agentic loop](ai-agentic-loop/ARTICLE.md)
+Dwóch nadzorców na jednym dzienniku podwaja efekty i nikt tego nie widzi w logu — `flock` na osobnym pliku (z czterema pułapkami zmierzonymi na prawdziwych `SIGKILL`) daje dokładnie jedno pióro.
 → [Artykuł](ai-agentic-loop/ARTICLE.md) · [Kod](ai-agentic-loop/code/)
 
 ### 🧠 [AI — zarządzanie kontekstem](ai-context/ARTICLE.md)
