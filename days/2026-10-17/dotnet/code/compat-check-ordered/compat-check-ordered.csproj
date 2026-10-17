@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- CELOWO net9.0 + global.json z SDK 9.0.316: ten projekt ma sie NIE skompilowac -
+       dowod, ze przeciazenia z "out int index" sa nowoscia .NET 10. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

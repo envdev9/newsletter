@@ -125,6 +125,16 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
     istnieje już na net9 (nie nowość). Niezweryfikowane: kod source generatora, ASP.NET, `Preserve` z konstruktorami parametrycznymi,
     czasy, SDK 11 (dostępne tylko 8.0.422/8.0.425/9.0.316/10.0.400). Puste bin/obj w code/ (ignorowane przez .gitignore).
   - Zostało z diffu: `OrderedDictionary.TryAdd(..., out int)`, `SlhDsa`/`CompositeMLDsa` → potem .NET 11 (gdy SDK) lub zejście do .NET 9.
+  - [x] `OrderedDictionary<TKey,TValue>.TryAdd(key, value, out int index)` / `TryGetValue(key, out value, out int index)` oraz
+    `SlhDsa` (FIPS 205; tylko API) — wydanie #24, 2026-10-17. Nowość .NET 10 potwierdzona refleksją (9.0.18 vs 10.0.11) i `CS1501`×2
+    na SDK 9.0.316 (global.json); `SlhDsa*` na net9.0 → `CS0103`×3. Zweryfikowane `dotnet run`: licznik wywołań komparatora (1000 kluczy:
+    2 hashe/klucz starą drogą vs 1 nową; licznik słów 6000 vs 3000 hashy) — mierzono liczbę wywołań, nie czas. Haczyki: indeks to migawka
+    (po `Insert(0)` `SetAt` cicho nadpisuje zły wpis; po `RemoveAt(0)` → `ArgumentOutOfRangeException`); nieudany `TryAdd` zwraca indeks
+    istniejącego wpisu bez nadpisania; `TryGetValue` bez klucza → `-1`; dla `TKey=int` indexer to klucz, `GetAt` to indeks; klucz `null` →
+    `ArgumentNullException`; `RemoveAt(0)` O(n) (2000 op. na 50 000 el. ~1,2–1,35 s). `SlhDsa` jest `[Experimental]` (SYSLIB5006 trzeba
+    wyciszyć), rozmiary podpisów 7856 B (SHA2-128s)…49856 B (SHA2-256f). Na maszynie `SlhDsa/MLDsa/MLKem.IsSupported=False`
+    (OpenSSL 3.0.2) → NIE zweryfikowano sign/verify. Puste bin/obj w code/.
+  - Zostało z diffu: `CompositeMLDsa` → potem .NET 11 (gdy SDK) lub zejście do .NET 9.
 - Gdy funkcje .NET 10 się wyczerpią → .NET 11 → (dalsze nowości) → schodzimy w dół:
   9 → 8 → 7 → 6, potem wracamy do najnowszej dostępnej wersji.
 
