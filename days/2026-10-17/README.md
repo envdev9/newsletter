@@ -12,6 +12,7 @@
 → [Artykuł](dotnet/ARTICLE.md) · [Kod](dotnet/code/)
 
 ### 🔧 [Ansible](ansible/ARTICLE.md)
+Dwie role dopisują po bloku do jednego pliku, playbook jest zielony, a w pliku zostaje tylko jeden blok — jak to wyłapać po `changed=2` w drugim przebiegu, kiedy `backup: true` naprawdę robi kopię i co dokładnie widzi `validate`.
 → [Artykuł](ansible/ARTICLE.md) · [Kod](ansible/code/)
 
 ### 🏗️ [TeamCity](teamcity/ARTICLE.md)

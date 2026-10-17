@@ -1,0 +1,9 @@
+---
+- name: Sprzatanie katalogu roboczego
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Usun /tmp/ansible-demo-lvl24
+      ansible.builtin.file:
+        path: /tmp/ansible-demo-lvl24
+        state: absent

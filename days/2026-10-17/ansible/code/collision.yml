@@ -1,0 +1,29 @@
+---
+# Kolizja markerów blockinfile w dwóch rolach piszących do jednego pliku.
+#   ansible-playbook -i inventory.ini collision.yml                      (kolizja)
+#   ansible-playbook -i inventory.ini collision.yml -e fix_markers=true  (poprawnie)
+- name: Dwie role, jeden plik
+  hosts: localhost
+  gather_facts: false
+  vars:
+    work_dir: /tmp/ansible-demo-lvl24
+    shared_file: /tmp/ansible-demo-lvl24/collision/shared.conf
+    fix_markers: false
+  pre_tasks:
+    - name: Katalog roboczy
+      ansible.builtin.file:
+        path: "{{ shared_file | dirname }}"
+        state: directory
+        mode: "0755"
+  roles:
+    - team_a
+    - team_b
+  post_tasks:
+    - name: Zawartość pliku po przebiegu
+      ansible.builtin.command: cat {{ shared_file }}
+      register: shared_out
+      changed_when: false
+
+    - name: Pokaż plik
+      ansible.builtin.debug:
+        msg: "{{ shared_out.stdout_lines }}"

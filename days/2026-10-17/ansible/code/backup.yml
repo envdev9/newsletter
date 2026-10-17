@@ -1,0 +1,85 @@
+---
+# create / backup w lineinfile: kiedy pliku brak, kiedy powstaje kopia.
+- name: create i backup
+  hosts: localhost
+  gather_facts: false
+  vars:
+    dir: /tmp/ansible-demo-lvl24/backup
+    target: /tmp/ansible-demo-lvl24/backup/app.conf
+  tasks:
+    - name: Katalog
+      ansible.builtin.file:
+        path: "{{ dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: "1. lineinfile na brakującym pliku BEZ create"
+      block:
+        - ansible.builtin.lineinfile:
+            path: "{{ target }}"
+            line: "port=8080"
+            regexp: '^port='
+          register: no_create
+      rescue:
+        - ansible.builtin.debug:
+            msg: "BLAD (oczekiwany): {{ ansible_failed_result.msg }}"
+
+    - name: "2. z create: true (plik powstaje, backup_file?)"
+      ansible.builtin.lineinfile:
+        path: "{{ target }}"
+        line: "port=8080"
+        regexp: '^port='
+        create: true
+        backup: true
+        mode: "0644"
+      register: step2
+
+    - name: "3. zmiana wartosci z backup: true"
+      ansible.builtin.lineinfile:
+        path: "{{ target }}"
+        line: "port=9090"
+        regexp: '^port='
+        backup: true
+      register: step3
+
+    - name: "4. ta sama wartosc ponownie z backup: true"
+      ansible.builtin.lineinfile:
+        path: "{{ target }}"
+        line: "port=9090"
+        regexp: '^port='
+        backup: true
+      register: step4
+
+    - name: "5. druga zmiana"
+      ansible.builtin.lineinfile:
+        path: "{{ target }}"
+        line: "port=9191"
+        regexp: '^port='
+        backup: true
+      register: step5
+
+    - name: Wyniki krokow
+      ansible.builtin.debug:
+        msg:
+          - "krok 2: changed={{ step2.changed }} backup={{ step2.backup | default('BRAK') | basename }}"
+          - "krok 3: changed={{ step3.changed }} backup={{ step3.backup | default('BRAK') | basename }}"
+          - "krok 4: changed={{ step4.changed }} backup={{ step4.backup | default('BRAK') | basename }}"
+          - "krok 5: changed={{ step5.changed }} backup={{ step5.backup | default('BRAK') | basename }}"
+          - "kluczy z 'backup_file' w wyniku kroku 3: {{ 'backup_file' in step3 }}"
+
+    - name: Pliki w katalogu
+      ansible.builtin.find:
+        paths: "{{ dir }}"
+        patterns: "app.conf*"
+      register: found
+
+    - name: Zawartosc kopii z kroku 3
+      ansible.builtin.command: cat {{ step3.backup }}
+      register: backup_content
+      changed_when: false
+
+    - name: Podsumowanie
+      ansible.builtin.debug:
+        msg:
+          - "pliki: {{ found.files | map(attribute='path') | map('basename') | map('regex_replace', '\\.[0-9]+\\.', '.<pid>.') | sort }}"
+          - "kopia z kroku 3 (stan PRZED zmiana): {{ backup_content.stdout_lines }}"

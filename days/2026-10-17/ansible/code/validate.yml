@@ -1,0 +1,122 @@
+---
+# validate w lineinfile, blockinfile i assemble: zly wsad nie trafia do pliku docelowego.
+- name: validate w trzech modulach
+  hosts: localhost
+  gather_facts: false
+  vars:
+    dir: /tmp/ansible-demo-lvl24/validate
+    conf: /tmp/ansible-demo-lvl24/validate/app.conf
+    checker: "python3 {{ playbook_dir }}/validate_conf.py %s"
+  tasks:
+    - name: Katalogi i pliki startowe
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: "0755"
+      loop:
+        - "{{ dir }}"
+        - "{{ dir }}/frag_ok"
+        - "{{ dir }}/frag_bad"
+
+    - name: Plik startowy i fragmenty
+      ansible.builtin.copy:
+        dest: "{{ item.dest }}"
+        content: "{{ item.content }}"
+        force: false
+        mode: "0644"
+      loop:
+        - { dest: "{{ conf }}", content: "port=8080\nmode=prod\n" }
+        - { dest: "{{ dir }}/frag_ok/10-a.conf", content: "a=1\n" }
+        - { dest: "{{ dir }}/frag_ok/20-b.conf", content: "b=2\n" }
+        - { dest: "{{ dir }}/frag_bad/10-a.conf", content: "a=1\n" }
+        - { dest: "{{ dir }}/frag_bad/20-b.conf", content: "to nie jest key=value\n" }
+
+    # --- lineinfile ---
+    - name: "A1. lineinfile, poprawna linia"
+      ansible.builtin.lineinfile:
+        path: "{{ conf }}"
+        regexp: '^port='
+        line: "port=9090"
+        validate: "{{ checker }}"
+
+    - name: "A2. lineinfile, zla linia (bez znaku =)"
+      block:
+        - ansible.builtin.lineinfile:
+            path: "{{ conf }}"
+            regexp: '^port='
+            line: "port 9091"
+            validate: "{{ checker }}"
+      rescue:
+        - ansible.builtin.debug:
+            msg: "A2 odrzucone: {{ ansible_failed_result.msg }}"
+
+    - name: Plik po A1/A2
+      ansible.builtin.command: cat {{ conf }}
+      register: after_a
+      changed_when: false
+
+    - ansible.builtin.debug:
+        msg: "po A1+A2: {{ after_a.stdout_lines }}"
+
+    # --- blockinfile ---
+    - name: "B1. blockinfile, poprawny blok"
+      ansible.builtin.blockinfile:
+        path: "{{ conf }}"
+        block: |
+          cache=on
+          ttl=60
+        validate: "{{ checker }}"
+
+    - name: "Co zobaczyl walidator przy B1 (caly plik, z markerami)"
+      ansible.builtin.command: cat /tmp/ansible-demo-lvl24/validator_saw.txt
+      register: saw
+      changed_when: false
+
+    - ansible.builtin.debug:
+        msg: "walidator dostal: {{ saw.stdout_lines }}"
+
+    - name: "B2. blockinfile, zly blok"
+      block:
+        - ansible.builtin.blockinfile:
+            path: "{{ conf }}"
+            block: |
+              cache=on
+              ttl: 120
+            validate: "{{ checker }}"
+      rescue:
+        - ansible.builtin.debug:
+            msg: "B2 odrzucone: {{ ansible_failed_result.msg }}"
+
+    - name: Plik po B2
+      ansible.builtin.command: cat {{ conf }}
+      register: after_b
+      changed_when: false
+
+    - ansible.builtin.debug:
+        msg: "po B2: {{ after_b.stdout_lines }}"
+
+    # --- assemble ---
+    - name: "C1. assemble z poprawnych fragmentow"
+      ansible.builtin.assemble:
+        src: "{{ dir }}/frag_ok"
+        dest: "{{ dir }}/all.conf"
+        validate: "{{ checker }}"
+        mode: "0644"
+
+    - name: "C2. assemble ze zlym fragmentem"
+      block:
+        - ansible.builtin.assemble:
+            src: "{{ dir }}/frag_bad"
+            dest: "{{ dir }}/all.conf"
+            validate: "{{ checker }}"
+      rescue:
+        - ansible.builtin.debug:
+            msg: "C2 odrzucone: {{ ansible_failed_result.msg }}"
+
+    - name: Plik all.conf po C2
+      ansible.builtin.command: cat {{ dir }}/all.conf
+      register: after_c
+      changed_when: false
+
+    - ansible.builtin.debug:
+        msg: "all.conf po C2: {{ after_c.stdout_lines }}"

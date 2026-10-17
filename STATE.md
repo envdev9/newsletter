@@ -292,6 +292,12 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   błąd. Niezweryfikowane: wbudowane `show_custom_stats` (env odrzucone; własny callback `dump_custom_stats.py`), `include_role` z
   `apply:`, `private_role_vars`, kolejność zapisu `aggregate: false`, vault/galaxy/Molecule, SSH/`become`. W code/ zostało
   `callback_plugins/__pycache__`. Zostało z "Do rozważenia": `include_role` + `apply:`, `private_role_vars`, `set_stats` w wielu playach.
+- Wydanie #24, 2026-10-17: kolizja markerów `blockinfile` w dwóch rolach (domyślny marker → role cicho się nadpisują, każdy przebieg
+  `changed=2`; marker z nazwą roli → `changed=0` w drugim przebiegu), `create`/`backup` w `lineinfile` (brak pliku bez `create` → rc 257;
+  kopia tylko przy realnej zmianie istniejącego pliku; klucz wyniku `backup`, nie `backup_file`; kopie się kumulują), `validate` w
+  `lineinfile`/`blockinfile`/`assemble` (walidator dostaje plik tymczasowy z całą zawartością; rc=1 → cel nietknięty). ansible-core 2.17.14.
+  Niezweryfikowane: `nginx -t`/`visudo -cf`, kolizja przy `serial`/wielu hostach, `validate` z `--check`, SSH/`become`, vault/galaxy/Molecule.
+  Zostało: `include_role` + `apply:`, `private_role_vars`, `set_stats` w wielu playach.
 - Następny poziom: Molecule (gdyby `ansible-galaxy` kiedyś przestał być blokowany); zdalne SSH/`become`
   (jeśli kiedykolwiek dostępne — środowisko na razie blokuje nawet sprawdzenie `sshd`); własny
   **inventory plugin** (dynamic inventory jako skrypt zwracający JSON, podłączony przez `-i`, nie

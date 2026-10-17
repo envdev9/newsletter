@@ -1,0 +1,10 @@
+---
+- name: "team_b: blok z flagami do wspólnego pliku"
+  ansible.builtin.blockinfile:
+    path: "{{ shared_file }}"
+    create: true
+    mode: "0644"
+    marker: "{{ '# {mark} team_b' if fix_markers | bool else '# {mark} ANSIBLE MANAGED BLOCK' }}"
+    block: |
+      flag_b=on
+      retries_b=5
