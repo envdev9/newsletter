@@ -1099,7 +1099,14 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   modelu; scenariusze i reguły powstały razem (wynik zawyżony). Haczyki: zielone testy mogą być bezwartościowe (S4); ścisły JSON daje fałszywy czerwony;
   zła poprawka w dobrym formacie odpada dopiero w bramce końcowej. Niezweryfikowane: pętla naprawcza (prompt tylko budowany), koszt tokenów, Roslyn
   (indeks symboli to regexy), sprzątanie `/tmp` (`ls` odrzucone).
-- Następne: porównanie ze Stryker.NET i ślepym zestawem; walidator na Roslynie; ewaluacja na prawdziwym modelu; pomiar kosztu tokenów łańcucha vs jeden prompt.
+- Wydanie #24 (w artykule oznaczone #25), 2026-10-17: **walidator na Roslynie vs regex z #18** (`SymbolIndex`, Roslyn z SDK przez `HintPath`, offline; `regex_index.py`,
+  `compare.py`, `patchcheck.py`, `corpus/hard`, `claims.txt`). .NET 10.0.400, Python 3.10. Indeks symboli: `Billing` regex 9/12 vs Roslyn 12/12; `corpus/hard` regex 16/41
+  (25 pominiętych, 12 widm) vs Roslyn 40/41; razem 25 vs 52 z 53. Werdykty na 25 twierdzeniach: regex 10/25 (5 fałszywych zielonych, 10 fałszywych czerwonych), Roslyn 24/25
+  (0 f. zielonych). Poprawki: 4/6 przechodzi reguły formatu, kompilator odrzuca (CS0117×2, CS1503, CS0266); kody Roslyna = `dotnet build` 6/6. Haczyki: regex gubi
+  właściwości/pola/event/enum/generyki, widma z komentarzy i `record struct`, `partial` → jeden plik, nie zna sygnatur; Roslyn nie widzi symboli pod nieaktywnym `#if`, bez MSBuilda
+  brak `ImplicitUsings`. Niezweryfikowane: żaden model, korpus adversarialny (zbudowany przeciw regexowi, prawda moja), NuGet `Microsoft.CodeAnalysis`, generatory, Stryker.NET,
+  koszt tokenów.
+- Następne: porównanie ze Stryker.NET i ślepym zestawem; pomiar kosztu tokenów łańcucha vs jeden prompt; ewaluacja na prawdziwym modelu; pomiar kosztu tokenów łańcucha vs jeden prompt.
 
 ### 🅰️ Angular
 - Aktualny poziom trudności: **podstawy (opanowane)**

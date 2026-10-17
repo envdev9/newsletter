@@ -1,0 +1,13 @@
+# Prawda pisana recznie (czytajac kod): deklarowane symbole dowolnej dostepnosci | pliki
+Discounts|Billing/Discounts.cs
+Discounts.IsEligible|Billing/Discounts.cs
+InvoiceCalculator|Billing/InvoiceCalculator.cs
+InvoiceCalculator.LineTotal|Billing/InvoiceCalculator.cs
+InvoiceCalculator.Total|Billing/InvoiceCalculator.cs
+InvoiceLine|Billing/InvoiceCalculator.cs
+InvoiceLine.Sku|Billing/InvoiceCalculator.cs
+InvoiceLine.Quantity|Billing/InvoiceCalculator.cs
+InvoiceLine.UnitPrice|Billing/InvoiceCalculator.cs
+Money|Billing/Money.cs
+Money.Round|Billing/Money.cs
+Money.Percent|Billing/Money.cs

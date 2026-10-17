@@ -1,0 +1,27 @@
+# Twierdzenia "modelu" w kroku 1 (triaz): symbol | plik | prawda (real/fake) | notatka
+# Pisane recznie. Pytanie do walidatora: czy regula C06/C07 podejmie dobra decyzje?
+Money.Round|Billing/Money.cs|real|kontrola: istnieje
+InvoiceLine.Quantity|Billing/InvoiceCalculator.cs|real|wlasciwosc pozycyjna rekordu
+InvoiceCalculator.RoundTotal|Billing/InvoiceCalculator.cs|fake|zmyslony symbol z #18 (S2)
+Money.Round(decimal,int)|Billing/Money.cs|fake|zmyslone przeciazenie (Math.Round je ma, Money.Round nie)
+Money.Fake|Billing/Money.cs|fake|kontrola: nigdzie nie wystepuje
+Ledger.Balance|hard/Ledger.cs|real|wlasciwosc auto, bez nawiasu
+Ledger.Take|hard/Ledger.cs|real|metoda po zagniezdzonej klasie
+Ledger.Snapshot|hard/Ledger.cs|real|typ zagniezdzony
+Ledger|hard/Ledger.Reports.cs|real|klasa partial: deklaracja takze w drugim pliku
+Ledger.Average|hard/Ledger.Reports.cs|real|kontrola: prosta metoda
+Legacy|hard/Ledger.cs|fake|wystepuje tylko w komentarzu "old class Legacy"
+Outer.AfterInner|hard/Tricky.cs|real|skladowa po zagniezdzonej klasie
+Parser.Parse|hard/Tricky.cs|real|kontrola: prosta metoda
+Parser.Parse|hard/Ledger.cs|fake|zly plik (C07)
+Parser.Ghost|hard/Tricky.cs|fake|wystepuje tylko w komentarzu //
+Parser.Commented|hard/Tricky.cs|fake|wystepuje tylko w komentarzu /* */
+Parser.Convert|hard/Tricky.cs|real|metoda generyczna
+Parser.Helper|hard/Tricky.cs|real|metoda prywatna (bug moze siedziec w prywatnej)
+Parser.LoadAsync|hard/Tricky.cs|real|kontrola: async
+Pricer.Old|hard/Shapes.cs|real|kontrola: atrybut + sygnatura w 2 liniach
+Pricer.Price(string,int)|hard/Shapes.cs|real|istniejace przeciazenie
+Pricer.Price(string,int,int)|hard/Shapes.cs|fake|zmyslone przeciazenie
+Platform.OnlyWin|hard/Platform.cs|real|istnieje w tekscie, ale pod #if LEGACY_WIN (nieaktywny) - tu Roslyn przegrywa
+Rate|hard/Shapes.cs|real|record struct
+Tier.Premium|hard/Shapes.cs|real|skladowa enum

@@ -39,6 +39,7 @@ Dwóch nadzorców na jednym dzienniku podwaja efekty i nikt tego nie widzi w log
 → [Artykuł](ai-context/ARTICLE.md) · [Kod](ai-context/code/)
 
 ### ✍️ [AI — prompty dla developera](ai-prompts/ARTICLE.md)
+Regex „widzi" w kodzie C# to, co wygląda jak deklaracja: 5 zmyślonych symboli przeszło, 10 prawdziwych odrzucił — Roslyn zrobił 24/25 poprawnych decyzji i oddaje błąd kompilatora gotowy do promptu naprawczego.
 → [Artykuł](ai-prompts/ARTICLE.md) · [Kod](ai-prompts/code/)
 
 ### 🅰️ [Angular](angular/ARTICLE.md)
