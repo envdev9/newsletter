@@ -581,6 +581,14 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   odrzuciło kolejne polecenia): `SKIPLAB_DB=demo`, `[Explicit]` przez `--treenode-filter`, filtr po `[Property]`, kod wyjścia gdy
   wszystko pominięte, `dotnet test`, `ShouldSkip` przy `[Repeat]`/`[Retry]`/`[Arguments]`. Następny krok: powtórzyć niezweryfikowane,
   potem `TestContext.Output`, `--report-trx`, `[ParallelGroup]`. W code/ bin/obj (w .gitignore).
+- Wydanie #24, 2026-10-17: `ReportingLab` (TUnit 1.75.0, SDK 10.0.400, `dotnet run --project`). `TestContext.Current!.Output`/`Console.WriteLine`
+  → `<StdOut>` w TRX (zielone testy: brak w konsoli); `Output.AttachArtifact(new Artifact{File=...})` → `<ResultFile>` w TRX; `--report-trx` bez
+  dodatkowego pakietu; `--coverage` tworzy .coverage/.cobertura.xml (podsumowanie N/A); `[Explicit]` przez `--treenode-filter` z dokładną ścieżką
+  (nie wchodzi do total); filtr `[Property]` przez `--list-tests`; kody wyjścia: porażka 2, brak dopasowań 8, same skipy 0 ("Passed!");
+  `[NotInParallel("db")]` serializuje ponad klasami, różne klucze się nie blokują; `[ParallelGroup]` — w grupie równolegle, grupy po kolei.
+  Haczyki: `Console.WriteLine` z `[AfterEvery(Assembly)]` trafił do StdOut ostatniego testu; artefakt to referencja do pliku. Niezweryfikowane:
+  filtry z `*`, `dotnet test` z code/, TRX przy porażce, zawartość raportu HTML, wiele kluczy w `[NotInParallel]`, realne coverage.
+- Następny poziom (po #24): domknąć niezweryfikowane powyżej; potem wyścigi/powtarzalność testów HTTP, walidacja łańcucha `x5c`.
 - Następny poziom (po #15): okno publikacja→aktywacja dłuższe niż `AutomaticRefreshInterval`, wspólny JWKS za balanserem, walidacja
   łańcucha `x5c`, flakowanie/powtarzalność testów z HTTP. (Starsze po #14: rotacja z wyprzedzeniem, RS256 z certyfikatem X.509, wiele instancji wystawcy; jeszcze starsze: rotacja kluczy (wiele `kid` w JWKS, `ConfigurationManager` po HTTP), wyścig przy współbieżnym
   refreshu, RS256 z certyfikatem X.509 (spójne z rubryką Certyfikaty); Aspire + TUnit zajmuje rubryka Aspire.

@@ -18,6 +18,7 @@
 → [Artykuł](teamcity/ARTICLE.md) · [Kod](teamcity/code/)
 
 ### 🧪 [TUnit](tunit/ARTICLE.md)
+Gdzie ląduje output testu, co trafia do TRX, jakie kody wyjścia zwraca przebieg z samymi skipami (0 — zielony dla CI!) i czym naprawdę jest `[ParallelGroup]` — wszystko zmierzone osią czasu.
 → [Artykuł](tunit/ARTICLE.md) · [Kod](tunit/code/)
 
 ### ✈️ [Aspire](aspire/ARTICLE.md)
