@@ -603,6 +603,13 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   `[NotInParallel("db")]` serializuje ponad klasami, różne klucze się nie blokują; `[ParallelGroup]` — w grupie równolegle, grupy po kolei.
   Haczyki: `Console.WriteLine` z `[AfterEvery(Assembly)]` trafił do StdOut ostatniego testu; artefakt to referencja do pliku. Niezweryfikowane:
   filtry z `*`, `dotnet test` z code/, TRX przy porażce, zawartość raportu HTML, wiele kluczy w `[NotInParallel]`, realne coverage.
+- Wydanie #25, 2026-10-18: `FilterLab` (TUnit 1.75.0, SDK 10.0.400, `dotnet run --project`, 10 testów zielonych). TRX po porażce:
+  `outcome="Failed"` z `<ErrorInfo>` i `<StdOut>`; `[NotInParallel(["orders","stock"])]` — klasa z dwoma kluczami czeka na oba, pojedyncze
+  klucze biegną obok siebie (oś czasu mierzona 2×); realne coverage na prawdziwej bibliotece: 80% pełny przebieg, 60% przy jednym teście
+  (niepokryta gałąź `express` testowana tylko `[Explicit]`); potwierdzony haczyk: `Console.WriteLine` z `[AfterEvery(Assembly)]` dokleja się
+  do outputu testu, także w konsoli przy porażce. Niezweryfikowane: wildcardy `*` w `--treenode-filter` (środowisko odrzuca), `dotnet test`
+  z code/ (odrzucone; `--solution` z korzenia → MSB1001), zawartość raportu HTML. W code/ bin/obj/TestResults (w .gitignore).
+- Następny poziom (po #25): wildcardy i `dotnet test` gdy środowisko pozwoli; wyścigi/powtarzalność testów HTTP, walidacja łańcucha `x5c`.
 - Następny poziom (po #24): domknąć niezweryfikowane powyżej; potem wyścigi/powtarzalność testów HTTP, walidacja łańcucha `x5c`.
 - Następny poziom (po #15): okno publikacja→aktywacja dłuższe niż `AutomaticRefreshInterval`, wspólny JWKS za balanserem, walidacja
   łańcucha `x5c`, flakowanie/powtarzalność testów z HTTP. (Starsze po #14: rotacja z wyprzedzeniem, RS256 z certyfikatem X.509, wiele instancji wystawcy; jeszcze starsze: rotacja kluczy (wiele `kid` w JWKS, `ConfigurationManager` po HTTP), wyścig przy współbieżnym

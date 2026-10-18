@@ -18,6 +18,7 @@ Na `net9.0` z C# 14 `a.Reverse();` na tablicy po cichu odwraca ją w miejscu, a 
 → [Artykuł](teamcity/ARTICLE.md) · [Kod](teamcity/code/)
 
 ### 🧪 [TUnit](tunit/ARTICLE.md)
+Co ląduje w TRX, gdy test pada (`ErrorInfo` + `StdOut`), jak `[NotInParallel]` z wieloma kluczami czeka na oba naraz i ile kodu naprawdę pokrywają testy: 80% w pełnym przebiegu, 60% przy jednym teście — z niepokrytą gałęzią, którą widzi tylko `[Explicit]`.
 → [Artykuł](tunit/ARTICLE.md) · [Kod](tunit/code/)
 
 ### ✈️ [Aspire](aspire/ARTICLE.md)

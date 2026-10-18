@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="FilterLab.Core/FilterLab.Core.csproj" />
+  <Project Path="FilterLab.Tests/FilterLab.Tests.csproj" />
+</Solution>
