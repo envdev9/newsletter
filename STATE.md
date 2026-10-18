@@ -1026,7 +1026,14 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   z oknem 10 ms; flock 0/100). Pułapki flock: zamek na samym `journal.jsonl` ginie po `os.replace` z `compact`; `unlink` pliku `.lock`; dziecko po `fork()`
   trzyma zamek; reuse PID (symulacja). Błąd: `compact_every=4` bez blokady → wspólny `.tmp` → 20/40 procesów `FileNotFoundError`. Niezweryfikowane: żywy `claude`,
   NFS/Windows/macOS, >3 pisarzy, dzierżawa z heartbeatem/`SIGSTOP`, prawdziwy reuse PID.
-- Następne: dzierżawa z heartbeatem + fencing token; `permissionMode` w frontmatterze agenta i hooki headless (po weryfikacji CLI); inne kierunki wyższego poziomu pętli (np. wielu pisarzy/blokada dziennika).
+- Wydanie #25, 2026-10-18: **zamarznięty właściciel blokady (`SIGSTOP`), dzierżawa z TTL + heartbeat i fencing token** (`lease.py`, `holder.py`, `small.py`,
+  `scen.py`, `demo.py`, `run_tests.py` 14/14 w 2 przebiegach, Python 3.10.4, Linux). Zmierzone: `flock` z #24 trzyma bez końca zamrożonego właściciela (B czekał
+  2 s bez zamka); dzierżawa TTL 0,6 s przeszła na B po 0,54 s; samo sprawdzenie dzierżawy nie wystarcza (po wznowieniu zamrożony właściciel zapisał 3 przeterminowane
+  zapisy bez sprawdzania, 1 ze sprawdzeniem przed zapisem, 0 przy tokenie ogrodzeniowym sprawdzanym przez zasób). Niezweryfikowane: żywy `claude`/`permissionMode`/hooki
+  headless (agent = skrypt), `time.monotonic()` tylko jeden host (skoki zegara, restart, dryf), zasób bez sprawdzania tokenu (API, `git push`), narzut `FencedLog`
+  przy wielu pisarzach, głodzenie heartbeatu, NFS/Windows/macOS, integracja z nadzorcą z #14–#24. Nie potwierdzono końcowego sprzątania `/tmp/prasowka-lease-*` (find odrzucony).
+- Następne (po #25): wpiąć token w dziennik WAL (`fold` odrzuca rekordy ze starszym tokenem); dzierżawa w bazie zamiast w pliku; `permissionMode` po weryfikacji CLI.
+- Następne (po #24): dzierżawa z heartbeatem + fencing token; `permissionMode` w frontmatterze agenta i hooki headless (po weryfikacji CLI); inne kierunki wyższego poziomu pętli (np. wielu pisarzy/blokada dziennika).
 
 ### 🧠 AI — zarządzanie kontekstem
 - Omówione elementy: kolejność warstw kontekstu (system→narzędzia/MCP→pamięć→historia→

@@ -32,6 +32,7 @@ Co ląduje w TRX, gdy test pada (`ErrorInfo` + `StdOut`), jak `[NotInParallel]` 
 → [Artykuł](ai-claude-code/ARTICLE.md) · [Kod](ai-claude-code/code/)
 
 ### ⚙️ [AI — agentic loop](ai-agentic-loop/ARTICLE.md)
+Co, gdy właściciel blokady nie umiera, tylko zamarza (`SIGSTOP`)? `flock` trzyma bez końca, dzierżawa z TTL przechodzi na drugiego w 0,54 s — ale dopiero fencing token sprawdzany przez sam zasób zatrzymuje zapisy zombie (3 → 1 → 0).
 → [Artykuł](ai-agentic-loop/ARTICLE.md) · [Kod](ai-agentic-loop/code/)
 
 ### 🧠 [AI — zarządzanie kontekstem](ai-context/ARTICLE.md)
