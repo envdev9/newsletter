@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Ten sam kod, dwa TFM: pokazuje przez refleksje, co istnieje na runtime 9 i 10.
+       Uruchom: dotnet run -f net9.0 (oraz -f net10.0) z flaga project wskazujaca ten katalog. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>net9.0;net10.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

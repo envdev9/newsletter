@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- C# 14 na OBU runtime'ach: ten sam kod zrodlowy, inny wynik zaleznie od TFM.
+       Kompilacja przez SDK 10 (net9.0 dostaje pakiet referencyjny BCL 9). -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>net9.0;net10.0</TargetFrameworks>
+    <LangVersion>14</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

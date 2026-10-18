@@ -135,6 +135,15 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
     wyciszyć), rozmiary podpisów 7856 B (SHA2-128s)…49856 B (SHA2-256f). Na maszynie `SlhDsa/MLDsa/MLKem.IsSupported=False`
     (OpenSSL 3.0.2) → NIE zweryfikowano sign/verify. Puste bin/obj w code/.
   - Zostało z diffu: `CompositeMLDsa` → potem .NET 11 (gdy SDK) lub zejście do .NET 9.
+  - [x] `Enumerable.Reverse(TSource[])` (C# 14 first-class spans: na net9.0 `a.Reverse();` odwraca tablicę w miejscu bez ostrzeżenia,
+    na net10.0 nowe przeciążenie przywraca LINQ → brak efektu; CS1579 przy `foreach`; z LangVersion=13 się kompiluje) i
+    `HttpMethod.Query` (metoda QUERY; na SDK 9.0.316 CS0117; po 301/302 QUERY zachowuje metodę i ciało, po 303 → GET; równość z
+    `new HttpMethod("QUERY")` niezależna od wielkości liter, ale inna referencja) — wydanie #25, 2026-10-18. Zweryfikowane na
+    lokalnym `HttpListener`, SDK 10.0.400, runtime 9.0.18/10.0.11. Niezweryfikowane: `List<T>`/`ReadOnlySpan` przy Reverse, Kestrel/
+    minimal API/CORS/cache dla QUERY, pośrednicy HTTP, przyczyna zachowania 301/302, C# 14 na realnym SDK 9.0.316, .NET 11 (brak SDK).
+  - Zostało: async API `System.IO.Compression` (`ZipFile.CreateFromDirectoryAsync`/`ExtractToDirectoryAsync`, `ZipArchive.CreateAsync`,
+    `ZipArchiveEntry.OpenAsync`, `DisposeAsync`; potwierdzone refleksją, bez kodu), `ProcessStartInfo.CreateNewProcessGroup`,
+    `CompositeMLDsa` → potem .NET 11 (gdy SDK) lub zejście do .NET 9.
 - Gdy funkcje .NET 10 się wyczerpią → .NET 11 → (dalsze nowości) → schodzimy w dół:
   9 → 8 → 7 → 6, potem wracamy do najnowszej dostępnej wersji.
 
