@@ -1,0 +1,1 @@
+{"changes": [{"file": "Billing/Money.cs", "symbol": "Money.Round", "edit": "Math.Round z MidpointRounding.AwayFromZero"}], "test": "Round(0.125) oczekiwane 0.13 w Billing.Check", "out_of_scope": ["Discounts.IsEligible", "zmiana sygnatur publicznych"]}

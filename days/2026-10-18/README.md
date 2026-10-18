@@ -39,6 +39,7 @@ Co, gdy właściciel blokady nie umiera, tylko zamarza (`SIGSTOP`)? `flock` trzy
 → [Artykuł](ai-context/ARTICLE.md) · [Kod](ai-context/code/)
 
 ### ✍️ [AI — prompty dla developera](ai-prompts/ARTICLE.md)
+Łańcuch promptów kosztuje ok. 1,9–2× więcej tokenów niż jeden prompt, a fail-fast oszczędza 33% — ale tylko tam, gdzie odrzucenie pada w krokach 1–2; do tego próg, od którego łańcuch i tak się opłaca (szacunek na długościach, bez modelu).
 → [Artykuł](ai-prompts/ARTICLE.md) · [Kod](ai-prompts/code/)
 
 ### 🅰️ [Angular](angular/ARTICLE.md)

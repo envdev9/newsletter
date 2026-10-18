@@ -1,0 +1,1 @@
+{"changes": [{"file": "Billing/InvoiceCalculator.cs", "symbol": "InvoiceCalculator.LineTotal", "edit": "w RoundTotal uzyc MidpointRounding.AwayFromZero"}], "test": "LineTotal(3 x 0.835) oczekiwane 2.51", "out_of_scope": []}

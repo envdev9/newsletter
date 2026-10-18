@@ -1,0 +1,11 @@
+--- a/Billing/InvoiceCalculator.cs
++++ b/Billing/InvoiceCalculator.cs
+@@ -8,7 +8,7 @@
+     /// <summary>Zaokrągla sumę faktury do groszy.</summary>
+     public static decimal RoundTotal(decimal total)
+     {
+-        return Math.Round(total, 2);
++        return Math.Round(total, 2, MidpointRounding.AwayFromZero);
+     }
+
+     /// <summary>Wartość jednej pozycji (ilość x cena), zaokrąglona do groszy.</summary>

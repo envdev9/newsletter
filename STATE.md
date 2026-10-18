@@ -1136,7 +1136,15 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   właściwości/pola/event/enum/generyki, widma z komentarzy i `record struct`, `partial` → jeden plik, nie zna sygnatur; Roslyn nie widzi symboli pod nieaktywnym `#if`, bez MSBuilda
   brak `ImplicitUsings`. Niezweryfikowane: żaden model, korpus adversarialny (zbudowany przeciw regexowi, prawda moja), NuGet `Microsoft.CodeAnalysis`, generatory, Stryker.NET,
   koszt tokenów.
-- Następne: porównanie ze Stryker.NET i ślepym zestawem; pomiar kosztu tokenów łańcucha vs jeden prompt; ewaluacja na prawdziwym modelu; pomiar kosztu tokenów łańcucha vs jeden prompt.
+- Wydanie #25, 2026-10-18: **koszt tokenów łańcucha vs jeden prompt** (`cost.py` rejestrator długości promptów + model kosztu, `test_cost.py`; `chain.py`/`Billing`/
+  `prompts/`/`fixtures/` skopiowane z #18 dla samodzielności). Tokeny = `ceil(znaki/k)` (szacunek, żaden model/tokenizer nie uruchamiany). Zmierzone: na ścieżce
+  szczęśliwej łańcuch ~1,9–2,0× droższy od jednego promptu (stabilne dla k=3–5, waga wyjścia 1–5); szablony 47% wejścia, źródła jadą 2× (kroki 2 i 3); fail-fast
+  oszczędza 33% (4931 vs 7337 tokenów), ale cała oszczędność z 3 scenariuszy odrzuconych w krokach 1–2 (s4, s5 odpadają w kroku 3 → 0). Próg opłacalności łańcucha
+  zależy od q (krok) i Q (jeden prompt), które trzeba zmierzyć na modelu. Niezweryfikowane: model/tokenizer, ręcznie pisane nagrania, waga wyjścia, q/Q, runda
+  naprawcza, kod "duży" (ekstrapolacja), cache promptów i czas niemodelowane, brak testu negatywnego `test_cost.py`, bramka `dotnet run` tylko przez `chain.py run`.
+- Następne (po #25): pomiar na prawdziwym modelu i tokenizerze; układanie promptów pod cache prefiksu (stały prefiks, zmienne dane na końcu); Stryker.NET i ślepy
+  zestaw; kolejność kroków od najtańszej walidacji.
+- Następne (po #24): porównanie ze Stryker.NET i ślepym zestawem; pomiar kosztu tokenów łańcucha vs jeden prompt; ewaluacja na prawdziwym modelu; pomiar kosztu tokenów łańcucha vs jeden prompt.
 
 ### 🅰️ Angular
 - Aktualny poziom trudności: **podstawy (opanowane)**

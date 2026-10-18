@@ -1,0 +1,2 @@
+Napraw blad z zaokragleniem kwot w bibliotece Billing (faktura wychodzi o grosz za
+malo) i upewnij sie, ze testy przechodza. Zrob to porzadnie i zwroc gotowa zmiane.
