@@ -1,0 +1,42 @@
+---
+# set_stats w wielu playach: liczniki zbiorcze na koniec przebiegu.
+# Uruchom z ANSIBLE_SHOW_CUSTOM_STATS=true, żeby zobaczyć sekcję CUSTOM STATS.
+- name: play 1 - każdy host dokłada 2 do "pliki" (aggregate)
+  hosts: fleet
+  gather_facts: false
+  tasks:
+    - name: stats play 1
+      ansible.builtin.set_stats:
+        data:
+          pliki: 2
+          etap: "play1"
+        per_host: false
+        aggregate: true
+
+- name: play 2 - każdy host dokłada 3, etap nadpisywany
+  hosts: fleet
+  gather_facts: false
+  tasks:
+    - name: stats play 2
+      ansible.builtin.set_stats:
+        data:
+          pliki: 3
+          etap: "play2"
+        per_host: false
+        aggregate: true
+
+- name: play 3 - aggregate false (nadpisanie) i per_host true
+  hosts: fleet
+  gather_facts: false
+  tasks:
+    - name: stats play 3 nadpisanie
+      ansible.builtin.set_stats:
+        data:
+          ostatni_etap: "play3-{{ inventory_hostname }}"
+        aggregate: false
+
+    - name: stats play 3 per host
+      ansible.builtin.set_stats:
+        data:
+          wersja: "v1"
+        per_host: true

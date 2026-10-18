@@ -12,6 +12,7 @@ Na `net9.0` z C# 14 `a.Reverse();` na tablicy po cichu odwraca ją w miejscu, a 
 → [Artykuł](dotnet/ARTICLE.md) · [Kod](dotnet/code/)
 
 ### 🔧 [Ansible](ansible/ARTICLE.md)
+Tag na `include_role` nie wchodzi do środka roli — rola się dołącza, ale żadne jej zadanie nie rusza; dopiero `apply:` to naprawia. Plus `set_stats` przez trzy playe i trzy hosty: kiedy liczby się sumują (15), a napisy tylko sklejają.
 → [Artykuł](ansible/ARTICLE.md) · [Kod](ansible/code/)
 
 ### 🏗️ [TeamCity](teamcity/ARTICLE.md)

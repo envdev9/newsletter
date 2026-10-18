@@ -1,0 +1,12 @@
+---
+# Zadanie roli bez żadnych tagów - widać, czy w ogóle się wykonało.
+# Uwaga: lookup('env') działa na kontrolerze i NIE widzi `environment:` zadania,
+# dlatego odczyt robi moduł wykonywany na hoście (shell).
+- name: "probe: odczyt DEMO_ENV na hoście"
+  ansible.builtin.shell: 'echo "DEMO_ENV=${DEMO_ENV:-(brak)}"'
+  register: probe_env
+  changed_when: false
+
+- name: "probe: zadanie roli"
+  ansible.builtin.debug:
+    msg: "rola probe wykonana, {{ probe_env.stdout }}"

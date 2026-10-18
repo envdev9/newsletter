@@ -1,0 +1,22 @@
+---
+# include_role: tag na include vs apply:
+#   uruchom z --tags only_tag   (zadanie roli NIE dziedziczy tagu)
+#   uruchom z --tags applied_tag (apply: przekazuje tag + environment do wnętrza roli)
+- name: include_role a apply
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: "A) include_role z samym tagiem"
+      ansible.builtin.include_role:
+        name: probe
+      tags: [only_tag]
+
+    - name: "B) include_role z tagiem + apply (tags, environment)"
+      ansible.builtin.include_role:
+        name: probe
+        apply:
+          tags: [applied_tag]
+          environment:
+            DEMO_ENV: "ustawione-przez-apply"
+      tags: [applied_tag]

@@ -1,0 +1,31 @@
+---
+# Czy zmienne roli (defaults/ i vars/) widać w playbooku PO wywołaniu roli?
+# Uruchom bez i z ANSIBLE_PRIVATE_ROLE_VARS=true.
+- name: wyciek zmiennych roli
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  roles:
+    - probe
+  tasks:
+    - name: "po roli: probe_default i probe_fixed"
+      ansible.builtin.debug:
+        msg:
+          probe_default: "{{ probe_default | default('NIEDOSTEPNA') }}"
+          probe_fixed: "{{ probe_fixed | default('NIEDOSTEPNA') }}"
+
+- name: include_role z public true
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: wywolanie include_role public true
+      ansible.builtin.include_role:
+        name: probe
+        public: true
+
+    - name: "po include_role public: true"
+      ansible.builtin.debug:
+        msg:
+          probe_default: "{{ probe_default | default('NIEDOSTEPNA') }}"
+          probe_fixed: "{{ probe_fixed | default('NIEDOSTEPNA') }}"

@@ -307,6 +307,13 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   `lineinfile`/`blockinfile`/`assemble` (walidator dostaje plik tymczasowy z całą zawartością; rc=1 → cel nietknięty). ansible-core 2.17.14.
   Niezweryfikowane: `nginx -t`/`visudo -cf`, kolizja przy `serial`/wielu hostach, `validate` z `--check`, SSH/`become`, vault/galaxy/Molecule.
   Zostało: `include_role` + `apply:`, `private_role_vars`, `set_stats` w wielu playach.
+- Wydanie #25, 2026-10-18: `include_role` + `apply: {tags, environment}` (tag na `include_role` nie wchodzi do roli: przy `--tags only_tag`
+  rola dołączona, zadania się nie wykonują; `apply:` przekazuje tag i środowisko; `environment:` bezpośrednio na `include_role` → błąd
+  parsowania "not a valid attribute for a IncludeRole"), `set_stats` przez 3 pleye × 3 hosty (`aggregate: true` sumuje liczby 3×2+3×3=15,
+  napisy sklejane; `aggregate: false` ostatni zapis; `per_host: true` osobny klucz na host). ansible-core 2.17.14. Haczyk: `lookup('env')`
+  działa na kontrolerze, nie na hoście. Niezweryfikowane: `private_role_vars` z włączoną flagą (env/ansible.cfg niedostępne), dziedziczenie
+  tagów w `roles:`/`import_role`, `apply:` z `become`/`when`, wbudowany `show_custom_stats`, SSH/`become`, vault/galaxy/Molecule.
+  W code/ zostało `callback_plugins/__pycache__`. Zostało: `private_role_vars` (jeśli da się włączyć), `apply:` z `become`/`when`.
 - Następny poziom: Molecule (gdyby `ansible-galaxy` kiedyś przestał być blokowany); zdalne SSH/`become`
   (jeśli kiedykolwiek dostępne — środowisko na razie blokuje nawet sprawdzenie `sshd`); własny
   **inventory plugin** (dynamic inventory jako skrypt zwracający JSON, podłączony przez `-i`, nie

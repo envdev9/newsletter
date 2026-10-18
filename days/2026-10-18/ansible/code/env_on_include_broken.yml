@@ -1,0 +1,13 @@
+---
+# CELOWO ZEPSUTY: environment bezposrednio na include_role jest odrzucany.
+# Poprawnie: environment wewnatrz apply: (patrz apply.yml).
+- name: environment na include_role
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: include z environment na poziomie include
+      ansible.builtin.include_role:
+        name: probe
+      environment:
+        DEMO_ENV: "env-na-include"
