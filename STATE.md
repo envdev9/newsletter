@@ -861,7 +861,15 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   `ArgumentException: Messages types must have a valid namespace`. **Niezweryfikowane (polecenia `dotnet <dll>` odrzucone):**
   wznowienie sagi po restarcie, konflikt wersji przy wyścigu (retry/noretry), `Pessimistic` na SQLite, ostrzeżenie NU1903 dla
   `SQLitePCLRaw.lib.e_sqlite3`. Kod i scenariusze A/B są w `code/README.md`, nie były wykonane.
-- Następny poziom: uruchomić scenariusze restartu i wyścigu z #21, trwałe sagi na PostgreSQL z pesymistycznym lockiem i na RabbitMQ,
+- Wydanie #26, 2026-10-19: **trwała saga na PostgreSQL 16 (Docker) — restart, wyścig, optymistyczna vs pesymistyczna współbieżność.** MassTransit
+  + EntityFrameworkCore 8.5.10, Npgsql EF 10.0.0 (9.0.4 daje NU1107), .NET SDK 10.0.400, in-memory transport, build 0/0. Zweryfikowane (każdy
+  scenariusz raz): `submit`/`pay` w osobnych procesach działają na tym samym wierszu (restart); tryb optymistyczny z `int Version` cicho gubi
+  aktualizację (`eventsApplied=2` zamiast 3, brak `Packed` w `trail`, `Version` stale 0, bez wyjątku); token `xmin` (`IsRowVersion()`) daje
+  głośny `DbUpdateConcurrencyException`, z retry 3; tryb pesymistyczny wymaga `PostgresLockStatementProvider`, `SELECT ... FOR UPDATE`, domyślnie
+  drugi event pada z SQLSTATE 40001 (opakowany w `InvalidOperationException`), z `IsolationLevel.ReadCommitted` czeka na blokadę. Niezweryfikowane:
+  że domyślna izolacja jest wyższa niż ReadCommitted (wniosek z błędu), czas oczekiwania na blokadę, statystyka powtórzeń, wyścig z dwóch
+  procesów, ręczne `Version++`, `UseDelayedRedelivery`, saga na RabbitMQ, `UseMessageRetry` + Courier, `dotnet test`. Kontener `mt-pgsaga-demo` usunięty.
+- Następny poziom: saga na RabbitMQ z trwałym repozytorium,
   `UseDelayedRedelivery` na prawdziwym brokerze,
   `ReviseItinerary`, `UseMessageRetry` + Courier, zachowanie po `ShutdownTimeout`, atomowy klucz idempotentności przy 2 workerach.
 
