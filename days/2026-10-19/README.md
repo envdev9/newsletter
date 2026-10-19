@@ -40,6 +40,7 @@ Po kompakcji wskaźnik „bez zmian od tury 11" może wskazywać treść, które
 → [Artykuł](ai-prompts/ARTICLE.md) · [Kod](ai-prompts/code/)
 
 ### 🅰️ [Angular](angular/ARTICLE.md)
+Signal Forms w SSR: serwer czeka na `validateAsync`, więc błąd walidacji jest już w HTML (render = czas najwolniejszej walidacji), ale bez `TransferState` klient po hydracji woła backend drugi raz — z nim 0 zapytań; do tego tekst wpisany przed startem JS jest nadpisywany modelem.
 → [Artykuł](angular/ARTICLE.md) · [Kod](angular/code/)
 
 ### 🗄️ [SQL Server](sqlserver/ARTICLE.md)

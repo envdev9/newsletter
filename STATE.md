@@ -1309,8 +1309,17 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   niecommitowane). Zweryfikowane: `npm install`, `ng build` OK (6,9 s, 208,59 kB), `ng test` 14/14, test mutacyjny (4 padają). Niezweryfikowane:
   `ng serve`/przeglądarka, przyczyna rozjazdu UI/model to wniosek z kodu `signals.mjs`, `NG_ASYNC_VALIDATORS` na natywnym `<input>`, CVA z
   `ngModel`/`FormControl` obok `[formField]`, sygnał abort przy resecie, SSR/hydration, `mapResponse()`, `aria-*`.
-- Następny poziom: SSR/hydration formularza (`renderApplication` w Node), `mapResponse()` w kontekście `@ngrx/effects`/Actions,
-  CVA z `ngModel`, `ng serve` w prawdziwej przeglądarce (o ile dostępna).
+- Wydanie #26, 2026-10-19: **Signal Forms w SSR i hydracji** — `renderApplication` w czystym Node (bez Expressa/`@angular/ssr`), formularz z dwoma natywnymi
+  `<input [formField]>` + `validateAsync`/`resource()`. Zmierzone: `[formField]` emituje `value`/`required`/`name`; `afterNextRender` nie działa na serwerze; serwer czeka na
+  `validateAsync` (render = czas najwolniejszej walidacji: 200 ms → 286 ms, 800 ms → 816 ms), błąd jest już w HTML; bez `TransferState` klient woła backend drugi raz
+  (`clientRequests:["TAKEN"]`), z nim 0 zapytań; hydracja używa węzłów z SSR, bez znaczników (`ngh`/`ng-state`) → NG0505 i budowa od nowa; tekst wpisany przed JS (`Zofia`)
+  nadpisany modelem (`Anna`); `name` z procesowego licznika (`ng.form0..7.code`), klient po hydracji przepisuje własnym. Angular 22.2.3, TS 6.0.3, Vitest 5.0.5, jsdom 30.1.2,
+  esbuild 0.28.2, Node 22.14.0 (obejścia: przypięty jsdom, `overrides.undici` 8.11.2, edycja progu CLI w `node_modules` — niecommitowana). Zweryfikowane: `ng build` OK
+  (6,7 s, 238,57 kB), bundle SSR + `ssr:check` (8 scenariuszy), `ng test` 13/13, test mutacyjny (`USE_TRANSFER_STATE=false` → 2 padają). `renderApplication` nie działa w Vitest
+  (SSR przez `ngc`+`esbuild` w osobnym procesie). Niezweryfikowane: `ng serve`/przeglądarka (jsdom, zdarzenia syntetyczne), `withEventReplay()`, cache `HttpClient`,
+  `outputMode:"server"`/`@angular/ssr` (na Node 22.14 `registerHooks is not a function`), limit czasu renderu, `mapResponse()`, CVA z `ngModel`, `aria-*`.
+- Następny poziom: `mapResponse()` w kontekście `@ngrx/effects`/Actions, CVA z `ngModel`/`FormControl` obok `[formField]`, `withEventReplay()`, `ng serve`
+  w prawdziwej przeglądarce (o ile dostępna).
 
 ### 🗄️ SQL Server
 - Aktualny poziom trudności: **podstawy (opanowane, w pełni zweryfikowane)**
