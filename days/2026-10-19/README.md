@@ -33,6 +33,7 @@ Saga na PostgreSQL potrafi cicho zgubić aktualizację: tryb optymistyczny z `in
 → [Artykuł](ai-agentic-loop/ARTICLE.md) · [Kod](ai-agentic-loop/code/)
 
 ### 🧠 [AI — zarządzanie kontekstem](ai-context/ARTICLE.md)
+Po kompakcji wskaźnik „bez zmian od tury 11" może wskazywać treść, której już nie ma: najtańsza polityka (2,11×) zgubiła 4 z 14 wyników, a poprawna kosztuje 1,48× — w przemiataniu 108 scenariuszy jedna „prawie dobra" polityka też kłamała.
 → [Artykuł](ai-context/ARTICLE.md) · [Kod](ai-context/code/)
 
 ### ✍️ [AI — prompty dla developera](ai-prompts/ARTICLE.md)

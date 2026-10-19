@@ -1098,7 +1098,14 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   retro zapisuje do cache więcej niż none (64 228 vs 43 915 tok.) — mutacja środka historii unieważnia resztę. Odczyt po edycji 33–106 tok. (diff) zamiast 7962; bez zmian 14 tok.
   Rekonstrukcja 8/8 odczytów, fuzz 300 edycji diffu. Mnożnik odczytu cache ≤0,50 → wygrywa append; przy 0,05 retro gorszy niż none. append zostawia 1 nieaktualną kopię pliku (9238 tok.).
   Niezweryfikowane: zachowanie modelu, mnożniki cache (z pamięci), rozkład powtórzeń w realnych sesjach, deduplikacja w `claude`, `/compact` (wiszący stub), CRLF/binaria; próg diffu 50% umowny.
-- Następne: embeddingi (gdy dostępny model/biblioteka); `last_seen` po kompakcji + test wiszącego stuba; dedupikacja wyników `grep`/`ls`; weryfikacja w żywym `claude`/dokumentacji (nowa sesja, wznowienie, `/compact`); analiza prawdziwego transkryptu (gdy odczyt dozwolony); reguły CLAUDE.md i „lost in the middle"; niezależny zestaw zapytań pisany przez kogoś innego.
+- Wydanie #10 rubryki (#26), 2026-10-19: **`last_seen` po kompakcji i wiszący stub + dedupikacja wyników `grep`** — `ctxledger.py`, `test_ctxledger.py` (54 asercje, Python 3.10.4
+  stdlib, `-B`), `ctxdedup.py` (kopia z #21), `fixture/`. Sesja 19 kroków (edycje, testy `OK: 40`, 8× `grep` ugrep 7.8.4). Polityki: `none`, `ignore` (zachowanie z #9), `epoch`
+  (zerowanie przy kompakcji), `last` (ważny gdy żyje ostatnie zdarzenie z treścią), `chain` (ważny gdy żyje cały łańcuch odczyt+diffy); warianty `chain-bez-grep`/`chain-tylko-grep`.
+  Kompakcja przed turą 12, ogon 0: `ignore` 2,11× tańszy, ale 4/14 wyników nie do odtworzenia z okna; `chain`/`epoch`/`last` 1,48×, 0 błędów. Ogon 6: `ignore` 2,49×, `last` 2,48× z 2 wiszącymi
+  odczytami (osierocony diff bez bazy), `chain` 1,77×, `epoch` 1,76×, 0 błędów. Przemiatanie 108 scenariuszy (kompakcja po każdym z 18 kroków × 6 ogonów): `ignore` błąd w 91/108 (354 złe),
+  `last` 15/108 (20 złych), `epoch`/`chain` 0. Poprawny `chain` ~41% droższy od `ignore` (54 315 vs 38 637). Numery linii `grep` po wstawieniu linii +1 — klucz `(plik,nr,tekst)` unieważnia sam.
+  Niezweryfikowane: kompakcja tylko modelowana (stałe podsumowanie 510 tok.), zachowanie modelu, `/compact`/żywy `claude`, mnożniki cache z założeń, `ls`/`grep -r` na dużym repo, prawdziwy transkrypt; jedna sesja, dwa pliki.
+- Następne: embeddingi (gdy dostępny model/biblioteka); dedupikacja wyników `ls`; weryfikacja w żywym `claude`/dokumentacji (nowa sesja, wznowienie, `/compact`); analiza prawdziwego transkryptu (gdy odczyt dozwolony); reguły CLAUDE.md i „lost in the middle"; niezależny zestaw zapytań pisany przez kogoś innego.
 
 ### ✍️ AI — prompty dla developera
 - Omówione elementy: 5 par zły/dobry prompt (konkretność+pliki/linie, "dlaczego" vs

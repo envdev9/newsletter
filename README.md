@@ -41,7 +41,7 @@ gotowy, ale weryfikację ograniczyło środowisko (szczegóły w artykułach).
 
 | # | Data | Wydanie | Rubryki |
 |---|------|---------|---------|
-| 26 | 2026-10-19 | [Otwórz](days/2026-10-19/README.md) | 📨 MassTransit |
+| 26 | 2026-10-19 | [Otwórz](days/2026-10-19/README.md) | 📨 MassTransit · 🧠 AI kontekst |
 | 25 | 2026-10-18 | [Otwórz](days/2026-10-18/README.md) | 🔷 .NET · 🧪 TUnit · 🔧 Ansible · ⚙️ AI agentic loop · ✍️ AI prompty |
 | 24 | 2026-10-17 | [Otwórz](days/2026-10-17/README.md) | 🔷 .NET · 🧪 TUnit · 🔧 Ansible · 🤖 AI×2 |
 | 23 | 2026-10-16 | [Otwórz](days/2026-10-16/README.md) | 🗄️ SQL Server · 🧬 pgvector · 🤖 AI Claude Code |
