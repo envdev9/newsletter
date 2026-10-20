@@ -40,6 +40,7 @@ Powtarzane `ls` w sesji agenta: delta katalogu zamiast pełnych kopii daje na 15
 → [Artykuł](ai-prompts/ARTICLE.md) · [Kod](ai-prompts/code/)
 
 ### 🅰️ [Angular](angular/ARTICLE.md)
+`mapResponse()` w efektach NgRx: jedno złe ustawienie operatora (poza `switchMap`) po cichu zabija efekt po pierwszym błędzie — kolejne wyszukiwanie wysyła 0 żądań, a `ErrorHandler` milczy; do tego mosty ze starymi kontrolkami CVA, `compatForm` i `SignalFormControl`.
 → [Artykuł](angular/ARTICLE.md) · [Kod](angular/code/)
 
 ### 🗄️ [SQL Server](sqlserver/ARTICLE.md)

@@ -1333,8 +1333,16 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   (6,7 s, 238,57 kB), bundle SSR + `ssr:check` (8 scenariuszy), `ng test` 13/13, test mutacyjny (`USE_TRANSFER_STATE=false` → 2 padają). `renderApplication` nie działa w Vitest
   (SSR przez `ngc`+`esbuild` w osobnym procesie). Niezweryfikowane: `ng serve`/przeglądarka (jsdom, zdarzenia syntetyczne), `withEventReplay()`, cache `HttpClient`,
   `outputMode:"server"`/`@angular/ssr` (na Node 22.14 `registerHooks is not a function`), limit czasu renderu, `mapResponse()`, CVA z `ngModel`, `aria-*`.
-- Następny poziom: `mapResponse()` w kontekście `@ngrx/effects`/Actions, CVA z `ngModel`/`FormControl` obok `[formField]`, `withEventReplay()`, `ng serve`
-  w prawdziwej przeglądarce (o ile dostępna).
+- Wydanie #27, 2026-10-20: **`mapResponse()` w efektach NgRx + mosty ze starymi formularzami (CVA, `compatForm`, `SignalFormControl`)** — Angular 22.2.3, NgRx 22.0.1,
+  TS 6.0.3, Vitest 5.0.5, jsdom 30.1.2, Node 22.14.0 (te same obejścia co #9–#26). Zweryfikowane: `ng build` OK (7,3 s, 251,49 kB), `ng test` 13/13, test mutacyjny (`mapResponse`
+  na zewnątrz `switchMap` → 2 testy padają). `mapResponse` = `map` + `catchError(of(...))`. Na zewnątrz `switchMap`: pierwszy błąd obsłużony, kolejne wyszukiwanie 0 żądań, `ErrorHandler`
+  milczy (strumień zakończony). Bez obsługi błędu: reducer w `loading: true`, NgRx wznawia efekt 10 razy (żądania 1–11 wychodzą, 12. nic). Wyjątek w `next` trafia do `error` jako zwykły `Error`.
+  Kolejność CVA: `ngModel` → `writeValue(null)`, `setDisabledState`, rejestracje, potem `writeValue(2)`; `[formControl]` wartość od razu; `[formField]` rejestracja potem wartość. `ngModel` +
+  `[formField]` na jednym elemencie: bez błędu i ostrzeżenia, `ngModel` wygrywa, model Signal Forms zostaje. `compatForm`: stary `Validators.min(3)` → `kind: "min"` (kolizja nazw z nowym `min`).
+  `SignalFormControl` w `FormGroup` propaguje ważność/wartość/`dirty`/`touched`. Niezweryfikowane: `ng serve`/przeglądarka (curl odrzucony), `withEventReplay()`, `mapResponse` przy wielu emisjach,
+  własny `EFFECTS_ERROR_HANDLER`, `NG_VALIDATORS`/`NG_ASYNC_VALIDATORS` pod `compatForm`.
+- Następny poziom: `withEventReplay()` i incremental hydration (`@defer (hydrate on …)`), `NG_VALIDATORS`/`NG_ASYNC_VALIDATORS` pod `compatForm`, własny `EFFECTS_ERROR_HANDLER` /
+  `useEffectsErrorHandler: false`, `ng serve` w prawdziwej przeglądarce (o ile dostępna).
 
 ### 🗄️ SQL Server
 - Aktualny poziom trudności: **podstawy (opanowane, w pełni zweryfikowane)**
