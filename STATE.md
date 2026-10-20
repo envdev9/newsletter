@@ -1114,7 +1114,13 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   odczytami (osierocony diff bez bazy), `chain` 1,77×, `epoch` 1,76×, 0 błędów. Przemiatanie 108 scenariuszy (kompakcja po każdym z 18 kroków × 6 ogonów): `ignore` błąd w 91/108 (354 złe),
   `last` 15/108 (20 złych), `epoch`/`chain` 0. Poprawny `chain` ~41% droższy od `ignore` (54 315 vs 38 637). Numery linii `grep` po wstawieniu linii +1 — klucz `(plik,nr,tekst)` unieważnia sam.
   Niezweryfikowane: kompakcja tylko modelowana (stałe podsumowanie 510 tok.), zachowanie modelu, `/compact`/żywy `claude`, mnożniki cache z założeń, `ls`/`grep -r` na dużym repo, prawdziwy transkrypt; jedna sesja, dwa pliki.
-- Następne: embeddingi (gdy dostępny model/biblioteka); dedupikacja wyników `ls`; weryfikacja w żywym `claude`/dokumentacji (nowa sesja, wznowienie, `/compact`); analiza prawdziwego transkryptu (gdy odczyt dozwolony); reguły CLAUDE.md i „lost in the middle"; niezależny zestaw zapytań pisany przez kogoś innego.
+- Wydanie #11 rubryki (#27), 2026-10-20: **dedupikacja wyników `ls` — delta katalogu** — `lsdelta.py`, `test_lsdelta.py` (4 545 asercji, fuzz 60 sesji; Python 3.10.4, GNU ls 8.32). Sesja 17 tur,
+  11 listingów na realnym katalogu `src` (152 wpisy) w /tmp. Polityki none/same/setdiff/namekey/state/evented. Tokeny vs none: same 1,22×, setdiff 4,04×, namekey 4,10×, state 4,12× (koszt ważony 3,18×),
+  0 błędów odtworzenia 11/11; `evented` („nie wołam ls, ufam zdarzeniom”) oszczędza 0,1% i myli się 1/11 po zewnętrznym buildzie (błąd trwa 3 tury). `ls -lA` 1 677 tok. vs `ls -1A` 383. Skala: 22 wpisy 2,60×,
+  502 → 4,57×, 2002 → 4,75× (koszt ważony 3,56×). Klucz po nazwie tylko +1,5%. `ls -l` nie widzi edycji o tym samym rozmiarze w tej samej minucie (mtime wymuszony `os.utime`). Delta gubi kolejność.
+  Niezweryfikowane: zachowanie modelu, żywy `claude`/`/compact`, mnożniki cache (założenia), `ls -R`/`-t`/symlinki/BSD, rozkład powtórzeń w realnych sesjach (11 listingów dobranych ręcznie).
+- Następne: weryfikacja w żywym `claude` (hak na wynik narzędzia, co przeżywa `/compact`); epoka kompakcji dla delt `ls` + `ls -R` na dużym repo; analiza prawdziwego transkryptu; reguły CLAUDE.md i „lost in the middle”; embeddingi.
+- (Stara lista, wcześniejsze): embeddingi (gdy dostępny model/biblioteka); dedupikacja wyników `ls` (zrobione #27); weryfikacja w żywym `claude`/dokumentacji (nowa sesja, wznowienie, `/compact`); analiza prawdziwego transkryptu (gdy odczyt dozwolony); reguły CLAUDE.md i „lost in the middle"; niezależny zestaw zapytań pisany przez kogoś innego.
 
 ### ✍️ AI — prompty dla developera
 - Omówione elementy: 5 par zły/dobry prompt (konkretność+pliki/linie, "dlaczego" vs

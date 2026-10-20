@@ -33,6 +33,7 @@
 → [Artykuł](ai-agentic-loop/ARTICLE.md) · [Kod](ai-agentic-loop/code/)
 
 ### 🧠 [AI — zarządzanie kontekstem](ai-context/ARTICLE.md)
+Powtarzane `ls` w sesji agenta: delta katalogu zamiast pełnych kopii daje na 152 wpisach 4,12× mniej tokenów i zero błędów odtworzenia, a polityka „nie wołam `ls`, ufam własnym zdarzeniom” oszczędza 0,1% i myli się po zewnętrznym buildzie.
 → [Artykuł](ai-context/ARTICLE.md) · [Kod](ai-context/code/)
 
 ### ✍️ [AI — prompty dla developera](ai-prompts/ARTICLE.md)
