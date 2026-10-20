@@ -869,9 +869,18 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   drugi event pada z SQLSTATE 40001 (opakowany w `InvalidOperationException`), z `IsolationLevel.ReadCommitted` czeka na blokadę. Niezweryfikowane:
   że domyślna izolacja jest wyższa niż ReadCommitted (wniosek z błędu), czas oczekiwania na blokadę, statystyka powtórzeń, wyścig z dwóch
   procesów, ręczne `Version++`, `UseDelayedRedelivery`, saga na RabbitMQ, `UseMessageRetry` + Courier, `dotnet test`. Kontener `mt-pgsaga-demo` usunięty.
-- Następny poziom: saga na RabbitMQ z trwałym repozytorium,
-  `UseDelayedRedelivery` na prawdziwym brokerze,
-  `ReviseItinerary`, `UseMessageRetry` + Courier, zachowanie po `ShutdownTimeout`, atomowy klucz idempotentności przy 2 workerach.
+- Wydanie #27, 2026-10-20: **`UseDelayedRedelivery` na prawdziwym RabbitMQ (`4.3-management`) — bez wtyczki delayed-message nie działa** +
+  `Interval` retry jako zmierzona alternatywa + `HostOptions.ShutdownTimeout`. MassTransit + RabbitMQ 8.5.10, SDK 10.0.400, build 0/0.
+  Zweryfikowane (każdy wariant raz, `delayed` dwa razy): oficjalny obraz nie ma wtyczki (`rabbitmq-plugins list -m`); log brokera
+  `precondition_failed: unknown exchange type 'x-delayed-message'` (widoczny tylko w `docker logs`); bez wtyczki host startuje normalnie, a
+  `UseDelayedRedelivery` psuje się dopiero przy pierwszej błędnej wiadomości — próby #3/#4 po ~22,5 s zamiast 3 s, a `job-2` (PrefetchCount=1)
+  nieprzetworzony w 31 s; `Interval(2, 3s)` próby po 1,3/4,3/7,3 s, zdrowy `job-2` czeka ~6 s (zajęty slot konsumenta); `immediate` `job-2` po
+  0,3 s; zamknięcie hosta 30,0 s (domyślny `ShutdownTimeout`) vs 5,0 s po zmianie, wiadomości wracają do kolejki (`ready=2`, `consumers=0`).
+  Niezweryfikowane: `UseDelayedRedelivery` z działającą wtyczką (wariant `delayed-plugin` kompiluje się, nie był uruchomiony — `gh api` do
+  sprawdzenia wersji wtyczki odrzucone), przyczyna ~21 s opóźnienia (tylko hipoteza), `StopAsync` w wariancie `interval`, `dotnet test`.
+  Kontener `mt-delayed-demo` usunięty.
+- Następny poziom: własny obraz RabbitMQ z wtyczką delayed-message i realny pomiar `UseDelayedRedelivery`, saga na RabbitMQ z trwałym
+  repozytorium, `ReviseItinerary`, `UseMessageRetry` + Courier, atomowy klucz idempotentności przy 2 workerach.
 
 ### 🤖 AI — Claude Code dla .NET/Angular/SQL
 - Omówione przypadki użycia: slash command generujący testy xUnit dla klasy C#, hook
