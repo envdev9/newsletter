@@ -879,6 +879,12 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   Niezweryfikowane: `UseDelayedRedelivery` z działającą wtyczką (wariant `delayed-plugin` kompiluje się, nie był uruchomiony — `gh api` do
   sprawdzenia wersji wtyczki odrzucone), przyczyna ~21 s opóźnienia (tylko hipoteza), `StopAsync` w wariancie `interval`, `dotnet test`.
   Kontener `mt-delayed-demo` usunięty.
+- Wydanie #28, 2026-10-21: **atomowy klucz idempotentności przy 2 workerach** (RabbitMQ 4.3-management, SQLite w katalogu tymczasowym, 5 płatności
+  × 2 duplikaty, dwa procesy na kolejce `idem-pay`). `naive` (sprawdź → efekt → zapisz klucz): 10 efektów, 5 duplikatów, 0 SKIP; `atomic`
+  (`INSERT OR IGNORE` przed efektem): 5 efektów, 5 SKIP. Klucz z danych biznesowych (`PaymentId`), nie `MessageId`. Koszt atomic: awaria po
+  zajęciu klucza gubi efekt (at-most-once). MassTransit + RabbitMQ 8.5.10, SDK 10.0.400, build 0/0. Niezweryfikowane: awaria po zajęciu klucza,
+  stan started/done, >2 workery, Postgres/SQL Server, `dotnet test`; pobranie wtyczki delayed-message odrzucone przez uprawnienia (punkt wciąż
+  otwarty); NU1903 dla `SQLitePCLRaw.lib.e_sqlite3`. Kontener `mt-idem-demo` usunięty.
 - Następny poziom: własny obraz RabbitMQ z wtyczką delayed-message i realny pomiar `UseDelayedRedelivery`, saga na RabbitMQ z trwałym
   repozytorium, `ReviseItinerary`, `UseMessageRetry` + Courier, atomowy klucz idempotentności przy 2 workerach.
 
