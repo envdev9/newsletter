@@ -1125,7 +1125,13 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   0 błędów odtworzenia 11/11; `evented` („nie wołam ls, ufam zdarzeniom”) oszczędza 0,1% i myli się 1/11 po zewnętrznym buildzie (błąd trwa 3 tury). `ls -lA` 1 677 tok. vs `ls -1A` 383. Skala: 22 wpisy 2,60×,
   502 → 4,57×, 2002 → 4,75× (koszt ważony 3,56×). Klucz po nazwie tylko +1,5%. `ls -l` nie widzi edycji o tym samym rozmiarze w tej samej minucie (mtime wymuszony `os.utime`). Delta gubi kolejność.
   Niezweryfikowane: zachowanie modelu, żywy `claude`/`/compact`, mnożniki cache (założenia), `ls -R`/`-t`/symlinki/BSD, rozkład powtórzeń w realnych sesjach (11 listingów dobranych ręcznie).
-- Następne: weryfikacja w żywym `claude` (hak na wynik narzędzia, co przeżywa `/compact`); epoka kompakcji dla delt `ls` + `ls -R` na dużym repo; analiza prawdziwego transkryptu; reguły CLAUDE.md i „lost in the middle”; embeddingi.
+- Wydanie #12 rubryki (#28), 2026-10-21: **`ls -R`, delta po sekcjach, projekcja poddrzewa, kompakcja okna (`chain` vs `carry`)** — `lsepoch.py`, `test_lsepoch.py`
+  (171 asercji, fuzz 25 sesji; Python 3.10.4, GNU ls 8.32). Drzewo 17 katalogów/167 wpisów, pełny `ls -R` 1 954 tok., sesja 18 tur. Bez kompakcji: none 30 011 tok., delta 5 231 (5,74×), delta z projekcją
+  poddrzewa 3 162 (9,49×), stub „identyczny” 1,24×, 0 błędów. Przemiatanie 51 scenariuszy kompakcji: `chain` 4,45× i `carry` 3,89× — 0 błędów; delta globalna/po sekcjach/projekcja mylą się w 42/51
+  (wiszące delty bez bazy). Delta po sekcjach = ten sam wynik co globalna (hipoteza obalona). `carry` nie wygrał ani razu. Pierwsza wersja `chain` zawodziła w 2/51 (wiszące delty tworzyły częściowe sekcje, `prune`
+  uznawał poprawną za sierotę) → delta bez bazy ignorowana. Kolejność: `ls -S` odtwarzalne z tekstu 40/40; `ls -t` z minutami 0/40, z pełnym czasem 40/40 kosztem +46% tokenów. Zysk rośnie 7,29× (4 moduły) → 13,16× (120).
+  Niezweryfikowane: zachowanie modelu, prawdziwy `/compact`/żywy `claude` (kompakcja tylko modelowana), rozkład `ls -R` w realnych sesjach (18 tur dobranych ręcznie), `-L`, nazwy z newline, BSD, mtime przez `os.utime`.
+- Następne: `git status`/`git diff --stat`/`find` tą samą maszynerią; weryfikacja w żywym `claude` (hak na wynik narzędzia, co przeżywa `/compact`); analiza prawdziwego transkryptu; reguły CLAUDE.md i „lost in the middle”; embeddingi.
 - (Stara lista, wcześniejsze): embeddingi (gdy dostępny model/biblioteka); dedupikacja wyników `ls` (zrobione #27); weryfikacja w żywym `claude`/dokumentacji (nowa sesja, wznowienie, `/compact`); analiza prawdziwego transkryptu (gdy odczyt dozwolony); reguły CLAUDE.md i „lost in the middle"; niezależny zestaw zapytań pisany przez kogoś innego.
 
 ### ✍️ AI — prompty dla developera

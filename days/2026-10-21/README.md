@@ -33,6 +33,7 @@ Dwa duplikaty tej samej płatności i dwóch workerów: „sprawdź, czy już by
 → [Artykuł](ai-agentic-loop/ARTICLE.md) · [Kod](ai-agentic-loop/code/)
 
 ### 🧠 [AI — zarządzanie kontekstem](ai-context/ARTICLE.md)
+Delta `ls -R` z projekcją poddrzewa tnie sesję z 30 011 do 3 162 tokenów (9,49×), ale po kompakcji okna 42 z 51 scenariuszy daje wiszące delty; leniwy `chain` (4,45×) i gorliwy `carry` (3,89×) naprawiają to do zera błędów.
 → [Artykuł](ai-context/ARTICLE.md) · [Kod](ai-context/code/)
 
 ### ✍️ [AI — prompty dla developera](ai-prompts/ARTICLE.md)
