@@ -1353,8 +1353,14 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   `[formField]` na jednym elemencie: bez błędu i ostrzeżenia, `ngModel` wygrywa, model Signal Forms zostaje. `compatForm`: stary `Validators.min(3)` → `kind: "min"` (kolizja nazw z nowym `min`).
   `SignalFormControl` w `FormGroup` propaguje ważność/wartość/`dirty`/`touched`. Niezweryfikowane: `ng serve`/przeglądarka (curl odrzucony), `withEventReplay()`, `mapResponse` przy wielu emisjach,
   własny `EFFECTS_ERROR_HANDLER`, `NG_VALIDATORS`/`NG_ASYNC_VALIDATORS` pod `compatForm`.
-- Następny poziom: `withEventReplay()` i incremental hydration (`@defer (hydrate on …)`), `NG_VALIDATORS`/`NG_ASYNC_VALIDATORS` pod `compatForm`, własny `EFFECTS_ERROR_HANDLER` /
-  `useEffectsErrorHandler: false`, `ng serve` w prawdziwej przeglądarce (o ile dostępna).
+- Wydanie #28, 2026-10-21: **własny `EFFECTS_ERROR_HANDLER` i `useEffectsErrorHandler: false`** (Angular 22.2.3, NgRx 22.0.1, Node 22.14.0 z lokalnym obejściem progu CLI). `ng build` OK
+  (152,73 kB), `ng test` 13/13; test mutacyjny (wyciszenie zgłoszenia ostatniego błędu) psuje 2 testy. Domyślny strażnik zgłasza do `ErrorHandler` 10 błędów, 11. znika i efekt umiera
+  (żądania 1–11 wychodzą). Własna polityka `createErrorPolicy` (`maxRetries: 3`): 4 zgłoszone błędy, raz `onDied`. Wznowienie = nowa subskrypcja, stan `scan` zerowany; w oknie backoffu efekt
+  nie słucha (akcje przepadają, także 1 ms przed końcem). `useEffectsErrorHandler: false` zabija efekt po pierwszym błędzie bez wpisu w `ErrorHandler`. Efekt z dispatchem bez strażnika
+  nie zabija sąsiadów; efekt `dispatch: false` bez strażnika zabija sąsiadów (także w osobnym `provideEffects()`) i trafia do „unhandled” RxJS, nie do `ErrorHandler`. Obalone hipotezy
+  opisane w artykule. Niezweryfikowane: `ng serve`/przeglądarka (tylko jsdom), `window.onerror`, lazy moduły, `ngrxOnRunEffects`, backoff z jitterem.
+- Następny poziom: `withEventReplay()` i incremental hydration (`@defer (hydrate on …)`), `NG_VALIDATORS`/`NG_ASYNC_VALIDATORS` pod `compatForm`, `ngrxOnRunEffects`,
+  `ng serve` w prawdziwej przeglądarce (o ile dostępna).
 
 ### 🗄️ SQL Server
 - Aktualny poziom trudności: **podstawy (opanowane, w pełni zweryfikowane)**

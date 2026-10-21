@@ -40,6 +40,7 @@ Delta `ls -R` z projekcją poddrzewa tnie sesję z 30 011 do 3 162 tokenów (9,4
 → [Artykuł](ai-prompts/ARTICLE.md) · [Kod](ai-prompts/code/)
 
 ### 🅰️ [Angular](angular/ARTICLE.md)
+Domyślny strażnik efektów NgRx zgłasza 10 błędów i po cichu gubi 11., po którym efekt umiera; 30-liniowa polityka ponowień to naprawia, a `useEffectsErrorHandler: false` potrafi zabić sąsiednie efekty (13/13 testów).
 → [Artykuł](angular/ARTICLE.md) · [Kod](angular/code/)
 
 ### 🗄️ [SQL Server](sqlserver/ARTICLE.md)
