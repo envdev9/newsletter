@@ -31,17 +31,16 @@ między sekcjami). Każda dziedzina ma stały emoji/kolor badge'a, żeby całoś
 do skanowania wzrokiem jak dział w gazecie. Szczegóły layoutu głównego `README.md` — nie
 psuj konwencji, którą tam ustaliliśmy, rozszerzaj ją.
 
-## Rubryki — codziennie WSZYSTKIE, nie rotacyjnie
+## Rubryki — działy gazety
 
-**Jedno wydanie (jeden dzień) = jeden artykuł z KAŻDEJ rubryki poniżej.** To nie jest
-rotacja "dziś temat A, jutro temat B" — każdego dnia czytelnik dostaje postęp we
-wszystkich dziedzinach naraz, jak dział w prawdziwej gazecie (sport, polityka,
-technologia... tu: .NET, Ansible, TeamCity, ...). Każda rubryka ma **własny, niezależny
-postęp** (wersja .NET, poziom trudności Ansible/TeamCity/itd.) trzymany w `STATE.md` —
-ten postęp przesuwa się o jeden krok dziennie, per rubryka, niezależnie od pozostałych.
-Zawsze czytaj `STATE.md` przed pisaniem wydania i aktualizuj po (osobna sekcja per
-rubryka). Lista rubryk może z czasem rosnąć (dopisywana ręcznie) — trzymaj się aktualnej
-listy poniżej, nie tej zapamiętanej z poprzednich przebiegów.
+Prasówka jest podzielona **per rubryka, nie per dzień**: każda rubryka to osobny dział
+(`rubryki/<slug>/`), do którego dokładane są kolejne artykuły. Którego dnia która
+rubryka dostaje nowy artykuł, ustala harmonogram uruchomień (poza tym repo) — tu ważne
+jest tylko to, że każda rubryka ma **własny, niezależny postęp** (wersja .NET, poziom
+trudności Ansible/TeamCity/itd.) trzymany w `STATE.md`, przesuwany o jeden krok przy
+każdym nowym artykule tej rubryki. Zawsze czytaj `STATE.md` przed pisaniem i aktualizuj
+po (osobna sekcja per rubryka). Lista rubryk może z czasem rosnąć (dopisywana ręcznie) —
+trzymaj się aktualnej listy poniżej, nie tej zapamiętanej z poprzednich przebiegów.
 
 1. **.NET — nowości w wersji** 🔷: opisz 2 nowe funkcje danej wersji .NET, z pełnym,
    kompilującym się przykładem kodu na każdą + wyjaśnieniem "co to zmienia w praktyce".
@@ -111,19 +110,32 @@ listy poniżej, nie tej zapamiętanej z poprzednich przebiegów.
 
 ## Gdzie i jak zapisywać
 
-- Jeden folder na dzień (wydanie): `days/YYYY-MM-DD/`
-  - `README.md` — **strona tytułowa wydania**: krótkie zajawki wszystkich 10 rubryk tego
-    dnia z linkami do artykułów (wzór: dowolny istniejący `days/*/README.md`).
-  - Jeden podfolder na rubrykę, stały slug: `dotnet/`, `ansible/`, `teamcity/`, `tunit/`,
-    `aspire/`, `masstransit/`, `ai-claude-code/`, `ai-agentic-loop/`, `ai-context/`,
-    `ai-prompts/`. W każdym:
-    - `ARTICLE.md` — treść (nagłówek w stylu gazety, opis edukacyjny).
-    - `code/` — pełny, uruchamialny projekt/skrypt + `code/README.md` (instrukcja
-      uruchomienia + fragment artykułu, którego dotyczy).
-- Główny `README.md` (spis treści całej gazety): **jeden wiersz na dzień** (nie na
-  rubrykę) w tabeli "Spis wydań", link do `days/YYYY-MM-DD/README.md`. Sekcja "Dziś na
-  pierwszej stronie" pokazuje zajawkę najnowszego dnia.
+- Jeden folder na rubrykę: `rubryki/<slug>/`, stałe slugi: `dotnet`, `ansible`,
+  `teamcity`, `tunit`, `aspire`, `masstransit`, `ai-claude-code`, `ai-agentic-loop`,
+  `ai-context`, `ai-prompts`, `angular`, `sqlserver`, `postgres-vector`, `certificates`.
+- **Każdy artykuł we własnym podfolderze** `rubryki/<slug>/YYYY-MM-DD-<tytul>/`, gdzie
+  `<tytul>` to tytuł artykułu (nagłówek `## ` w `ARTICLE.md`) jako ASCII kebab-case:
+  małe litery, polskie znaki bez ogonków (ą→a, ł→l, ż→z…), wszystko poza literami i
+  cyframi zamienione na `-`, max ~60 znaków ucięte na granicy słowa. Przykład:
+  `rubryki/ansible/2026-10-24-handlery-bez-tajemnic-kolejnosc-listen-awaria-i-force/`.
+  W nim:
+  - `ARTICLE.md` — treść (nagłówek w stylu gazety, opis edukacyjny). Masthead:
+    `# 📰 TECH PRASÓWKA` + `### <emoji> <Rubryka> — <data słownie>` (bez numeru wydania).
+    Stopka: link do spisu rubryki (`../README.md`) i spisu rubryk (`../../../README.md`).
+  - `code/` — pełny, uruchamialny projekt/skrypt + `code/README.md` (instrukcja
+    uruchomienia + fragment artykułu, którego dotyczy). Ścieżki w komendach podawaj
+    względem folderu artykułu albo pełne od korzenia repo (`rubryki/<slug>/<folder>/code`).
+  - Odwołania do wcześniejszych artykułów: względne linki, np.
+    `../2026-10-18-<tytul>/ARTICLE.md` (ta sama rubryka) albo
+    `../../<inna-rubryka>/<folder>/ARTICLE.md`.
+- `rubryki/<slug>/README.md` — **spis rubryki**: tabela Data | Artykuł | W skrócie | Kod,
+  nowy artykuł = nowy wiersz na górze (jednozdaniowa zajawka w kolumnie „W skrócie”).
+- Główny `README.md`: tabela „Rubryki” (wiersz per rubryka: liczba artykułów + najnowszy
+  artykuł — aktualizuj wiersz swojej rubryki) i „Najnowsze artykuły” (nowy wiersz na
+  górze, lista trzyma 15 najnowszych — najstarszy nadmiarowy wiersz usuń).
 - Postęp per rubryka: `STATE.md`, osobna sekcja na rubrykę, aktualizowana po każdym
-  wydaniu (każda rubryka co dzień, więc każda sekcja rusza się co dzień).
-- Commit message: `Prasówka #<numer>: <data>` (jeden commit na cały dzień, wszystkie 10
-  rubryk razem).
+  nowym artykule tej rubryki.
+- Commit message: `Prasowka: <slug> <YYYY-MM-DD>` (jeden commit na jeden artykuł).
+- Historia: do 24.10.2026 prasówka była dzielona per dzień (`days/YYYY-MM-DD/<slug>/`);
+  wszystkie dotychczasowe artykuły zostały jednorazowo przeniesione do `rubryki/`.
+  Wzmianki „Wydanie #N” w starszych artykułach to historyczna numeracja.

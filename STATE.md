@@ -1,8 +1,10 @@
 # Stan postępu
 
 Czytaj to **przed** pisaniem wydania, aktualizuj **po**. To jedyna pamięć między
-przebiegami — kolejny agent nie widzi tej rozmowy, tylko ten plik. Każdego dnia
-aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubryki).
+przebiegami — kolejny agent nie widzi tej rozmowy, tylko ten plik. Po każdym nowym
+artykule aktualizowana jest **tylko sekcja jego rubryki**. Od 24.10.2026 artykuły leżą w
+`rubryki/<slug>/<data>-<tytul>/` (wcześniej `days/<data>/<slug>/`; numery „wydanie #N”
+poniżej to historyczna numeracja dni).
 
 ## Ostatnie wydanie
 
