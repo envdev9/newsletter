@@ -144,6 +144,15 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   - Zostało: async API `System.IO.Compression` (`ZipFile.CreateFromDirectoryAsync`/`ExtractToDirectoryAsync`, `ZipArchive.CreateAsync`,
     `ZipArchiveEntry.OpenAsync`, `DisposeAsync`; potwierdzone refleksją, bez kodu), `ProcessStartInfo.CreateNewProcessGroup`,
     `CompositeMLDsa` → potem .NET 11 (gdy SDK) lub zejście do .NET 9.
+  - [x] Async API `System.IO.Compression` (.NET 10: `ZipFile.CreateFromDirectoryAsync`/`ExtractToDirectoryAsync`/`OpenReadAsync`,
+    `ZipArchive.CreateAsync`, `ZipArchiveEntry.OpenAsync`, `DisposeAsync`) — wydanie #29, 2026-10-24. Refleksja 9.0.18 vs 10.0.11,
+    `CS0117`×3 na SDK 9.0.316. Zweryfikowane `dotnet run`: round-trip (hashe), zip-slip → `IOException`, „async" ≠ zero sync I/O
+    (strumień liczący zapisy: stare API 25 sync; nowe 11 sync + 14 async, `NoCompression` 3+16), `await using` na strumieniu wpisu kończy
+    deflate synchronicznie, anulowanie przed startem nie zostawia pliku, w trakcie zostawia częściowy zip (2–3 z 200 wpisów).
+    Niezweryfikowane: Kestrel/`AllowSynchronousIO=false`, strumienie sieciowe, tryb Update, zip64, zwolnienie wątków puli/czasy,
+    .NET 11 (brak SDK). bin/obj w code/ niesprzątnięte (odmowa Basha) — pomija je .gitignore.
+  - Zostało: `ProcessStartInfo.CreateNewProcessGroup`, `CompositeMLDsa` (tylko API; OpenSSL 3.0.2) → potem .NET 11 (gdy SDK) lub zejście
+    do .NET 9; opcjonalnie async ZIP na Kestrelu z `AllowSynchronousIO=false`.
 - Gdy funkcje .NET 10 się wyczerpią → .NET 11 → (dalsze nowości) → schodzimy w dół:
   9 → 8 → 7 → 6, potem wracamy do najnowszej dostępnej wersji.
 
