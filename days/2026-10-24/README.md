@@ -32,6 +32,7 @@ Tabela przypadków w CSV jako własny atrybut danych TUnit i DI per test przez `
 → [Artykuł](ai-claude-code/ARTICLE.md) · [Kod](ai-claude-code/code/)
 
 ### ⚙️ [AI — agentic loop](ai-agentic-loop/ARTICLE.md)
+Dziennik WAL z tokenem w każdym rekordzie: `fold` ogradza zombie po `SIGCONT`, ale zdublowanych skutków nie cofnie, a tryb „zamiar przed skutkiem" zamienia duplikaty w opóźnienie albo lukę.
 → [Artykuł](ai-agentic-loop/ARTICLE.md) · [Kod](ai-agentic-loop/code/)
 
 ### 🧠 [AI — zarządzanie kontekstem](ai-context/ARTICLE.md)

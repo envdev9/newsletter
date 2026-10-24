@@ -1077,6 +1077,13 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   zapisy bez sprawdzania, 1 ze sprawdzeniem przed zapisem, 0 przy tokenie ogrodzeniowym sprawdzanym przez zasób). Niezweryfikowane: żywy `claude`/`permissionMode`/hooki
   headless (agent = skrypt), `time.monotonic()` tylko jeden host (skoki zegara, restart, dryf), zasób bez sprawdzania tokenu (API, `git push`), narzut `FencedLog`
   przy wielu pisarzach, głodzenie heartbeatu, NFS/Windows/macOS, integracja z nadzorcą z #14–#24. Nie potwierdzono końcowego sprzątania `/tmp/prasowka-lease-*` (find odrzucony).
+- Wydanie #29, 2026-10-24: **token ogrodzeniowy w każdym rekordzie dziennika WAL** (`wal.py`, `lease.py`, `actor.py`, `scen.py`, `demo.py`, `run_tests.py` 13/13 ×3,
+  Python 3.10.4, Linux). `fold` odrzuca rekord z tokenem niższym niż najwyższy widziany; nowy właściciel zaczyna od rekordu `barrier`. Zmierzone na `SIGSTOP`/`SIGCONT`/`SIGKILL`:
+  fold z tokenem odrzucił 5 rekordów zombie (naiwny przypisał mu cały bieg), ale skutki zewnętrzne kroków 2–5 wykonały się 2×; tryb `intent` (zamiar przed skutkiem):
+  zamrożenie przed zamiarem 0 duplikatów, w oknie sprawdzenie→skutek dokładnie raz ale w odwróconej kolejności, z `SIGKILL` skutek ginie; snapshot kompaktowania musi nieść
+  najwyższy token; zapis starym deskryptorem po `os.replace` ginie; zombie między wygaśnięciem a barierą jest przyjmowany (ograniczenie). Niezweryfikowane: żywy `claude`/
+  `permissionMode`/hooki headless, NFS/Windows/macOS, >2 pisarzy, integracja z nadzorcą #14–#24; scenariusze zależne od czasu (TTL 0,6 s).
+- Następne (po #29): osobny rekord potwierdzenia skutku + rozstrzyganie „zamiar bez potwierdzenia" przy wznowieniu (`NEEDS_HUMAN` z #14); dzierżawa w bazie; `permissionMode` po weryfikacji CLI.
 - Następne (po #25): wpiąć token w dziennik WAL (`fold` odrzuca rekordy ze starszym tokenem); dzierżawa w bazie zamiast w pliku; `permissionMode` po weryfikacji CLI.
 - Następne (po #24): dzierżawa z heartbeatem + fencing token; `permissionMode` w frontmatterze agenta i hooki headless (po weryfikacji CLI); inne kierunki wyższego poziomu pętli (np. wielu pisarzy/blokada dziennika).
 
