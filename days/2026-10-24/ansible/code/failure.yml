@@ -1,0 +1,27 @@
+---
+# Co sie dzieje z juz zgloszonymi handlerami, gdy pozniejsze zadanie sie wywali?
+#   ansible-playbook -i inventory.ini failure.yml                      -> handler NIE biegnie
+#   ansible-playbook -i inventory.ini failure.yml -e force=true        -> handler biegnie
+#   ansible-playbook -i inventory.ini failure.yml -e flush=true        -> handler biegnie przed awaria
+- name: Handlery a awaria
+  hosts: localhost
+  gather_facts: false
+  # -e przychodzi jako string, wiec | bool jest konieczne.
+  force_handlers: "{{ force | default(false) | bool }}"
+  tasks:
+    - name: "zmiana konfiguracji (zglasza handler)"
+      ansible.builtin.debug: { msg: "zmieniam konfiguracje" }
+      changed_when: true
+      notify: restart uslugi
+
+    - name: "opcjonalny flush_handlers przed ryzykownym krokiem"
+      ansible.builtin.meta: flush_handlers
+      when: flush | default(false) | bool
+
+    - name: "ryzykowny krok - zawsze pada"
+      ansible.builtin.fail:
+        msg: "celowa awaria po zmianie konfiguracji"
+
+  handlers:
+    - name: restart uslugi
+      ansible.builtin.debug: { msg: "HANDLER: restart uslugi wykonany" }

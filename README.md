@@ -41,7 +41,7 @@ gotowy, ale weryfikację ograniczyło środowisko (szczegóły w artykułach).
 
 | # | Data | Wydanie | Rubryki |
 |---|------|---------|---------|
-| 29 | 2026-10-24 | [Otwórz](days/2026-10-24/README.md) | 🔷 .NET · 🧪 TUnit |
+| 29 | 2026-10-24 | [Otwórz](days/2026-10-24/README.md) | 🔷 .NET · 🧪 TUnit · 🔧 Ansible |
 | 28 | 2026-10-21 | [Otwórz](days/2026-10-21/README.md) | 📨 MassTransit · 🧠 AI kontekst · 🅰️ Angular |
 | 27 | 2026-10-20 | [Otwórz](days/2026-10-20/README.md) | 📨 MassTransit · 🧠 AI kontekst · 🅰️ Angular |
 | 26 | 2026-10-19 | [Otwórz](days/2026-10-19/README.md) | 📨 MassTransit · 🧠 AI kontekst · 🅰️ Angular |

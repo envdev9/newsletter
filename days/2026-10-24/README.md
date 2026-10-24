@@ -12,6 +12,7 @@ Async ZIP w .NET 10 (`CreateFromDirectoryAsync`, `ZipArchive.CreateAsync`) i pom
 → [Artykuł](dotnet/ARTICLE.md) · [Kod](dotnet/code/)
 
 ### 🔧 [Ansible](ansible/ARTICLE.md)
+Zmieniłeś konfigurację, następny krok padł i usługa nigdy nie dostała restartu — handlery: kolejność, `listen`, `force_handlers` i łańcuchy.
 → [Artykuł](ansible/ARTICLE.md) · [Kod](ansible/code/)
 
 ### 🏗️ [TeamCity](teamcity/ARTICLE.md)

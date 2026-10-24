@@ -323,6 +323,13 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   działa na kontrolerze, nie na hoście. Niezweryfikowane: `private_role_vars` z włączoną flagą (env/ansible.cfg niedostępne), dziedziczenie
   tagów w `roles:`/`import_role`, `apply:` z `become`/`when`, wbudowany `show_custom_stats`, SSH/`become`, vault/galaxy/Molecule.
   W code/ zostało `callback_plugins/__pycache__`. Zostało: `private_role_vars` (jeśli da się włączyć), `apply:` z `become`/`when`.
+- Wydanie #29, 2026-10-24: handlery na poziomie reguł — kolejność wg definicji w `handlers:` (nie wg `notify`), deduplikacja, `listen`,
+  utrata zgłoszonych handlerów po awarii kolejnego kroku vs `force_handlers`/`meta: flush_handlers`, handler zgłaszający handler
+  (biegnie od razu po zgłaszającym). Zweryfikowane ansible-core 2.17.14 (syntax-check, order_listen, chain ×2, failure ×3).
+  Niezweryfikowane: `force_handlers` przy unreachable/serial/any_errors_fatal, handlery w rolach, notify w block/rescue, kod wyjścia failure.yml;
+  „drugi przebieg po awarii = ok" to wniosek z idempotencji, nie pomiar.
+- Następny poziom (po #29): block/rescue z handlerami, force_handlers + serial/any_errors_fatal, handlery w rolach (listen między rolami),
+  `meta: end_host`/`end_play`, `check_mode: true` na tasku.
 - Następny poziom: Molecule (gdyby `ansible-galaxy` kiedyś przestał być blokowany); zdalne SSH/`become`
   (jeśli kiedykolwiek dostępne — środowisko na razie blokuje nawet sprawdzenie `sshd`); własny
   **inventory plugin** (dynamic inventory jako skrypt zwracający JSON, podłączony przez `-i`, nie

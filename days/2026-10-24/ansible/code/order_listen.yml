@@ -1,0 +1,50 @@
+---
+# Kolejnosc handlerow, listen (topic), wielokrotne notify, handler zglaszajacy handler.
+- name: Handlery - kolejnosc, listen, deduplikacja
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    # Zadania "zmieniaja" (changed_when: true) w kolejnosci: Z -> Y -> X.
+    - name: "zadanie Z (notify handler Z)"
+      ansible.builtin.debug: { msg: "robie Z" }
+      changed_when: true
+      notify: handler Z
+
+    - name: "zadanie Y (notify: handler Y, dwa razy z rzedu przez dwa zadania)"
+      ansible.builtin.debug: { msg: "robie Y" }
+      changed_when: true
+      notify: handler Y
+
+    - name: "zadanie Y2 (znowu notify: handler Y)"
+      ansible.builtin.debug: { msg: "robie Y2" }
+      changed_when: true
+      notify: handler Y
+
+    - name: "zadanie X (notify przez topic 'config changed')"
+      ansible.builtin.debug: { msg: "robie X" }
+      changed_when: true
+      notify: config changed
+
+    - name: "zadanie N (nic nie zmienia, notify nie zadziala)"
+      ansible.builtin.debug: { msg: "robie N" }
+      changed_when: false
+      notify: handler NIGDY
+
+  # Definicje handlerow w kolejnosci X, Y, Z - to ona decyduje o kolejnosci wykonania.
+  handlers:
+    - name: handler X (przez listen)
+      ansible.builtin.debug: { msg: "HANDLER X (zdefiniowany 1.)" }
+      listen: config changed
+
+    - name: handler Y
+      ansible.builtin.debug: { msg: "HANDLER Y (zdefiniowany 2.)" }
+
+    - name: handler Z
+      ansible.builtin.debug: { msg: "HANDLER Z (zdefiniowany 3.)" }
+
+    - name: handler X2 (tez przez listen)
+      ansible.builtin.debug: { msg: "HANDLER X2 (zdefiniowany 4., ten sam topic co X)" }
+      listen: config changed
+
+    - name: handler NIGDY
+      ansible.builtin.debug: { msg: "tego nie powinno byc w outpucie" }

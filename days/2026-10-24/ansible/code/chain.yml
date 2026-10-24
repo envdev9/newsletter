@@ -1,0 +1,31 @@
+---
+# Handler zgłaszający inny handler. Czy to dziala i czy kolejnosc definicji ma znaczenie?
+# Handler A (zdefiniowany 1.) zgłasza B (zdefiniowany 2. - PO nim)
+# Handler C (zdefiniowany 3.) zgłasza D (zdefiniowany 0. - PRZED nim, ale po stronie listy to pierwszy)
+- name: Handlery zgłaszające handlery
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: "zadanie startowe"
+      ansible.builtin.debug: { msg: "zmiana" }
+      changed_when: true
+      notify:
+        - handler A
+        - handler C
+
+  handlers:
+    - name: handler D (zdefiniowany pierwszy, zgłaszany przez C)
+      ansible.builtin.debug: { msg: "HANDLER D" }
+
+    - name: handler A
+      ansible.builtin.debug: { msg: "HANDLER A - zglaszam B" }
+      changed_when: true
+      notify: handler B
+
+    - name: handler B
+      ansible.builtin.debug: { msg: "HANDLER B (zgloszony przez A)" }
+
+    - name: handler C
+      ansible.builtin.debug: { msg: "HANDLER C - zglaszam D" }
+      changed_when: true
+      notify: handler D (zdefiniowany pierwszy, zgłaszany przez C)
