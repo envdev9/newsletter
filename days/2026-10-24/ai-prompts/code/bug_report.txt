@@ -1,0 +1,3 @@
+Faktura FV/2026/0412: pozycja 3 x 0.835 zl wyswietla sie jako 2.50 zl, ksiegowosc
+oczekuje 2.51 zl (polowki zaokraglamy w gore, od zera). Podobnie kwota 0.125 zl
+daje 0.12 zamiast 0.13. Nie zmieniac publicznego API biblioteki Billing.

@@ -1,0 +1,9 @@
+Twoja poprzednia odpowiedz w kroku {{step}} narusza kontrakt. Wyniki walidatora
+(kazdy punkt to konkretna regula, nie opinia):
+{{errors}}
+
+Twoja poprzednia odpowiedz:
+{{previous}}
+
+Popraw WYLACZNIE wskazane naruszenia. Nie zmieniaj tego, co przeszlo walidacje.
+Zachowaj ten sam format wyjscia. To ponowienie nr {{attempt}} z {{max_attempts}}.

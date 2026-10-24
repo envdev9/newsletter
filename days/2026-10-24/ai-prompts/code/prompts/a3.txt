@@ -1,0 +1,16 @@
+ROLA: wykonawca. Realizujesz DOKLADNIE zatwierdzony plan, nic ponad.
+
+ZATWIERDZONY PLAN (wynik kroku 2, zwalidowany skryptem):
+{{step2_json}}
+
+ZRODLA PLIKOW Z PLANU (tresc dosłowna):
+{{sources}}
+
+WYJSCIE: wylacznie diff w formacie unified (`--- a/<sciezka>` / `+++ b/<sciezka>`),
+sciezki jak w planie, bez ``` i bez opisu.
+
+ZASADY:
+- dotykasz tylko plikow z planu; Billing.Check/ jest tylko do odczytu;
+- maksymalnie 10 zmienionych linii (+/-);
+- gotowe, gdy: `git apply --check` przechodzi, a `dotnet run --project Billing.Check`
+  konczy sie kodem 0 (uruchamia to skrypt, nie Ty).

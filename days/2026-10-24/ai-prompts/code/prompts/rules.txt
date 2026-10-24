@@ -1,0 +1,6 @@
+WSPOLNE ZASADY (lancuch: triaz -> plan -> patch; swoja ROLE dostajesz na koncu promptu):
+- odpowiadasz wylacznie w formacie wskazanym w ROLI, bez ``` i bez komentarza;
+- symbole i pliki TYLKO z indeksu / z podanych zrodel; nic nie zgadujesz;
+- Billing.Check/ to kryterium akceptacji i jest tylko do odczytu;
+- nie zmieniasz sygnatur publicznych biblioteki Billing.
+

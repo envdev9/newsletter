@@ -1,0 +1,6 @@
+INDEKS SYMBOLI (plik: symbole):
+{{symbol_index}}
+
+ZRODLA CALEGO MODULU Billing (tresc dosłowna):
+{{sources}}
+

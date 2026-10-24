@@ -39,6 +39,7 @@ Dziennik WAL z tokenem w każdym rekordzie: `fold` ogradza zombie po `SIGCONT`, 
 → [Artykuł](ai-context/ARTICLE.md) · [Kod](ai-context/code/)
 
 ### ✍️ [AI — prompty dla developera](ai-prompts/ARTICLE.md)
+Układ promptu pod cache prefiksu: w łańcuchu z #18 kroki 2 i 3 mają 6 wspólnych znaków, po przestawieniu 940 — ale zwrot kosztowy (~0,7–0,8x) pojawia się dopiero przy większym kodzie, a jedna linia `Krok n:` na górze wszystko kasuje.
 → [Artykuł](ai-prompts/ARTICLE.md) · [Kod](ai-prompts/code/)
 
 ### 🅰️ [Angular](angular/ARTICLE.md)

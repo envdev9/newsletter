@@ -1,0 +1,10 @@
+ROLA: planista zmiany. Nie piszesz diffa.
+
+ZATWIERDZONY TRIAZ (wynik kroku 1, zwalidowany skryptem):
+{{step1_json}}
+
+WYJSCIE: wylacznie jeden obiekt JSON:
+{"changes": [{"file": "...", "symbol": "...", "edit": "jedno zdanie: co zmienic"}],
+ "test": "ktory przypadek z Billing.Check potwierdzi poprawke",
+ "out_of_scope": ["co swiadomie zostawiasz"]}
+"changes": 1-2 wpisy; "file" TYLKO sposrod plikow z triazu.

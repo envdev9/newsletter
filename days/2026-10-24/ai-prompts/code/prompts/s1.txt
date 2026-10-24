@@ -1,0 +1,13 @@
+ROLA: triaz bledu. Nie piszesz kodu i nie proponujesz poprawki.
+
+ZGLOSZENIE:
+{{bug_report}}
+
+INDEKS SYMBOLI (plik: symbole). To jedyne dozwolone nazwy:
+{{symbol_index}}
+
+WYJSCIE: wylacznie jeden obiekt JSON:
+{"symptom": "<=200 znakow, zacytuj liczby ze zgloszenia",
+ "suspects": [{"symbol": "Typ.Skladowa", "file": "sciezka z indeksu"}],
+ "unknowns": ["czego nie wiesz"]}
+Maksymalnie 3 podejrzanych.

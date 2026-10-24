@@ -1213,6 +1213,12 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   oszczędza 33% (4931 vs 7337 tokenów), ale cała oszczędność z 3 scenariuszy odrzuconych w krokach 1–2 (s4, s5 odpadają w kroku 3 → 0). Próg opłacalności łańcucha
   zależy od q (krok) i Q (jeden prompt), które trzeba zmierzyć na modelu. Niezweryfikowane: model/tokenizer, ręcznie pisane nagrania, waga wyjścia, q/Q, runda
   naprawcza, kod "duży" (ekstrapolacja), cache promptów i czas niemodelowane, brak testu negatywnego `test_cost.py`, bramka `dotnet run` tylko przez `chain.py run`.
+- Wydanie #29, 2026-10-24: **układ promptów łańcucha z #18 pod cache prefiksu** (`prefix.py`, `test_prefix.py`, Python 3.10.4, deterministyczne, bez modelu/tokenizera).
+  Wspólny prefiks kroków 2–3: A (układ z #18) 6 znaków, B (cały moduł w prefiksie) 2275, C (reguły na górze, źródła z triażu, zmienne na końcu) 940. Mały kod: cache nic nie daje
+  (poniżej progu); C wygrywa z A między skalą x5 a x8 (0,81x), zbiega do ~0,68x; B nigdy (2,1–2,4x). Zbijacze prefiksu: nagłówek `Krok n:` na górze (940→5), JSON przed źródłami (→372),
+  źródła kroku 3 z planu zamiast z triażu (→474), runda naprawcza przed promptem (→0). Test negatywny: 3/3 zepsute układy wykryte. Niezweryfikowane: ceny odczytu 0,1/zapisu 1,25 i próg
+  1024 tokenów to założenia, TTL, punkt zapisu, wywołania równoległe, tokeny = znaki/4, wpływ na jakość, latencja; nagrania ręczne.
+- Następne (po #29): pomiar na prawdziwym modelu/tokenizerze (prawdziwe r, g, m, TTL, trafienia z API); kolejność kroków od najtańszej walidacji; Stryker.NET i ślepy zestaw; cache przy wywołaniach równoległych.
 - Następne (po #25): pomiar na prawdziwym modelu i tokenizerze; układanie promptów pod cache prefiksu (stały prefiks, zmienne dane na końcu); Stryker.NET i ślepy
   zestaw; kolejność kroków od najtańszej walidacji.
 - Następne (po #24): porównanie ze Stryker.NET i ślepym zestawem; pomiar kosztu tokenów łańcucha vs jeden prompt; ewaluacja na prawdziwym modelu; pomiar kosztu tokenów łańcucha vs jeden prompt.
