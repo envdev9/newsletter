@@ -16,55 +16,61 @@
 ![pgvector](https://img.shields.io/badge/PostgreSQL_%2B_pgvector-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
 ![TLS](https://img.shields.io/badge/TLS_%2F_X.509-2E8B57?style=for-the-badge&logo=letsencrypt&logoColor=white)
 
-*Każda rubryka to osobny dział gazety: nowe artykuły trafiają do swojej rubryki, każdy
-we własnym folderze z datą i tytułem. Kod zawsze zweryfikowany lokalnie przed publikacją —
-a jeśli czegoś nie dało się zweryfikować (środowisko, nie kod), artykuł mówi to wprost.*
+*Jedno wydanie dziennie, godz. 2:30 — a w każdym wydaniu artykuł z KAŻDEJ z 14 rubryk
+poniżej naraz. Kod zawsze zweryfikowany lokalnie przed publikacją — a jeśli czegoś nie
+dało się zweryfikować (środowisko, nie kod), wydanie mówi to wprost zamiast udawać.*
 
 </div>
 
 ---
 
-## 🗂️ Rubryki
+## 🗞️ Dziś na pierwszej stronie
 
-| | Rubryka | Artykułów | Najnowszy |
-|---|---------|-----------|-----------|
-| 🔷 | [.NET — nowości w wersji](rubryki/dotnet/README.md) | 16 | 2026-10-24 — [Async ZIP w .NET 10: `CreateFromDirectoryAsync`, `ZipArchive.CreateAsync` — i dlaczego „async" nie znaczy jeszcze „zero synchronicznego I/O"](rubryki/dotnet/2026-10-24-async-zip-w-net-10-createfromdirectoryasync-ziparchive/ARTICLE.md) |
-| 🔧 | [Ansible](rubryki/ansible/README.md) | 18 | 2026-10-24 — [Handlery bez tajemnic: kolejność, `listen`, awaria i `force_handlers`, łańcuchy](rubryki/ansible/2026-10-24-handlery-bez-tajemnic-kolejnosc-listen-awaria-i-force/ARTICLE.md) |
-| 🏗️ | [TeamCity](rubryki/teamcity/README.md) | 11 | 2026-10-15 — [TeamCity: zielone testy na artefakcie z builda, który nie jest Twój — snapshot to nie artefakt](rubryki/teamcity/2026-10-15-teamcity-zielone-testy-na-artefakcie-z-builda-ktory-nie/ARTICLE.md) |
-| 🧪 | [TUnit](rubryki/tunit/README.md) | 16 | 2026-10-24 — [TUnit: własne źródło danych z pliku CSV i własny konstruktor klas testowych z DI](rubryki/tunit/2026-10-24-tunit-wlasne-zrodlo-danych-z-pliku-csv-i-wlasny-konstruktor/ARTICLE.md) |
-| ✈️ | [Aspire](rubryki/aspire/README.md) | 10 | 2026-10-15 — ["Trwały" kontener Aspire jest trwały do pierwszej zmiany konfiguracji. Zmień jedną zmienną środowiskową i Redis wstaje od zera](rubryki/aspire/2026-10-15-trwaly-kontener-aspire-jest-trwaly-do-pierwszej-zmiany/ARTICLE.md) |
-| 📨 | [Messaging .NET z MassTransit](rubryki/masstransit/README.md) | 16 | 2026-10-21 — [📨 Dwóch workerów, jedna płatność: dlaczego „sprawdź i zapisz” zawsze zaksięguje dwa razy](rubryki/masstransit/2026-10-21-dwoch-workerow-jedna-platnosc-dlaczego-sprawdz-i-zapisz/ARTICLE.md) |
-| 🤖 | [AI — Claude Code dla .NET/Angular/SQL](rubryki/ai-claude-code/README.md) | 11 | 2026-10-16 — [Rachunek za GIN: ile kosztuje indeks, który ratuje `Contains` — i co z `ILIKE` oraz `citext`](rubryki/ai-claude-code/2026-10-16-rachunek-za-gin-ile-kosztuje-indeks-ktory-ratuje-contains-i/ARTICLE.md) |
-| ⚙️ | [AI — agentic loop](rubryki/ai-agentic-loop/README.md) | 13 | 2026-10-24 — [Token w dzienniku WAL: czytelnik ogradza zombie, ale nie cofa skutków](rubryki/ai-agentic-loop/2026-10-24-token-w-dzienniku-wal-czytelnik-ogradza-zombie-ale-nie-cofa/ARTICLE.md) |
-| 🧠 | [AI — zarządzanie kontekstem](rubryki/ai-context/README.md) | 12 | 2026-10-21 — [Delta `ls` z wczoraj działa do pierwszej kompakcji. `ls -R`, projekcja poddrzewa i dwa sposoby na „wiszącą deltę”: leniwy `chain` i drogi `carry`](rubryki/ai-context/2026-10-21-delta-ls-z-wczoraj-dziala-do-pierwszej-kompakcji-ls-r/ARTICLE.md) |
-| ✍️ | [AI — prompty dla developera](rubryki/ai-prompts/README.md) | 9 | 2026-10-24 — [Układ promptu pod cache prefiksu: w łańcuchu z #18 kroki 2 i 3 mają 6 wspólnych znaków; po przestawieniu 940 - i dopiero od ~8-krotnie większego kodu to się opłaca](rubryki/ai-prompts/2026-10-24-uklad-promptu-pod-cache-prefiksu-w-lancuchu-z-18-kroki-2-i/ARTICLE.md) |
-| 🅰️ | [Angular](rubryki/angular/README.md) | 16 | 2026-10-21 — [Strażnik efektów NgRx pod lupą: własny `EFFECTS_ERROR_HANDLER`, backoff i pułapka `useEffectsErrorHandler: false`](rubryki/angular/2026-10-21-straznik-efektow-ngrx-pod-lupa-wlasny-effects-error-handler/ARTICLE.md) |
-| 🗄️ | [SQL Server](rubryki/sqlserver/README.md) | 9 | 2026-10-16 — [Spill do tempdb, który sam się leczy. I statystyki, które odświeżają się „po fakcie"](rubryki/sqlserver/2026-10-16-spill-do-tempdb-ktory-sam-sie-leczy-i-statystyki-ktore/ARTICLE.md) |
-| 🧬 | [PostgreSQL jako baza wektorowa](rubryki/postgres-vector/README.md) | 8 | 2026-10-16 — [Partycjonowanie z indeksem HNSW: wielotenantowy kNN bez post-filtrowania — i `max_scan_tuples`, czyli bezpiecznik skanu iteracyjnego](rubryki/postgres-vector/2026-10-16-partycjonowanie-z-indeksem-hnsw-wielotenantowy-knn-bez-post/ARTICLE.md) |
-| 🔐 | [Certyfikaty i TLS (X.509)](rubryki/certificates/README.md) | 8 | 2026-10-15 — [Dowód spójności logu CT: jak monitor łapie log, który pokazuje dwie historie](rubryki/certificates/2026-10-15-dowod-spojnosci-logu-ct-jak-monitor-lapie-log-ktory/ARTICLE.md) |
+### [Wydanie #1 — 24 września 2026](days/2026-09-24/README.md)
+
+14 rubryk, 14 artykułów: .NET 10, Ansible, TeamCity, TUnit, Aspire, MassTransit, cztery
+odsłony AI dla dev-a, Angular, SQL Server, PostgreSQL+pgvector i certyfikaty/TLS. 12 z 14
+przykładów kodu zweryfikowane realnym uruchomieniem — TeamCity i SQL Server mają kod
+gotowy, ale weryfikację ograniczyło środowisko (szczegóły w artykułach).
+
+→ [Otwórz wydanie #1](days/2026-09-24/README.md)
 
 ---
 
-## 🗞️ Najnowsze artykuły
+## 📚 Spis wydań
 
-| Data | | Artykuł |
-|------|---|---------|
-| 2026-10-24 | 🧪 | [TUnit: własne źródło danych z pliku CSV i własny konstruktor klas testowych z DI](rubryki/tunit/2026-10-24-tunit-wlasne-zrodlo-danych-z-pliku-csv-i-wlasny-konstruktor/ARTICLE.md) |
-| 2026-10-24 | 🔷 | [Async ZIP w .NET 10: `CreateFromDirectoryAsync`, `ZipArchive.CreateAsync` — i dlaczego „async" nie znaczy jeszcze „zero synchronicznego I/O"](rubryki/dotnet/2026-10-24-async-zip-w-net-10-createfromdirectoryasync-ziparchive/ARTICLE.md) |
-| 2026-10-24 | 🔧 | [Handlery bez tajemnic: kolejność, `listen`, awaria i `force_handlers`, łańcuchy](rubryki/ansible/2026-10-24-handlery-bez-tajemnic-kolejnosc-listen-awaria-i-force/ARTICLE.md) |
-| 2026-10-24 | ✍️ | [Układ promptu pod cache prefiksu: w łańcuchu z #18 kroki 2 i 3 mają 6 wspólnych znaków; po przestawieniu 940 - i dopiero od ~8-krotnie większego kodu to się opłaca](rubryki/ai-prompts/2026-10-24-uklad-promptu-pod-cache-prefiksu-w-lancuchu-z-18-kroki-2-i/ARTICLE.md) |
-| 2026-10-24 | ⚙️ | [Token w dzienniku WAL: czytelnik ogradza zombie, ale nie cofa skutków](rubryki/ai-agentic-loop/2026-10-24-token-w-dzienniku-wal-czytelnik-ogradza-zombie-ale-nie-cofa/ARTICLE.md) |
-| 2026-10-21 | 📨 | [📨 Dwóch workerów, jedna płatność: dlaczego „sprawdź i zapisz” zawsze zaksięguje dwa razy](rubryki/masstransit/2026-10-21-dwoch-workerow-jedna-platnosc-dlaczego-sprawdz-i-zapisz/ARTICLE.md) |
-| 2026-10-21 | 🅰️ | [Strażnik efektów NgRx pod lupą: własny `EFFECTS_ERROR_HANDLER`, backoff i pułapka `useEffectsErrorHandler: false`](rubryki/angular/2026-10-21-straznik-efektow-ngrx-pod-lupa-wlasny-effects-error-handler/ARTICLE.md) |
-| 2026-10-21 | 🧠 | [Delta `ls` z wczoraj działa do pierwszej kompakcji. `ls -R`, projekcja poddrzewa i dwa sposoby na „wiszącą deltę”: leniwy `chain` i drogi `carry`](rubryki/ai-context/2026-10-21-delta-ls-z-wczoraj-dziala-do-pierwszej-kompakcji-ls-r/ARTICLE.md) |
-| 2026-10-20 | 📨 | [📨 UseDelayedRedelivery na RabbitMQ: „działa w dokumentacji”, a u ciebie wisi 21 sekund](rubryki/masstransit/2026-10-20-usedelayedredelivery-na-rabbitmq-dziala-w-dokumentacji-a-u/ARTICLE.md) |
-| 2026-10-20 | 🅰️ | [Dwa mosty między starym a nowym: `mapResponse()` w efektach NgRx i stare kontrolki obok Signal Forms](rubryki/angular/2026-10-20-dwa-mosty-miedzy-starym-a-nowym-mapresponse-w-efektach-ngrx/ARTICLE.md) |
-| 2026-10-20 | 🧠 | [`ls` to tani wynik, który wraca jak bumerang. Delta katalogu, rzut `-1A` z `-lA` i pokusa „nie wołam, bo wiem”](rubryki/ai-context/2026-10-20-ls-to-tani-wynik-ktory-wraca-jak-bumerang-delta-katalogu/ARTICLE.md) |
-| 2026-10-19 | 📨 | [📨 Saga na PostgreSQL: dwa eventy, zero wyjątków i zgubiona aktualizacja](rubryki/masstransit/2026-10-19-saga-na-postgresql-dwa-eventy-zero-wyjatkow-i-zgubiona/ARTICLE.md) |
-| 2026-10-19 | 🅰️ | [Signal Forms na serwerze: co naprawdę trafia do HTML, kto czeka na walidację i co gubi hydracja](rubryki/angular/2026-10-19-signal-forms-na-serwerze-co-naprawde-trafia-do-html-kto/ARTICLE.md) |
-| 2026-10-19 | 🧠 | [Wskaźnik do czegoś, czego już nie ma. Jak „oszczędność” kontekstu po kompakcji zamienia się w ciche kłamstwo](rubryki/ai-context/2026-10-19-wskaznik-do-czegos-czego-juz-nie-ma-jak-oszczednosc/ARTICLE.md) |
-| 2026-10-18 | 🧪 | [TUnit: TRX po porażce, wiele kluczy w `[NotInParallel]` i pokrycie kodu, któremu można ufać](rubryki/tunit/2026-10-18-tunit-trx-po-porazce-wiele-kluczy-w-notinparallel-i/ARTICLE.md) |
-<!-- kolejne wiersze dopisywane automatycznie na górze; lista trzyma 15 najnowszych -->
+| # | Data | Wydanie | Rubryki |
+|---|------|---------|---------|
+| 29 | 2026-10-24 | [Otwórz](days/2026-10-24/README.md) | 🔷 .NET · 🧪 TUnit · 🔧 Ansible · ⚙️ AI agentic loop · ✍️ AI prompty |
+| 28 | 2026-10-21 | [Otwórz](days/2026-10-21/README.md) | 📨 MassTransit · 🧠 AI kontekst · 🅰️ Angular |
+| 27 | 2026-10-20 | [Otwórz](days/2026-10-20/README.md) | 📨 MassTransit · 🧠 AI kontekst · 🅰️ Angular |
+| 26 | 2026-10-19 | [Otwórz](days/2026-10-19/README.md) | 📨 MassTransit · 🧠 AI kontekst · 🅰️ Angular |
+| 25 | 2026-10-18 | [Otwórz](days/2026-10-18/README.md) | 🔷 .NET · 🧪 TUnit · 🔧 Ansible · ⚙️ AI agentic loop · ✍️ AI prompty |
+| 24 | 2026-10-17 | [Otwórz](days/2026-10-17/README.md) | 🔷 .NET · 🧪 TUnit · 🔧 Ansible · 🤖 AI×2 |
+| 23 | 2026-10-16 | [Otwórz](days/2026-10-16/README.md) | 🗄️ SQL Server · 🧬 pgvector · 🤖 AI Claude Code |
+| 22 | 2026-10-15 | [Otwórz](days/2026-10-15/README.md) | 🏗️ TeamCity · ✈️ Aspire · 🔐 TLS |
+| 21 | 2026-10-14 | [Otwórz](days/2026-10-14/README.md) | 📨 MassTransit · 🧠 AI context · 🅰️ Angular |
+| 20 | 2026-10-13 | [Otwórz](days/2026-10-13/README.md) | 🔷 .NET · 🔧 Ansible · 🏗️ TeamCity · 🧪 TUnit · ✈️ Aspire · 📨 MassTransit · 🤖 AI×4 · 🅰️ Angular · 🗄️ SQL Server · 🧬 pgvector · 🔐 TLS |
+| 19 | 2026-10-12 | [Otwórz](days/2026-10-12/README.md) | 🔷 .NET · 🔧 Ansible · 🏗️ TeamCity · 🧪 TUnit · ✈️ Aspire · 📨 MassTransit · 🤖 AI×4 · 🅰️ Angular · 🗄️ SQL Server · 🧬 pgvector · 🔐 TLS |
+| 18 | 2026-10-11 | [Otwórz](days/2026-10-11/README.md) | 🔷 .NET · 🔧 Ansible · 🏗️ TeamCity · 🧪 TUnit · ✈️ Aspire · 📨 MassTransit · 🤖 AI×4 · 🅰️ Angular · 🗄️ SQL Server · 🧬 pgvector · 🔐 TLS |
+| 17 | 2026-10-10 | [Otwórz](days/2026-10-10/README.md) | 🔷 .NET · 🔧 Ansible · 🏗️ TeamCity · 🧪 TUnit · ✈️ Aspire · 📨 MassTransit · 🤖 AI×4 · 🅰️ Angular · 🗄️ SQL Server · 🧬 pgvector · 🔐 TLS |
+| 16 | 2026-10-09 | [Otwórz](days/2026-10-09/README.md) | 🔷 .NET · 🔧 Ansible · 🏗️ TeamCity · 🧪 TUnit · ✈️ Aspire · 📨 MassTransit · 🤖 AI×4 · 🅰️ Angular · 🗄️ SQL Server · 🧬 pgvector · 🔐 TLS |
+| 15 | 2026-10-08 | [Otwórz](days/2026-10-08/README.md) | 🔷 .NET · 🔧 Ansible · 🏗️ TeamCity · 🧪 TUnit · ✈️ Aspire · 📨 MassTransit · 🤖 AI×4 · 🅰️ Angular · 🗄️ SQL Server · 🧬 pgvector · 🔐 TLS |
+| 14 | 2026-10-07 | [Otwórz](days/2026-10-07/README.md) | 🔷 .NET · 🔧 Ansible · 🏗️ TeamCity · 🧪 TUnit · ✈️ Aspire · 📨 MassTransit · 🤖 AI×4 · 🅰️ Angular · 🗄️ SQL Server · 🧬 pgvector · 🔐 TLS |
+| 13 | 2026-10-06 | [Otwórz](days/2026-10-06/README.md) | 🔷 .NET · 🔧 Ansible · 🏗️ TeamCity · 🧪 TUnit · ✈️ Aspire · 📨 MassTransit · 🤖 AI×4 · 🅰️ Angular · 🗄️ SQL Server · 🧬 pgvector · 🔐 TLS |
+| 12 | 2026-10-05 | [Otwórz](days/2026-10-05/README.md) | 🔷 .NET · 🔧 Ansible · 🏗️ TeamCity · 🧪 TUnit · ✈️ Aspire · 📨 MassTransit · 🤖 AI×4 · 🅰️ Angular · 🗄️ SQL Server · 🧬 pgvector · 🔐 TLS |
+| 11 | 2026-10-04 | [Otwórz](days/2026-10-04/README.md) | 🔷 .NET · 🔧 Ansible · 🏗️ TeamCity · 🧪 TUnit · ✈️ Aspire · 📨 MassTransit · 🤖 AI×4 · 🅰️ Angular · 🗄️ SQL Server · 🧬 pgvector · 🔐 TLS |
+| 10 | 2026-10-03 | [Otwórz](days/2026-10-03/README.md) | 🔷 .NET · 🔧 Ansible · 🏗️ TeamCity · 🧪 TUnit · ✈️ Aspire · 📨 MassTransit · 🤖 AI×4 · 🅰️ Angular · 🗄️ SQL Server · 🧬 pgvector · 🔐 TLS |
+| 9 | 2026-10-02 | [Otwórz](days/2026-10-02/README.md) | 🔷 .NET · 🔧 Ansible · 🏗️ TeamCity · 🧪 TUnit · ✈️ Aspire · 📨 MassTransit · 🤖 AI×4 · 🅰️ Angular · 🗄️ SQL Server · 🧬 pgvector · 🔐 TLS |
+| 8 | 2026-10-01 | [Otwórz](days/2026-10-01/README.md) | 🔷 .NET · 🔧 Ansible · 🏗️ TeamCity · 🧪 TUnit · ✈️ Aspire · 📨 MassTransit · 🤖 AI×4 · 🅰️ Angular · 🗄️ SQL Server · 🧬 pgvector · 🔐 TLS |
+| 7 | 2026-09-30 | [Otwórz](days/2026-09-30/README.md) | 🔷 .NET · 🔧 Ansible · 🏗️ TeamCity · 🧪 TUnit · ✈️ Aspire · 📨 MassTransit · 🤖 AI×4 · 🅰️ Angular · 🗄️ SQL Server · 🧬 pgvector · 🔐 TLS |
+| 6 | 2026-09-29 | [Otwórz](days/2026-09-29/README.md) | 🔷 .NET · 🔧 Ansible · 🏗️ TeamCity · 🧪 TUnit · ✈️ Aspire · 📨 MassTransit · 🤖 AI×4 · 🅰️ Angular · 🗄️ SQL Server · 🧬 pgvector · 🔐 TLS |
+| 5 | 2026-09-28 | [Otwórz](days/2026-09-28/README.md) | 🔷 .NET · 🔧 Ansible · 🏗️ TeamCity · 🧪 TUnit · ✈️ Aspire · 📨 MassTransit · 🤖 AI×4 · 🅰️ Angular · 🗄️ SQL Server · 🧬 pgvector · 🔐 TLS |
+| 4 | 2026-09-27 | [Otwórz](days/2026-09-27/README.md) | 🔷 .NET · 🔧 Ansible · 🏗️ TeamCity · 🧪 TUnit · ✈️ Aspire · 📨 MassTransit · 🤖 AI×4 · 🅰️ Angular · 🗄️ SQL Server · 🧬 pgvector · 🔐 TLS |
+| 3 | 2026-09-26 | [Otwórz](days/2026-09-26/README.md) | 🔷 .NET · 🔧 Ansible · 🏗️ TeamCity · 🧪 TUnit · ✈️ Aspire · 📨 MassTransit · 🤖 AI×4 · 🅰️ Angular · 🗄️ SQL Server · 🧬 pgvector · 🔐 TLS |
+| 2 | 2026-09-25 | [Otwórz](days/2026-09-25/README.md) | 🔷 .NET · 🔧 Ansible · 🏗️ TeamCity · 🧪 TUnit · ✈️ Aspire · 📨 MassTransit · 🤖 AI×4 · 🅰️ Angular · 🗄️ SQL Server · 🧬 pgvector · 🔐 TLS |
+| 1 | 2026-09-24 | [Otwórz](days/2026-09-24/README.md) | 🔷 .NET · 🔧 Ansible · 🏗️ TeamCity · 🧪 TUnit · ✈️ Aspire · 📨 MassTransit · 🤖 AI×4 · 🅰️ Angular · 🗄️ SQL Server · 🧬 pgvector · 🔐 TLS |
+<!-- kolejne wiersze dopisywane automatycznie, najnowsze na górze -->
 
 ---
 

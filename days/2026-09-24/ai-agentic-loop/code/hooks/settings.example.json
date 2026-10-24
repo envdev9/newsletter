@@ -1,0 +1,28 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PROJECT_DIR}/days/2026-09-24/ai-agentic-loop/code/hooks/pretooluse_guard.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PROJECT_DIR}/days/2026-09-24/ai-agentic-loop/code/hooks/posttooluse_logger.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}
