@@ -18,6 +18,7 @@ Async ZIP w .NET 10 (`CreateFromDirectoryAsync`, `ZipArchive.CreateAsync`) i pom
 → [Artykuł](teamcity/ARTICLE.md) · [Kod](teamcity/code/)
 
 ### 🧪 [TUnit](tunit/ARTICLE.md)
+Tabela przypadków w CSV jako własny atrybut danych TUnit i DI per test przez `[ClassConstructor]`, z błędnym wierszem wskazanym w nazwie testu.
 → [Artykuł](tunit/ARTICLE.md) · [Kod](tunit/code/)
 
 ### ✈️ [Aspire](aspire/ARTICLE.md)

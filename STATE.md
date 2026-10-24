@@ -625,6 +625,12 @@ aktualizowane są **wszystkie** sekcje poniżej (jedno wydanie = wszystkie rubry
   (niepokryta gałąź `express` testowana tylko `[Explicit]`); potwierdzony haczyk: `Console.WriteLine` z `[AfterEvery(Assembly)]` dokleja się
   do outputu testu, także w konsoli przy porażce. Niezweryfikowane: wildcardy `*` w `--treenode-filter` (środowisko odrzuca), `dotnet test`
   z code/ (odrzucone; `--solution` z korzenia → MSB1001), zawartość raportu HTML. W code/ bin/obj/TestResults (w .gitignore).
+- Wydanie #29, 2026-10-24: własne źródło danych `CsvCasesAttribute : DataSourceGeneratorAttribute<decimal,string,decimal>` (wiersz CSV = test,
+  `generateCalls=1`), `[DisplayName]` z `$param` (samo `{0}` zostaje dosłowne), `[ClassConstructor<T>]` + `ITestEndEventReceiver` (scope DI
+  per test, created=10 disposed=10 także przy porażce), błędny wiersz CSV wskazany w nazwie testu, exit 2. TUnit 1.76.0, SDK 10.0.400,
+  zielone 10/10 przez `dotnet run`. Niezweryfikowane: `dotnet test --project` (MSB1001 bez global.json), `--treenode-filter` z `*`
+  (odrzucone przez środowisko), moment tworzenia instancji klas testowych, `AsyncDataSourceGeneratorAttribute`, `[ClassConstructor]` z dziedziczeniem.
+- Następny poziom (po #29): `AsyncDataSourceGeneratorAttribute`, `[ClassConstructor]` z klasą bazową, `dotnet test` z katalogu z global.json, wildcardy.
 - Następny poziom (po #25): wildcardy i `dotnet test` gdy środowisko pozwoli; wyścigi/powtarzalność testów HTTP, walidacja łańcucha `x5c`.
 - Następny poziom (po #24): domknąć niezweryfikowane powyżej; potem wyścigi/powtarzalność testów HTTP, walidacja łańcucha `x5c`.
 - Następny poziom (po #15): okno publikacja→aktywacja dłuższe niż `AutomaticRefreshInterval`, wspólny JWKS za balanserem, walidacja

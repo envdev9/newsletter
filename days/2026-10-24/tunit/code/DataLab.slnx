@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="DataLab.Core/DataLab.Core.csproj" />
+  <Project Path="DataLab.Tests/DataLab.Tests.csproj" />
+</Solution>
